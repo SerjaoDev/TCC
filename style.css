@@ -96,27 +96,32 @@ nav a:hover{
     background:#FF9800;
 }
 
-.mascote{
-    flex:1;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    position:relative;
-    width:100%;
-    max-width:420px;
-    height:auto;
-    z-index:2;
-    animation:float 4s ease-in-out infinite;
+.hero-img {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  height: 420px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.hero-circle{
-    position:absolute;
-    width:380px;
-    height:380px;
-    border-radius:50%;
-    background:#FFE066;
-    opacity:.35;
-    z-index:1;
+.hero-circle {
+  position: absolute;
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  background: #FFE066;
+  opacity: .35;
+  z-index: 1; 
+}
+
+.mascote {
+  position: absolute;
+  width: 100%;
+  height: auto;
+  z-index: 2; 
+  animation: float 4s ease-in-out infinite;
 }
 
 .email{
@@ -791,7 +796,7 @@ section{
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 999;
+  z-index: -999;
 }
 
 .glitter-overlay::before {
