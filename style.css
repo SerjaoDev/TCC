@@ -22,7 +22,8 @@ body{
 
 header{
     background: linear-gradient(90deg, var(--laranja), var(--amarelo));
-    position: sticky;
+    position: fixed;
+    z-index: 999;
     top: 0;
     left: 0;
     width: 100%;
