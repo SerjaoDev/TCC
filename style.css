@@ -22,7 +22,7 @@ body{
 
 header{
     background: linear-gradient(90deg, var(--laranja), var(--amarelo));
-    position: fixed;
+    position: sticky;
     top: 0;
     left: 0;
     width: 100%;
@@ -34,20 +34,6 @@ header{
     border-bottom-left-radius:25px;
     border-bottom-right-radius:25px;
     box-shadow:0 6px 20px rgba(0,0,0,.12);
-}
-
-.logo{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-size:2rem;
-    font-weight:bold;
-    color:#FF8C00;
-}
-
-.logo-img{
-    height:65px;
-    width:auto;
 }
 
 nav a{
