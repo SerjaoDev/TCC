@@ -11,12 +11,17 @@
     --rosa:#FFB6D9;
     --verde:#8BE39A;
     --laranja:#FF9D42;
-    --branco:#ffffff;
+    --branco:#FFF;
     --texto:#444;
+    --azul-claro:#EAF7FF;
+    --verde-claro:#F2FFF1;
+    --rosa-claro:#FFF2F8;
+    --laranja-claro:#FFF7EB;
+    --texto-secundario:#666;
 }
 
 body{
-    background: linear-gradient(180deg,#FFFBE6,#fff4c5);
+    background: linear-gradient(180deg,#FFFBE6,#FFF4C5);
     color:#333;
 }
 
@@ -75,7 +80,7 @@ nav a:hover{
 .hero p{
     font-size:1.25rem;
     line-height:1.8;
-    color:#666;
+    color:var(--texto-secundario);
     margin-bottom:40px;
 }
 
@@ -86,7 +91,7 @@ nav a:hover{
     border-radius:50px;
     transition:.35s;
     background:#FFB400;
-    color:white;
+    color:var(--branco);
     text-decoration:none;
 }
 
@@ -145,15 +150,21 @@ nav a:hover{
     100%{transform:translateY(0);}
 }
 
+.app{
+    background:var(--laranja-claro);
+    padding:120px 8%;
+}
+
 section{
-    padding:100px 8%;
+    padding:120px 8%;
+    border-top:4px solid rgba(255,255,255,.3);
 }
 
 .titulo{
-    text-align:center;
     font-size:3rem;
-    color:#FFB400;
-    margin-bottom:50px;
+    color:var(--texto);
+    margin-bottom:20px;
+    text-align:center;
 }
 
 .cards{
@@ -193,7 +204,8 @@ section{
 }
 
 .metodologia{
-    padding:90px 20px;
+    background:var(--azul-claro);
+    padding:120px 8%;
 }
 
 .metodologia-container{
@@ -253,8 +265,8 @@ section{
 }
 
 .beneficios{
-    padding:90px 20px;
-    background:#ffffff98;
+    background:var(--verde-claro);
+    padding:120px 8%;
 }
 
 .beneficios-container{
@@ -272,7 +284,7 @@ section{
 .subtitulo{
     max-width:750px;
     margin:0 auto 55px;
-    color:#666;
+    color:var(--texto-secundario);
     line-height:1.7;
     font-size:1.05rem;
 }
@@ -381,8 +393,8 @@ section{
 }
 
 .objetivo{
-    padding:90px 20px;
-    background:#ffffff98;
+    background:var(--rosa-claro);
+    padding:120px 8%;
 }
 
 .objetivo-container{
@@ -445,7 +457,8 @@ section{
 }
 
 .quem-somos{
-    padding:90px 20px;
+    background:var(--branco);
+    padding:120px 8%;
 }
 
 .container-quem{
@@ -639,8 +652,8 @@ section{
 
 
 .download{
-    padding:100px 20px;
-    background:linear-gradient(135deg,#ffd64fc9,#ffe0827c);
+    background:linear-gradient(135deg,var(--amarelo),#FFE780);
+    padding:120px 8%;
     text-align:center;
 }
 
