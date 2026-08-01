@@ -808,78 +808,36 @@ main {
     }
 
     .header {
-        position: relative;
         display: flex;
-        justify-content: flex-end;
+        justify-content: center;
         align-items: center;
         padding: 15px 20px;
         z-index: 1000;
-    }
-
-    .hamburger-btn {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        width: 28px;
-        height: 20px;
-        cursor: pointer;
-    }
-
-    .hamburger-btn span {
-        display: block;
-        height: 3px;
-        width: 100%;
-        background-color: var(--branco);
-        border-radius: 3px;
-        transition: all var(--transicao);
+        background-color: #FDFBD4;
+        box-shadow: var(--sombra);
     }
 
     .navbar {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        background-color: #FDFBD4;
         display: flex;
-        flex-direction: column;
-        max-height: 0;
-        overflow: hidden;
-        box-shadow: var(--sombra);
-        transition: max-height var(--transicao);
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
     }
 
     .navbar a {
         display: block;
-        padding: 15px 20px;
+        padding: 10px 15px;
         color: var(--texto);
         text-decoration: none;
         font-family: Arial, sans-serif;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         transition: background var(--transicao), color var(--transicao);
+        border-radius: 4px;
     }
 
     .navbar a:hover {
         background-color: var(--laranja);
         color: var(--branco);
-    }
-
-    .menu-checkbox:checked~.navbar {
-        max-height: 500px;
-        box-shadow: var(--sombra-hover);
-    }
-
-    .menu-checkbox:checked~.hamburger-btn span:nth-child(1) {
-        transform: translateY(8px) rotate(45deg);
-        background-color: var(--texto);
-    }
-
-    .menu-checkbox:checked~.hamburger-btn span:nth-child(2) {
-        opacity: 0;
-    }
-
-    .menu-checkbox:checked~.hamburger-btn span:nth-child(3) {
-        transform: translateY(-9px) rotate(-45deg);
-        background-color: var(--texto);
     }
 
     .hero {
