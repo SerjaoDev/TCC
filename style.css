@@ -116,19 +116,6 @@ main {
     box-shadow: var(--sombra);
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--texto);
-}
-
-.logo img {
-    width: 55px;
-}
-
 .navbar {
     display: flex;
     align-items: center;
@@ -145,6 +132,11 @@ main {
 .navbar a:hover {
     background: white;
     transform: translateY(-3px);
+}
+
+.menu-checkbox,
+.hamburger-btn {
+    display: none;
 }
 
 .hero {
@@ -816,13 +808,71 @@ main {
     }
 
     .header {
-        height: 80px;
-        padding: 0 6%;
+        position: relative;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        background-color: var(--amarelo);
+        padding: 15px 20px;
+        z-index: 1000;
+    }
+
+    .hamburger-btn {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 28px;
+        height: 20px;
+        cursor: pointer;
+    }
+
+    .hamburger-btn span {
+        display: block;
+        height: 3px;
+        width: 100%;
+        background-color: #fff;
+        border-radius: 3px;
+        transition: all 0.3s ease-in-out;
     }
 
     .navbar {
-        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #333;
+        display: flex;
+        flex-direction: column;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease-in-out;
     }
+
+    .navbar a {
+        display: block;
+        padding: 15px 20px;
+        color: #fff;
+        text-decoration: none;
+        font-family: Arial, sans-serif;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .menu-checkbox:checked~.navbar {
+        max-height: 500px;
+    }
+
+    .menu-checkbox:checked~.hamburger-btn span:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    .menu-checkbox:checked~.hamburger-btn span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .menu-checkbox:checked~.hamburger-btn span:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+    }
+
 
     .hero {
         flex-direction: column-reverse;
@@ -892,9 +942,5 @@ main {
         width: 180px;
         height: 180px;
         font-size: 5rem;
-    }
-
-    .bola {
-        display: none;
     }
 }
