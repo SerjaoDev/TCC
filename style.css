@@ -830,9 +830,9 @@ main {
         display: block;
         height: 3px;
         width: 100%;
-        background-color: #fff;
+        background-color: var(--branco);
         border-radius: 3px;
-        transition: all 0.3s ease-in-out;
+        transition: all var(--transicao);
     }
 
     .navbar {
@@ -840,29 +840,38 @@ main {
         top: 100%;
         left: 0;
         width: 100%;
-        background-color: #333;
+        background-color: var(--amarelo-escuro);
         display: flex;
         flex-direction: column;
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.4s ease-in-out;
+        box-shadow: var(--sombra);
+        transition: max-height var(--transicao);
     }
 
     .navbar a {
         display: block;
         padding: 15px 20px;
-        color: #fff;
+        color: var(--texto);
         text-decoration: none;
         font-family: Arial, sans-serif;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        transition: background var(--transicao), color var(--transicao);
+    }
+
+    .navbar a:hover {
+        background-color: var(--laranja);
+        color: var(--branco);
     }
 
     .menu-checkbox:checked~.navbar {
         max-height: 500px;
+        box-shadow: var(--sombra-hover);
     }
 
     .menu-checkbox:checked~.hamburger-btn span:nth-child(1) {
         transform: translateY(8px) rotate(45deg);
+        background-color: var(--texto);
     }
 
     .menu-checkbox:checked~.hamburger-btn span:nth-child(2) {
@@ -871,8 +880,8 @@ main {
 
     .menu-checkbox:checked~.hamburger-btn span:nth-child(3) {
         transform: translateY(-9px) rotate(-45deg);
+        background-color: var(--texto);
     }
-
 
     .hero {
         flex-direction: column-reverse;
