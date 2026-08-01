@@ -42,9 +42,124 @@ a {
     color: inherit;
 }
 
-section {
-    padding: 120px 8%;
+section{
     position: relative;
+    overflow: hidden;
+}
+
+section > *{
+    position: relative;
+    z-index: 2;
+}
+
+section::before{
+    content:"";
+    position:absolute;
+    width:180px;
+    height:180px;
+    top:-70px;
+    left:-70px;
+    border-radius:50%;
+    background:#DFFFB8;
+    border:3px dashed #8BE39A;
+    opacity:.35;
+    animation:girar 18s linear infinite;
+    z-index:1;
+}
+
+section::after{
+    content:"";
+    position:absolute;
+    width:150px;
+    height:150px;
+    bottom:-60px;
+    right:-60px;
+    border-radius:50%;
+    background:#CFF6FF;
+    border:3px dashed #72C7FF;
+    opacity:.35;
+    animation:girar 22s linear infinite reverse;
+    z-index:1;
+}
+
+#app::before{
+    background:#FFE0F1;
+    border-color:#FF8AC2;
+}
+
+#app::after{
+    background:#FFF0B8;
+    border-color:#FFD54F;
+}
+
+#funciona::before{
+    background:#D9F8FF;
+    border-color:#72C7FF;
+}
+
+#funciona::after{
+    background:#E4FFD7;
+    border-color:#8BE39A;
+}
+
+#metodologia::before{
+    background:#FFF0C8;
+    border-color:#FFB400;
+}
+
+#metodologia::after{
+    background:#D8F5FF;
+    border-color:#72C7FF;
+}
+
+#beneficios::before{
+    background:#FFE8F5;
+    border-color:#FF8AC2;
+}
+
+#beneficios::after{
+    background:#E7FFD7;
+    border-color:#8BE39A;
+}
+
+#mvv::before{
+    background:#FFF7D1;
+    border-color:#FFD54F;
+}
+
+#mvv::after{
+    background:#D9F3FF;
+    border-color:#72C7FF;
+}
+
+#objetivo::before{
+    background:#E8FFD6;
+    border-color:#8BE39A;
+}
+
+#objetivo::after{
+    background:#FFE4C9;
+    border-color:#FFB066;
+}
+
+#equipe::before{
+    background:#FFE2F0;
+    border-color:#FF8AC2;
+}
+
+#equipe::after{
+    background:#FFF2B8;
+    border-color:#FFD54F;
+}
+
+#download::before{
+    background:#DFFFD7;
+    border-color:#8BE39A;
+}
+
+#download::after{
+    background:#D8F4FF;
+    border-color:#72C7FF;
 }
 
 main {
@@ -807,50 +922,6 @@ main {
 
 .footer-links a:hover {
     color: var(--amarelo);
-}
-
-.bola {
-    position: fixed;
-    border-radius: 50%;
-    z-index: -1;
-    opacity: .45;
-    animation: girar 28s linear infinite;
-}
-
-.bola1 {
-    width: 220px;
-    height: 220px;
-    top: -60px;
-    left: 80px;
-    background: #DFFFB8;
-    border: 3px dashed #8BE39A;
-}
-
-.bola2 {
-    width: 190px;
-    height: 190px;
-    right: 80px;
-    bottom: 80px;
-    background: #CFF6FF;
-    border: 3px dashed #72C7FF;
-}
-
-.bola3 {
-    width: 170px;
-    height: 170px;
-    bottom: -60px;
-    left: -50px;
-    background: #FFD9EE;
-    border: 3px dashed #FF8AC2;
-}
-
-.bola4 {
-    width: 140px;
-    height: 140px;
-    top: 150px;
-    right: 220px;
-    background: #FFE3C6;
-    border: 3px dashed #FFB066;
 }
 
 @keyframes girar {
