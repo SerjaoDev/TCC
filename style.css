@@ -812,7 +812,6 @@ main {
         display: flex;
         justify-content: flex-end;
         align-items: center;
-        background-color: var(--amarelo);
         padding: 15px 20px;
         z-index: 1000;
     }
@@ -840,7 +839,7 @@ main {
         top: 100%;
         left: 0;
         width: 100%;
-        background-color: var(--amarelo-escuro);
+        background-color: #FDFBD4;
         display: flex;
         flex-direction: column;
         max-height: 0;
