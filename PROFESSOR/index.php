@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Professor | Lumi</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+<body>
+
+<div class="background"></div>
+
+<div class="login-card">
+
+    <img src="img/logo.png"
+         class="logo">
+
+    <h1>Área do Professor</h1>
+
+    <p>
+        Faça login para acessar seu painel.
+    </p>
+
+    <form action="php/login.php"
+          method="POST">
+
+        <input
+            type="email"
+            name="email"
+            placeholder="E-mail"
+            required>
+
+        <input
+            type="password"
+            name="senha"
+            placeholder="Senha"
+            required>
+
+        <button class="entrar">
+            Entrar
+        </button>
+
+    </form>
+
+    <button class="google">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg">
+        Entrar com Google
+    </button>
+
+    <div class="links">
+
+        <a href="cadastro.php">
+            Criar Conta 
+        </a>
+
+        <a href="recuperar.php">
+            Esqueci minha senha
+        </a>
+
+    </div>
+</div>
+
+<script src="js/script.js"></script>
+
+</body>
+</html>
