@@ -6,7 +6,7 @@ $banco   = getenv('DB_NAME') ?: 'lumi_professor';
 $porta   = getenv('DB_PORT') ?: '5432'; // Porta padrão do PostgreSQL
 
 try {
-    $conexao = new PDO("pgsql:host=$host;port=$porta;dbname=$banco", $usuario, $senha);
+    $conexao = new PDO("pgsql:host=$host;port=$porta;dbname=$banco;sslmode=require", $usuario, $senha);
     $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Erro na conexão com o banco PostgreSQL: " . $e->getMessage());
