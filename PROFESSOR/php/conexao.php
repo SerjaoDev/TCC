@@ -3,7 +3,7 @@ $host    = getenv('DB_HOST') ?: 'localhost';
 $usuario = getenv('DB_USER') ?: 'postgres';
 $senha   = getenv('DB_PASSWORD') ?: '';
 $banco   = getenv('DB_NAME') ?: 'lumi_professor';
-$porta   = getenv('DB_PORT') ?: '5432'; // Porta padrão do PostgreSQL
+$porta   = getenv('DB_PORT') ?: '5432';
 
 try {
     $conexao = new PDO("pgsql:host=$host;port=$porta;dbname=$banco;sslmode=require", $usuario, $senha);

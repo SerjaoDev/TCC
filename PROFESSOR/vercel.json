@@ -2,16 +2,14 @@
   "version": 2,
   "functions": {
     "api/*.php": { "runtime": "vercel-php@0.9.0" },
-    "*.php": { "runtime": "vercel-php@0.9.0" },
-    "php/*.php": { "runtime": "vercel-php@0.9.0" }
+    "php/*.php": { "runtime": "vercel-php@0.9.0" },
+    "*.php": { "runtime": "vercel-php@0.9.0" }
   },
   "routes": [
     { "src": "/css/(.*)", "dest": "/css/$1" },
     { "src": "/js/(.*)", "dest": "/js/$1" },
     { "src": "/img/(.*)", "dest": "/img/$1" },
-    { "src": "/banco/(.*)", "status": 403, "dest": "/index.php" },
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/php/(.*)", "dest": "/php/$1" },
-    { "src": "/(.*)", "dest": "/$1" }
+    { "src": "/banco/(.*)", "status": 403 },
+    { "handle": "filesystem" }
   ]
 }
