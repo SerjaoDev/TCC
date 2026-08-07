@@ -1,118 +1,197 @@
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Poppins,sans-serif;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --amarelo:#FFE76A;
+    --amarelo-hover:#FFD93D;
+    --amarelo-claro:#FFF8D6;
+    --branco:#FFFFFF;
+    --texto:#2D2D2D;
+    --texto-secundario:#666666;
+    --vermelho:#E74C3C;
+    --vermelho-hover:#C0392B;
+    --sombra:0 10px 30px rgba(0,0,0,.08);
 }
 
 body{
-display:flex;
-background:#fff4c547;
+    font-family:"Poppins",sans-serif;
+    background:var(--amarelo-claro);
+    display:flex;
+    color:var(--texto);
 }
 
 .sidebar{
-width:260px;
-height:100vh;
-background:#ffef97b1;
-color:rgb(0, 0, 0);
-padding:30px;
-position:fixed;
+    position:fixed;
+    left:0;
+    top:0;
+    width:260px;
+    min-height:100vh;
+    background:var(--amarelo);
+    padding:30px;
+    box-shadow:4px 0 20px rgba(0,0,0,.05);
 }
 
 .logo{
-width:80px;
-display:block;
-margin:auto;
-margin-bottom:15px;
+    width:90px;
+    display:block;
+    margin:0 auto 15px;
 }
 
 .sidebar h2{
-text-align:center;
-margin-bottom:40px;
+    text-align:center;
+    margin-bottom:35px;
 }
 
 .sidebar ul{
-list-style:none;
+    list-style:none;
 }
 
 .sidebar li{
-padding:15px;
-margin-bottom:10px;
-border-radius:10px;
+    margin-bottom:12px;
 }
 
-.sidebar li:hover{
-background:#fadb30aa;
+.sidebar a,
+.sidebar .ativo{
+    display:block;
+    padding:14px 18px;
+    border-radius:12px;
+    text-decoration:none;
+    color:var(--texto);
+    font-weight:600;
+    transition:.25s;
 }
 
-.sidebar a{
-text-decoration:none;
-color:rgb(0, 0, 0);
+.sidebar a:hover{
+    background:#FFF4B5;
 }
 
-.ativo{
-background:#ffed85;
-color:#000000;
-font-weight:bold;
+.sidebar .ativo{
+    background:#FFFFFF;
+    box-shadow:var(--sombra);
 }
 
 .conteudo{
-margin-left:250px;
-padding:40px;
-width:100%;
+    margin-left:260px;
+    width:100%;
+    padding:40px;
+}
+
+.conteudo h1{
+    font-size:32px;
+    margin-bottom:30px;
 }
 
 .novo{
-background:#fff4c5;
-color:rgb(0, 0, 0);
-border:none;
-padding:15px 25px;
-border-radius:10px;
-cursor:pointer;
-margin:30px 0;
-font-size:16px;
+    background:var(--amarelo);
+    color:var(--texto);
+    border:none;
+    padding:15px 25px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:600;
+    transition:.25s;
+    margin-bottom:35px;
+}
+
+.novo:hover{
+    background:var(--amarelo-hover);
+    transform:translateY(-2px);
 }
 
 .cards{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
     gap:25px;
-    margin-top:30px;
 }
 
 .card{
-
-    background:white;
-    padding:25px;
+    background:var(--branco);
     border-radius:20px;
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
-    margin-bottom:25px;
+    padding:25px;
+    box-shadow:var(--sombra);
+    transition:.25s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
 }
 
 .card h2{
-color:#000000;
-margin-bottom:15px;
+    margin-bottom:15px;
+    font-size:24px;
 }
 
 .card p{
-margin-bottom:20px;
+    color:var(--texto-secundario);
+    margin-bottom:25px;
 }
 
 .card button{
-background:#fff4c5;
-color:rgb(0, 0, 0);
-border:none;
-padding:12px 20px;
-border-radius:10px;
-cursor:pointer;
+    border:none;
+    cursor:pointer;
+    padding:12px 20px;
+    border-radius:10px;
+    font-size:15px;
+    font-weight:600;
+    transition:.25s;
+}
+
+.card a{
+    text-decoration:none;
+}
+
+.card button:first-child{
+    background:var(--amarelo);
+    color:var(--texto);
+}
+
+.card button:first-child:hover{
+    background:var(--amarelo-hover);
 }
 
 .excluir{
-    background:#d9544fb2;
+    background:var(--vermelho);
     color:white;
     margin-left:10px;
 }
 
 .excluir:hover{
-    background:#d9544fb2;
+    background:var(--vermelho-hover);
+}
+
+@media(max-width:900px){
+    .sidebar{
+        width:220px;
+    }
+
+    .conteudo{
+        margin-left:220px;
+        padding:25px;
+    }
+}
+
+@media(max-width:700px){
+    body{
+        display:block;
+    }
+
+    .sidebar{
+        position:relative;
+        width:100%;
+        min-height:auto;
+    }
+
+    .conteudo{
+        margin-left:0;
+    }
+}
+
+@media(max-width:500px){
+    .cards{
+        grid-template-columns:1fr;
+    }
 }
