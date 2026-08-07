@@ -1,33 +1,25 @@
 <?php
+header("Content-Type: application/json; charset=utf-8");
 
-header("Content-Type: application/json");
+require_once __DIR__ . "/../php/conexao.php";
 
-include("../php/conexao.php");
+try {
+    $sql = "SELECT id, titulo, descricao, nivel, categoria FROM licoes ORDER BY nivel ASC";
 
+    $stmt = $conexao->prepare($sql);
+    $stmt->execute();
 
-$sql = "SELECT * FROM licoes ORDER BY nivel ASC";
+    $licoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    echo json_encode([
+        "sucesso" => true,
+        "licoes" => $licoes
+    ]);
+} catch (PDOException $erro) {
+    http_response_code(500);
 
-$resultado = $conexao->query($sql);
-
-
-$licoes = [];
-
-
-while($linha = $resultado->fetch_assoc()){
-
-    $licoes[] = $linha;
-
+    echo json_encode([
+        "sucesso" => false,
+        "mensagem" => "Erro ao buscar lições"
+    ]);
 }
-
-
-echo json_encode([
-
-    "sucesso" => true,
-
-    "licoes" => $licoes
-
-]);
-
-
-?>
