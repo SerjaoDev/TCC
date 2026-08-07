@@ -1,197 +1,206 @@
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Poppins,sans-serif;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --amarelo:#FFE76A;
+    --amarelo-hover:#FFD93D;
+    --amarelo-claro:#FFF8D6;
+    --branco:#FFFFFF;
+    --texto:#2D2D2D;
+    --texto-secundario:#666666;
+    --azul:#3498DB;
+    --azul-hover:#2980B9;
+    --vermelho:#E74C3C;
+    --vermelho-hover:#C0392B;
+    --sombra:0 10px 30px rgba(0,0,0,.08);
 }
 
 body{
-display:flex;
-background:#F4F8F6;
+    font-family:"Poppins",sans-serif;
+    background:var(--amarelo-claro);
+    display:flex;
+    color:var(--texto);
 }
 
 .sidebar{
-
-width:250px;
-
-height:100vh;
-
-background:#2B5540;
-
-color:white;
-
-padding:25px;
-
-position:fixed;
-
+    width:260px;
+    min-height:100vh;
+    background:var(--amarelo);
+    position:fixed;
+    left:0;
+    top:0;
+    padding:30px;
+    box-shadow:4px 0 20px rgba(0,0,0,.05);
 }
 
 .logo{
-
-width:80px;
-
-display:block;
-
-margin:auto;
-
-margin-bottom:15px;
-
+    width:90px;
+    display:block;
+    margin:0 auto 15px;
 }
 
 .sidebar h2{
-
-text-align:center;
-
-margin-bottom:30px;
-
+    text-align:center;
+    margin-bottom:35px;
 }
 
 .sidebar ul{
-
-list-style:none;
-
+    list-style:none;
 }
 
 .sidebar li{
-
-padding:15px;
-
-margin-bottom:10px;
-
-border-radius:10px;
-
+    margin-bottom:12px;
 }
 
-.sidebar li:hover{
-
-background:#3f7257;
-
+.sidebar a,
+.sidebar .ativo{
+    display:block;
+    padding:14px 18px;
+    border-radius:12px;
+    text-decoration:none;
+    color:var(--texto);
+    font-weight:600;
+    transition:.25s;
 }
 
-.sidebar a{
-
-text-decoration:none;
-
-color:white;
-
+.sidebar a:hover{
+    background:#FFF4B5;
 }
 
-.ativo{
-
-background:#92CB6E;
-
-color:#2B5540;
-
-font-weight:bold;
-
+.sidebar .ativo{
+    background:#FFFFFF;
+    box-shadow:var(--sombra);
 }
 
 .conteudo{
+    margin-left:260px;
+    width:100%;
+    padding:40px;
+}
 
-margin-left:250px;
-
-padding:40px;
-
-width:100%;
-
+.conteudo h1{
+    font-size:32px;
+    margin-bottom:30px;
 }
 
 .novo{
+    background:var(--amarelo);
+    border:none;
+    border-radius:12px;
+    padding:14px 24px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:600;
+    transition:.25s;
+    margin-bottom:30px;
+}
 
-background:#92CB6E;
-
-border:none;
-
-padding:15px 25px;
-
-border-radius:10px;
-
-color:white;
-
-font-size:16px;
-
-cursor:pointer;
-
-margin:30px 0;
-
+.novo:hover{
+    background:var(--amarelo-hover);
 }
 
 table{
+    width:100%;
+    background:var(--branco);
+    border-collapse:collapse;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:var(--sombra);
+}
 
-width:100%;
-
-background:white;
-
-border-collapse:collapse;
-
-border-radius:20px;
-
-overflow:hidden;
-
-box-shadow:0 10px 30px rgba(0,0,0,.08);
-
+thead{
+    background:var(--amarelo);
 }
 
 th{
-
-background:#2B5540;
-
-color:white;
-
-padding:18px;
-
+    padding:18px;
+    text-align:center;
 }
 
 td{
+    padding:18px;
+    text-align:center;
+    border-bottom:1px solid #EEEEEE;
+}
 
-padding:18px;
-
-text-align:center;
-
+tbody tr:hover{
+    background:#FFFDF0;
 }
 
 .foto{
-
-width:50px;
-
-height:50px;
-
-border-radius:50%;
-
-object-fit:cover;
-
+    width:55px;
+    height:55px;
+    border-radius:50%;
+    object-fit:cover;
 }
 
 .editar{
+    background:var(--azul);
+    color:white;
+    border:none;
+    padding:10px 18px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:.25s;
+}
 
-background:#3498db;
-
-color:white;
-
-border:none;
-
-padding:10px 15px;
-
-border-radius:8px;
-
-cursor:pointer;
-
+.editar:hover{
+    background:var(--azul-hover);
 }
 
 .excluir{
+    background:var(--vermelho);
+    color:white;
+    border:none;
+    padding:10px 18px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-left:8px;
+    transition:.25s;
+}
 
-background:#e74c3c;
+.excluir:hover{
+    background:var(--vermelho-hover);
+}
 
-color:white;
+@media(max-width:900px){
+    .sidebar{
+        width:220px;
+    }
 
-border:none;
+    .conteudo{
+        margin-left:220px;
+        padding:25px;
+    }
+}
 
-padding:10px 15px;
+@media(max-width:700px){
+    body{
+        display:block;
+    }
 
-border-radius:8px;
+    .sidebar{
+        position:relative;
+        width:100%;
+        min-height:auto;
+    }
 
-cursor:pointer;
+    .conteudo{
+        margin-left:0;
+    }
 
-margin-left:10px;
+    table{
+        display:block;
+        overflow-x:auto;
+        white-space:nowrap;
+    }
+}
 
+@media(max-width:500px){
+    .novo{
+        width:100%;
+    }
 }
