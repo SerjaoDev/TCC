@@ -1,19 +1,25 @@
 <?php
-$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$uri = ltrim($uri, '/');
+$uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+$uri = trim($uri, "/");
 
-if ($uri === '') {
-    include __DIR__ . '/../login.php'; 
+if ($uri === "") {
+    require __DIR__ . "/../index.html";
     exit;
 }
 
-$arquivo_solicitado = __DIR__ . '/../' . $uri;
+$arquivo = __DIR__ . "/../" . $uri;
 
-if (file_exists($arquivo_solicitado) && is_file($arquivo_solicitado) && pathinfo($uri, PATHINFO_EXTENSION) === 'php') {
-    include $arquivo_solicitado;
+if (
+    file_exists($arquivo) && is_file($arquivo)
+) {
+    require $arquivo;
     exit;
 }
 
 http_response_code(404);
-echo "Página não encontrada (404).";
-?>
+header("Content-Type: application/json");
+
+echo json_encode([
+    "sucesso" => false,
+    "mensagem" => "Página não encontrada"
+]);
