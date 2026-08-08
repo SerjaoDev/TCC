@@ -1,14 +1,25 @@
 <?php
-$host    = getenv('DB_HOST') ?: 'localhost';
-$usuario = getenv('DB_USER') ?: 'postgres';
-$senha   = getenv('DB_PASSWORD') ?: '';
-$banco   = getenv('DB_NAME') ?: 'lumi_professor';
-$porta   = getenv('DB_PORT') ?: '5432';
+$host = getenv("PGHOST");
+$database = getenv("PGDATABASE");
+$user = getenv("PGUSER");
+$password = getenv("PGPASSWORD");
+$ssl = getenv("PGSSLMODE") ?: "require";
 
 try {
-    $conexao = new PDO("pgsql:host=$host;port=$porta;dbname=$banco;sslmode=require", $usuario, $senha);
-    $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Erro na conexão com o banco PostgreSQL: " . $e->getMessage());
+    $conexao = new PDO(
+        "pgsql:host=$host;dbname=$database;sslmode=$ssl",
+        $user,
+        $password,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false
+        ]
+    );
+} catch (PDOException $erro) {
+    http_response_code(500);
+
+    die("Erro ao conectar com o banco de dados: "
+        . $erro->getMessage());
 }
 ?>

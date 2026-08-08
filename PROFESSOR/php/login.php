@@ -1,31 +1,47 @@
 <?php
-
 session_start();
 
-include("conexao.php");
- 
-$email = $_POST["email"];
-$senha = $_POST["senha"];
+require_once __DIR__ . "/conexao.php";
 
-$sql = "SELECT * FROM professores WHERE email='$email'";
-
-$resultado = $conexao->query($sql);
-
-if($resultado->num_rows > 0){
-    $professor = $resultado->fetch_assoc();
-
-    if(password_verify($senha, $professor["senha"])){
-        $_SESSION["id"] = $professor["id"];
-        $_SESSION["nome"] = $professor["nome"];
-        $_SESSION["email"] = $professor["email"];
-
-        header("Location: ../painel.php");
-        exit();
-    }else{
-        echo "Senha incorreta.";
-    }
-}else{
-    echo "Professor não encontrado.";
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    header("Location: ../index.html");
+    exit();
 }
 
+$email = trim($_POST["email"] ?? "");
+$senha = $_POST["senha"] ?? "";
+
+if ($email === "" || $senha === "") {
+    header("Location: ../index.html?erro=preencha");
+    exit();
+}
+
+$sql = "SELECT id,nome,email,senha,foto FROM professores WHERE email = :email LIMIT 1";
+
+$stmt = $conexao->prepare($sql);
+$stmt->execute([
+    ":email" => $email
+]);
+
+$professor = $stmt->fetch();
+
+if (!$professor) {
+    header("Location: ../index.html?erro=login");
+    exit();
+}
+
+if (!password_verify($senha, $professor["senha"])) {
+    header("Location: ../index.html?erro=login");
+    exit();
+}
+
+session_regenerate_id(true);
+
+$_SESSION["professor_id"] = $professor["id"];
+$_SESSION["professor_nome"] = $professor["nome"];
+$_SESSION["professor_email"] = $professor["email"];
+$_SESSION["professor_foto"] = $professor["foto"];
+
+header("Location: ../painel.php");
+exit();
 ?>

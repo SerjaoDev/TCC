@@ -21,3 +21,4 @@ try {
         "mensagem" => "Erro ao listar lições"
     ]);
 }
+?>
