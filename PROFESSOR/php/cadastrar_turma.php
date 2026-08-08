@@ -1,21 +1,45 @@
 <?php
-
 session_start();
 
-include("conexao.php");
+require_once __DIR__ . "/conexao.php";
 
-$professor_id = $_SESSION["id"];
-$nome = $_POST["nome"];
+if (!isset($_SESSION["professor_id"])) {
+    header("Location: ../index.html");
+    exit();
+}
 
-$sql = "INSERT INTO turmas
-(professor_id,nome)
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    header("Location: ../turmas.php");
+    exit();
+}
 
-VALUES
-('$professor_id','$nome')";
+$professorId = $_SESSION["professor_id"];
+$nome = trim($_POST["nome"] ?? "");
+$descricao = trim($_POST["descricao"] ?? "");
 
-if($conexao->query($sql)){
-header("Location: ../turmas.php");
-}else{
-echo "Erro ao criar turma.";
+if ($nome === "") {
+    header("Location: ../adicionar_turma.php?erro=nome");
+    exit();
+}
+
+$sql = "INSERT INTO turmas (professor_id,nome,descricao) VALUES (:professor_id,:nome,:descricao)";
+
+try {
+    $stmt = $conexao->prepare($sql);
+
+    $stmt->execute([
+        ":professor_id" => $professorId,
+        ":nome" => $nome,
+        ":descricao" => $descricao !== "" ? $descricao : null
+    ]);
+    
+    header("Location: ../turmas.php?sucesso=turma_criada");
+    exit();
+} catch (PDOException $erro) {
+    http_response_code(500);
+
+    echo "Erro ao criar a turma.";
+
+    exit();
 }
 ?>

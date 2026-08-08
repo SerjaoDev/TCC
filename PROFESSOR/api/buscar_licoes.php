@@ -23,3 +23,4 @@ try {
         "mensagem" => "Erro ao buscar lições"
     ]);
 }
+?>

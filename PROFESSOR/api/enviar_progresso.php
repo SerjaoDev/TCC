@@ -56,3 +56,4 @@ try {
         "mensagem" => "Erro ao salvar progresso"
     ]);
 }
+?>

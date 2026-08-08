@@ -67,3 +67,4 @@ try {
         "mensagem" => "Erro interno"
     ]);
 }
+?>
