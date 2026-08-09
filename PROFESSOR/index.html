@@ -3,48 +3,129 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-    <title>Professor | Lumi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumi | Área do Professor</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
-
     <div class="background"></div>
-
-    <div class="login-card">
-        <img src="img/logo.png" class="logo">
+    <main class="login-card">
+        <img src="img/logo.png" alt="Logo Lumi" class="logo">
         <h1>Área do Professor</h1>
         <p>
             Faça login para acessar seu painel.
         </p>
-        <form action="php/login.php" method="POST">
-            <input type="email" name="email" placeholder="E-mail" required>
-            <input type="password" name="senha" placeholder="Senha" required>
-            <button class="entrar">
+        <form action="php/login.php" method="POST" autocomplete="on">
+            <input type="email" name="email" placeholder="E-mail" autocomplete="email" required>
+            <input type="password" name="senha" placeholder="Senha" autocomplete="current-password" required>
+            <button type="submit" class="entrar">
                 Entrar
             </button>
         </form>
 
-        <button class="google">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg">
+        <div style="display:flex; align-items:center; gap:12px; margin:20px 0; color:#777;">
+            <span style="flex:1; height:1px; background:#ddd;"></span>
+            <span>ou</span>
+            <span style="flex:1; height:1px; background:#ddd;"></span>
+        </div>
+
+        <button type="button" id="google-login" class="google">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google">
             Entrar com Google
         </button>
-
         <div class="links">
             <a href="cadastro.php">
                 Criar Conta
             </a>
-            <a href="recuperar.php">
-                Esqueci minha senha
-            </a>
         </div>
-    </div>
+    </main>
 
+    <script type="module">
+        import { initializeApp }
+            from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+        import {
+            getAuth,
+            GoogleAuthProvider,
+            signInWithPopup
+        }
+            from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBhCvVJlHIwEwiYShKXOkcHrzpMgxGwDFo",
+            authDomain: "lumi-for-teachers.firebaseapp.com",
+            projectId: "lumi-for-teachers",
+            storageBucket: "lumi-for-teachers.firebasestorage.app",
+            messagingSenderId: "1063473511779",
+            appId: "1:1063473511779:web:8344fbd922b2c34bf4a756"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        const botaoGoogle =
+            document.getElementById("google-login");
+
+        botaoGoogle.addEventListener("click", async () => {
+            try {
+                botaoGoogle.disabled = true;
+                botaoGoogle.textContent = "Entrando...";
+
+                const resultado = await signInWithPopup(
+                    auth,
+                    provider
+                );
+
+                const usuario = resultado.user;
+                const idToken = await usuario.getIdToken(true);
+
+                const resposta = await fetch(
+                    "php/login_google.php",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            idToken: idToken
+                        })
+                    }
+                );
+
+                const dados = await resposta.json();
+
+                if (!resposta.ok || !dados.sucesso) {
+                    throw new Error(
+                        dados.mensagem ||
+                        "Falha ao autenticar."
+                    );
+                }
+
+                window.location.href =
+                    "painel.php";
+            } catch (erro) {
+                console.error(
+                    "Erro no login Google:",
+                    erro
+                );
+
+                botaoGoogle.disabled = false;
+                botaoGoogle.textContent =
+                    "Entrar com Google";
+
+                alert(
+                    erro.message ||
+                    "Não foi possível entrar com o Google."
+                );
+            }
+        });
+    </script>
     <script src="js/script.js"></script>
 </body>
 
