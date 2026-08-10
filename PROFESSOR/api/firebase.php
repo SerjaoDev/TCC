@@ -12,9 +12,21 @@ function firebaseAuth(): Auth
     $clientEmail = getenv('FIREBASE_CLIENT_EMAIL');
     $privateKey = getenv('FIREBASE_PRIVATE_KEY');
 
-    if (!$projectId || !$clientEmail || !$privateKey) {
+    if (!$projectId) {
         throw new RuntimeException(
-            'As variáveis do Firebase não foram configuradas.'
+            'FIREBASE_PROJECT_ID não configurado.'
+        );
+    }
+
+    if (!$clientEmail) {
+        throw new RuntimeException(
+            'FIREBASE_CLIENT_EMAIL não configurado.'
+        );
+    }
+
+    if (!$privateKey) {
+        throw new RuntimeException(
+            'FIREBASE_PRIVATE_KEY não configurado.'
         );
     }
 
@@ -31,8 +43,12 @@ function firebaseAuth(): Auth
         'private_key' => $privateKey
     ];
 
-    $factory = (new Factory)
-        ->withServiceAccount($serviceAccount);
+    $factory = new Factory();
+
+    $factory = $factory->withServiceAccount(
+        $serviceAccount
+    );
 
     return $factory->createAuth();
 }
+?>
