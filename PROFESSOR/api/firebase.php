@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Kreait\Firebase\Factory;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 function firebaseAuth()
 {
@@ -11,13 +11,29 @@ function firebaseAuth()
     $clientEmail = getenv('FIREBASE_CLIENT_EMAIL');
     $privateKey = getenv('FIREBASE_PRIVATE_KEY');
 
-    if (!$projectId || !$clientEmail || !$privateKey) {
+    if (!$projectId) {
         throw new RuntimeException(
-            'Variáveis do Firebase não configuradas.'
+            'FIREBASE_PROJECT_ID não está configurada.'
         );
     }
 
-    $privateKey = str_replace('\n', "\n", $privateKey);
+    if (!$clientEmail) {
+        throw new RuntimeException(
+            'FIREBASE_CLIENT_EMAIL não está configurada.'
+        );
+    }
+
+    if (!$privateKey) {
+        throw new RuntimeException(
+            'FIREBASE_PRIVATE_KEY não está configurada.'
+        );
+    }
+
+    $privateKey = str_replace(
+        ['\\n', '\\r\\n'],
+        ["\n", "\r\n"],
+        $privateKey
+    );
 
     $serviceAccount = [
         'type' => 'service_account',
