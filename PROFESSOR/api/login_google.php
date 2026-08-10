@@ -5,7 +5,7 @@ session_start();
 
 header('Content-Type: application/json; charset=UTF-8');
 
-require_once __DIR__ . '/conexao.php';
+require_once __DIR__ . '/../php/conexao.php';
 require_once __DIR__ . '/firebase.php';
 
 try {
@@ -25,9 +25,9 @@ try {
         exit;
     }
 
-    $idToken = $dados['idToken'] ?? '';
+    $idToken = trim($dados['idToken'] ?? '');
 
-    if (!$idToken) {
+    if ($idToken === '') {
         http_response_code(400);
 
         echo json_encode([
@@ -49,13 +49,13 @@ try {
 
         echo json_encode([
             'sucesso' => false,
-            'mensagem' => 'Token do Firebase não contém os dados necessários.'
+            'mensagem' => 'Token do Firebase inválido.'
         ]);
 
         exit;
     }
 
-    $sql = "SELECT id,nome,email,foto FROM professores WHERE firebase_uid = :firebase_uid LIMIT 1";
+    $sql = "SELECT id, nome, email, foto, firebase_uid FROM professores WHERE firebase_uid = :firebase_uid LIMIT 1";
 
     $stmt = $conexao->prepare($sql);
 
@@ -66,7 +66,7 @@ try {
     $professor = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$professor) {
-        $sql = "SELECT id,nome,email,foto FROM professores WHERE email = :email LIMIT 1";
+        $sql = "SELECT id, nome, email, foto, firebase_uid FROM professores WHERE LOWER(email) = LOWER(:email) LIMIT 1";
 
         $stmt = $conexao->prepare($sql);
 
@@ -89,14 +89,14 @@ try {
     }
 
     if (!$professor) {
-        $nomeFinal = trim($nome ?: 'Professor');
+        $nomeFinal = trim((string) ($nome ?: 'Professor'));
 
         $senhaAleatoria = password_hash(
             bin2hex(random_bytes(32)),
             PASSWORD_DEFAULT
         );
 
-        $sql = "INSERT INTO professores (nome,email,senha,foto,firebase_uid) VALUES (:nome,:email,:senha,:foto,:firebase_uid) RETURNING id,nome,email,foto";
+        $sql = "INSERT INTO professores (nome, email, senha, foto, firebase_uid) VALUES (:nome, :email, :senha, :foto, :firebase_uid) RETURNING id, nome, email, foto, firebase_uid";
 
         $stmt = $conexao->prepare($sql);
 
@@ -121,7 +121,7 @@ try {
     echo json_encode([
         'sucesso' => true,
         'mensagem' => 'Login realizado com sucesso.',
-        'redirecionar' => '../painel.php'
+        'redirecionar' => '/painel.php'
     ]);
 
     exit;

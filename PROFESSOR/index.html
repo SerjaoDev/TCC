@@ -6,19 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lumi | Área do Professor</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
 </head>
 
 <body>
     <div class="background"></div>
-    <main class="login-card">
-        <img src="img/logo.png" alt="Logo Lumi" class="logo">
+    <div class="login-card">
+        <img src="img/logo.png" class="logo" alt="Lumi">
         <h1>Área do Professor</h1>
         <p>
             Faça login para acessar seu painel.
         </p>
-        <form action="php/login.php" method="POST" autocomplete="on">
+
+        <form action="php/login.php" method="POST">
             <input type="email" name="email" placeholder="E-mail" autocomplete="email" required>
             <input type="password" name="senha" placeholder="Senha" autocomplete="current-password" required>
             <button type="submit" class="entrar">
@@ -26,33 +25,39 @@
             </button>
         </form>
 
-        <div style="display:flex; align-items:center; gap:12px; margin:20px 0; color:#777;">
-            <span style="flex:1; height:1px; background:#ddd;"></span>
-            <span>ou</span>
-            <span style="flex:1; height:1px; background:#ddd;"></span>
-        </div>
-
-        <button type="button" id="google-login" class="google">
+        <button type="button" class="google" id="googleLogin">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google">
-            Entrar com Google
+            <span>Entrar com Google</span>
         </button>
+
+        <p id="googleMensagem" style="
+                display:none;
+                margin-top:15px;
+                margin-bottom:0;
+                font-size:14px;
+            "></p>
+
         <div class="links">
             <a href="cadastro.php">
                 Criar Conta
             </a>
+
+            <a href="recuperar.php">
+                Esqueci minha senha
+            </a>
         </div>
-    </main>
+    </div>
 
     <script type="module">
-        import { initializeApp }
-            from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
         import {
             getAuth,
             GoogleAuthProvider,
             signInWithPopup
-        }
-            from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBhCvVJlHIwEwiYShKXOkcHrzpMgxGwDFo",
@@ -66,66 +71,120 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
-
         const botaoGoogle =
-            document.getElementById("google-login");
+            document.getElementById("googleLogin");
+        const mensagem =
+            document.getElementById("googleMensagem");
 
-        botaoGoogle.addEventListener("click", async () => {
-            try {
+        function mostrarMensagem(texto, sucesso = false) {
+            mensagem.textContent = texto;
+            mensagem.style.display = "block";
+            mensagem.style.color =
+                sucesso ? "#2e7d32" : "#d32f2f";
+        }
+
+        botaoGoogle.addEventListener(
+            "click",
+            async function () {
                 botaoGoogle.disabled = true;
-                botaoGoogle.textContent = "Entrando...";
+                botaoGoogle.style.opacity = "0.6";
 
-                const resultado = await signInWithPopup(
-                    auth,
-                    provider
+                mostrarMensagem(
+                    "Conectando com o Google...",
+                    true
                 );
 
-                const usuario = resultado.user;
-                const idToken = await usuario.getIdToken(true);
+                try {
+                    const resultado =
+                        await signInWithPopup(
+                            auth,
+                            provider
+                        );
 
-                const resposta = await fetch(
-                    "php/login_google.php",
-                    {
-                        method: "POST",
+                    const usuario =
+                        resultado.user;
 
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-
-                        body: JSON.stringify({
-                            idToken: idToken
-                        })
+                    if (!usuario) {
+                        throw new Error(
+                            "Não foi possível obter o usuário."
+                        );
                     }
-                );
 
-                const dados = await resposta.json();
+                    const idToken =
+                        await usuario.getIdToken();
 
-                if (!resposta.ok || !dados.sucesso) {
-                    throw new Error(
-                        dados.mensagem ||
-                        "Falha ao autenticar."
+                    const resposta =
+                        await fetch(
+                            "/api/login_google.php",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body: JSON.stringify({
+                                    idToken: idToken
+                                })
+                            }
+                        );
+
+                    const dados =
+                        await resposta.json();
+
+                    if (
+                        !resposta.ok ||
+                        !dados.sucesso
+                    ) {
+                        throw new Error(
+                            dados.mensagem ||
+                            "Não foi possível realizar o login."
+                        );
+                    }
+
+                    mostrarMensagem(
+                        "Login realizado! Redirecionando...",
+                        true
                     );
+
+                    window.location.href =
+                        dados.redirecionar ||
+                        "/painel.php";
+                } catch (erro) {
+                    console.error(
+                        "Erro no login Google:",
+                        erro
+                    );
+
+                    if (
+                        erro.code ===
+                        "auth/popup-closed-by-user"
+                    ) {
+                        mostrarMensagem(
+                            "O login foi cancelado."
+                        );
+                    } else if (
+                        erro.code ===
+                        "auth/unauthorized-domain"
+                    ) {
+                        mostrarMensagem(
+                            "Este domínio não está autorizado no Firebase."
+                        );
+                    } else {
+                        mostrarMensagem(
+                            erro.message ||
+                            "Erro ao entrar com Google."
+                        );
+                    }
+                } finally {
+                    botaoGoogle.disabled = false;
+                    botaoGoogle.style.opacity = "1";
                 }
-
-                window.location.href =
-                    "painel.php";
-            } catch (erro) {
-                console.error(
-                    "Erro no login Google:",
-                    erro
-                );
-
-                botaoGoogle.disabled = false;
-                botaoGoogle.textContent =
-                    "Entrar com Google";
-
-                alert(
-                    erro.message ||
-                    "Não foi possível entrar com o Google."
-                );
             }
-        });
+        );
     </script>
+
     <script src="js/script.js"></script>
 </body>
 
