@@ -5,70 +5,83 @@ session_start();
 
 header('Content-Type: application/json; charset=UTF-8');
 
-try {
-    require_once __DIR__ . '/../php/conexao.php';
-    require_once __DIR__ . '/firebase.php';
+require_once __DIR__ . '/conexao.php';
+require_once __DIR__ . '/firebase.php';
 
-    $corpo = file_get_contents('php://input');
+function responder(bool $sucesso, string $mensagem, int $status = 200, array $extra = []): never
+{
+    http_response_code($status);
 
-    $dados = json_decode(
-        $corpo,
-        true
+    echo json_encode(
+        array_merge([
+            'sucesso' => $sucesso,
+            'mensagem' => $mensagem
+        ], $extra),
+        JSON_UNESCAPED_UNICODE
     );
 
-    if (!is_array($dados)) {
-        http_response_code(400);
+    exit;
+}
 
-        echo json_encode([
-            'sucesso' => false,
-            'mensagem' => 'Dados enviados são inválidos.'
-        ]);
-
-        exit;
+try {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        responder(
+            false,
+            'Método não permitido.',
+            405
+        );
     }
 
-    $idToken = trim(
-        (string) ($dados['idToken'] ?? '')
-    );
+    $conteudo = file_get_contents('php://input');
+
+    if ($conteudo === false || trim($conteudo) === '') {
+        responder(
+            false,
+            'Nenhum dado foi recebido.',
+            400
+        );
+    }
+
+    $dados = json_decode($conteudo, true);
+
+    if (!is_array($dados)) {
+        responder(
+            false,
+            'JSON enviado pelo navegador é inválido.',
+            400
+        );
+    }
+
+    $idToken = trim((string)($dados['idToken'] ?? ''));
 
     if ($idToken === '') {
-        http_response_code(400);
-
-        echo json_encode([
-            'sucesso' => false,
-            'mensagem' => 'Token do Firebase não informado.'
-        ]);
-
-        exit;
+        responder(
+            false,
+            'Token do Firebase não informado.',
+            400
+        );
     }
 
     $auth = firebaseAuth();
-
-    $tokenVerificado = $auth->verifyIdToken(
-        $idToken
-    );
-
-    $firebaseUid =
-        $tokenVerificado->claims()->get('sub');
-
-    $email =
-        $tokenVerificado->claims()->get('email');
-
-    $nome =
-        $tokenVerificado->claims()->get('name');
+    $tokenVerificado = $auth->verifyIdToken($idToken);
+    $claims = $tokenVerificado->claims();
+    $firebaseUid = $claims->get('sub');
+    $email = $claims->get('email');
+    $nome = $claims->get('name');
 
     if (!$firebaseUid || !$email) {
-        http_response_code(401);
-
-        echo json_encode([
-            'sucesso' => false,
-            'mensagem' => 'O token não contém os dados necessários.'
-        ]);
-
-        exit;
+        responder(
+            false,
+            'O token do Firebase não possui os dados necessários.',
+            401
+        );
     }
 
-    $sql = "SELECT id,nome,email,foto,firebase_uid FROM professores WHERE firebase_uid = :firebase_uid LIMIT 1";
+    $firebaseUid = (string)$firebaseUid;
+    $email = (string)$email;
+    $nome = trim((string)($nome ?? ''));
+
+    $sql = "SELECT id, nome, email, foto FROM professores WHERE firebase_uid = :firebase_uid LIMIT 1";
 
     $stmt = $conexao->prepare($sql);
 
@@ -76,12 +89,10 @@ try {
         ':firebase_uid' => $firebaseUid
     ]);
 
-    $professor = $stmt->fetch(
-        PDO::FETCH_ASSOC
-    );
+    $professor = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$professor) {
-        $sql = "SELECT id,nome,email,foto,firebase_uid FROM professores WHERE LOWER(email) = LOWER(:email) LIMIT 1";
+        $sql = "SELECT id, nome, email, foto FROM professores WHERE email = :email LIMIT 1";
 
         $stmt = $conexao->prepare($sql);
 
@@ -89,9 +100,7 @@ try {
             ':email' => $email
         ]);
 
-        $professor = $stmt->fetch(
-            PDO::FETCH_ASSOC
-        );
+        $professor = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($professor) {
             $sql = "UPDATE professores SET firebase_uid = :firebase_uid WHERE id = :id";
@@ -102,23 +111,20 @@ try {
                 ':firebase_uid' => $firebaseUid,
                 ':id' => $professor['id']
             ]);
-
-            $professor['firebase_uid'] =
-                $firebaseUid;
         }
     }
 
     if (!$professor) {
-        $nomeFinal = trim(
-            (string) ($nome ?: 'Professor')
-        );
+        $nomeFinal = $nome !== ''
+            ? $nome
+            : 'Professor';
 
         $senhaAleatoria = password_hash(
             bin2hex(random_bytes(32)),
             PASSWORD_DEFAULT
         );
 
-        $sql = "INSERT INTO professores (nome,email,senha,foto,firebase_uid) VALUES (:nome,:email, :senha,:foto,:firebase_uid) RETURNING id,nome,email,foto,firebase_uid";
+        $sql = "INSERT INTO professores (nome,email,senha,foto,firebase_uid) VALUES (:nome,:email,:senha,:foto,:firebase_uid) RETURNING id, nome, email, foto";
 
         $stmt = $conexao->prepare($sql);
 
@@ -130,54 +136,43 @@ try {
             ':firebase_uid' => $firebaseUid
         ]);
 
-        $professor = $stmt->fetch(
-            PDO::FETCH_ASSOC
-        );
-    }
+        $professor = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$professor) {
-        throw new RuntimeException(
-            'Não foi possível localizar ou criar o professor.'
-        );
+        if (!$professor) {
+            throw new RuntimeException(
+                'Não foi possível criar o professor.'
+            );
+        }
     }
 
     session_regenerate_id(true);
 
-    $_SESSION['id'] =
-        $professor['id'];
+    $_SESSION['id'] = $professor['id'];
+    $_SESSION['nome'] = $professor['nome'];
+    $_SESSION['email'] = $professor['email'];
+    $_SESSION['login_google'] = true;
 
-    $_SESSION['nome'] =
-        $professor['nome'];
-
-    $_SESSION['email'] =
-        $professor['email'];
-
-    $_SESSION['login_google'] =
-        true;
-
-    echo json_encode([
-        'sucesso' => true,
-        'mensagem' => 'Login realizado com sucesso.',
-        'redirecionar' => '/painel.php'
-    ]);
-
-    exit;
+    responder(
+        true,
+        'Login realizado com sucesso.',
+        200,
+        [
+            'redirecionar' => '/painel.php'
+        ]
+    );
 } catch (Throwable $e) {
     error_log(
-        'LOGIN GOOGLE: ' .
+        'LOGIN GOOGLE - ' .
+        $e->getFile() .
+        ':' .
+        $e->getLine() .
+        ' - ' .
         $e->getMessage()
     );
 
-    http_response_code(500);
-
-    echo json_encode([
-        'sucesso' => false,
-        'mensagem' =>
-            'Erro no servidor durante o login Google.',
-        'erro' =>
-            $e->getMessage()
-    ]);
-
-    exit;
+    responder(
+        false,
+        'Não foi possível concluir o login com o Google.',
+        500
+    );
 }
-?>
