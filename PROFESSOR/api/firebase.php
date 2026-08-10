@@ -1,11 +1,12 @@
 <?php
 declare(strict_types=1);
 
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Auth;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Kreait\Firebase\Factory;
-
-function firebaseAuth()
+function firebaseAuth(): Auth
 {
     $projectId = getenv('FIREBASE_PROJECT_ID');
     $clientEmail = getenv('FIREBASE_CLIENT_EMAIL');
@@ -13,13 +14,13 @@ function firebaseAuth()
 
     if (!$projectId || !$clientEmail || !$privateKey) {
         throw new RuntimeException(
-            'As variáveis do Firebase não estão configuradas.'
+            'As variáveis do Firebase não foram configuradas.'
         );
     }
 
     $privateKey = str_replace(
-        ['\\n', '\\r'],
-        ["\n", "\r"],
+        ['\\n', '\\r\\n'],
+        ["\n", "\r\n"],
         $privateKey
     );
 
@@ -35,4 +36,3 @@ function firebaseAuth()
 
     return $factory->createAuth();
 }
-?>
