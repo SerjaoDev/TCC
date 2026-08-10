@@ -1,13 +1,35 @@
 <?php
-$host = getenv("PGHOST");
-$database = getenv("PGDATABASE");
-$user = getenv("PGUSER");
-$password = getenv("PGPASSWORD");
-$ssl = getenv("PGSSLMODE") ?: "require";
+declare(strict_types=1);
+
+$host = getenv('PGHOST') ?: getenv('DB_HOST');
+$database = getenv('PGDATABASE') ?: getenv('DB_NAME');
+$user = getenv('PGUSER') ?: getenv('DB_USER');
+$password = getenv('PGPASSWORD') ?: getenv('DB_PASSWORD');
+$port = getenv('PGPORT') ?: getenv('DB_PORT') ?: '5432';
+
+if (!$host || !$database || !$user || !$password) {
+    http_response_code(500);
+
+    die('Erro: variáveis de conexão com o banco não configuradas.');
+}
+
+$endpointId = getenv('NEON_ENDPOINT_ID');
+
+if (!$endpointId) {
+    $endpointId = explode('.', $host)[0];
+}
 
 try {
+    $dsn = sprintf(
+        'pgsql:host=%s;port=%s;dbname=%s;sslmode=require;options=endpoint%%3D%s',
+        $host,
+        $port,
+        $database,
+        $endpointId
+    );
+
     $conexao = new PDO(
-        "pgsql:host=$host;dbname=$database;sslmode=$ssl",
+        $dsn,
         $user,
         $password,
         [
@@ -16,10 +38,15 @@ try {
             PDO::ATTR_EMULATE_PREPARES => false
         ]
     );
-} catch (PDOException $erro) {
+} catch (PDOException $e) {
+    error_log(
+        'Erro PostgreSQL/Neon: ' . $e->getMessage()
+    );
+
     http_response_code(500);
 
-    die("Erro ao conectar com o banco de dados: "
-        . $erro->getMessage());
+    die(
+        'Erro ao conectar com o banco de dados: ' .
+        $e->getMessage()
+    );
 }
-?>
