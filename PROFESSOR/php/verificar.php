@@ -1,16 +1,17 @@
 <?php
-session_start();
+declare(strict_types=1);
 
-if (!isset($_SESSION["professor_id"])) {
-    header("Location: ../index.html");
-    exit();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
 }
 
-if (!filter_var($_SESSION["professor_id"], FILTER_VALIDATE_INT)) {
-    session_unset();
-    session_destroy();
-
-    header("Location: ../index.html");
-    exit();
+if (
+    !isset($_SESSION['id']) ||
+    !is_numeric($_SESSION['id']) ||
+    (int) $_SESSION['id'] <= 0
+) {
+    header('Location: ../index.php');
+    exit;
 }
-?>
+
+$_SESSION['id'] = (int) $_SESSION['id'];
