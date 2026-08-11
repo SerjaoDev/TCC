@@ -1,124 +1,157 @@
 <?php
+declare(strict_types=1);
 
-include("php/verificar.php");
-include("php/conexao.php");
+require_once __DIR__ . '/php/verificar.php';
+require_once __DIR__ . '/php/conexao.php';
 
-$professor_id = $_SESSION["id"];
+$professor_id = (int) $_SESSION['id'];
 
-$sql = "SELECT COUNT(*) total
-FROM alunos
-WHERE professor_id='$professor_id'";
+try {
+    $stmt = $conexao->prepare("SELECT COUNT(*) FROM alunos WHERE professor_id = :professor_id");
 
-$totalAlunos = $conexao->query($sql)->fetch_assoc()["total"];
+    $stmt->execute([
+        ':professor_id' => $professor_id
+    ]);
 
-$sql = "SELECT COUNT(*) total
-FROM turmas
-WHERE professor_id='$professor_id'";
+    $totalAlunos = (int) $stmt->fetchColumn();
 
-$totalTurmas = $conexao->query($sql)->fetch_assoc()["total"];
+    $stmt = $conexao->prepare("SELECT COUNT(*) FROM turmas WHERE professor_id = :professor_id");
 
-$sql = "SELECT SUM(p.licoes_concluidas) total
-FROM progresso p
-INNER JOIN alunos a
-ON a.id=p.aluno_id
-WHERE a.professor_id='$professor_id'";
+    $stmt->execute([
+        ':professor_id' => $professor_id
+    ]);
 
-$totalLicoes = $conexao->query($sql)->fetch_assoc()["total"] ?? 0;
+    $totalTurmas = (int) $stmt->fetchColumn();
 
-$sql = "SELECT AVG(p.acertos) media
-FROM progresso p
-INNER JOIN alunos a
-ON a.id=p.aluno_id
-WHERE a.professor_id='$professor_id'";
+    $stmt = $conexao->prepare("SELECT COALESCE(SUM(p.licoes_concluidas), 0) FROM progresso p INNER JOIN alunos a ON a.id = p.aluno_id WHERE a.professor_id = :professor_id");
 
-$media = $conexao->query($sql)->fetch_assoc()["media"] ?? 0;
+    $stmt->execute([
+        ':professor_id' => $professor_id
+    ]);
 
-$sqlGrafico = "SELECT 
-t.nome,
-AVG(p.acertos) media
-FROM turmas t
-LEFT JOIN alunos a
-ON a.turma_id = t.id
-LEFT JOIN progresso p
-ON p.aluno_id = a.id
-WHERE t.professor_id='$professor_id'
-GROUP BY t.id";
+    $totalLicoes = (int) $stmt->fetchColumn();
 
-$resultadoGrafico = $conexao->query($sqlGrafico);
-$nomesTurmas = [];
-$mediasTurmas = [];
-while($linha = $resultadoGrafico->fetch_assoc()){
-    $nomesTurmas[] = $linha["nome"];
-    $mediasTurmas[] = round($linha["media"] ?? 0);
+    $stmt = $conexao->prepare("SELECT COALESCE(AVG(p.acertos), 0) FROM progresso p INNER JOIN alunos a ON a.id = p.aluno_id WHERE a.professor_id = :professor_id");
+
+    $stmt->execute([
+        ':professor_id' => $professor_id
+    ]);
+
+    $media = (float) $stmt->fetchColumn();
+
+    $stmt = $conexao->prepare("SELECT t.nome,COALESCE(AVG(p.acertos), 0) AS media FROM turmas t LEFT JOIN alunos a ON a.turma_id = t.id LEFT JOIN progresso p ON p.aluno_id = a.id WHERE t.professor_id = :professor_id GROUP BY t.id, t.nome ORDER BY t.nome ASC");
+
+    $stmt->execute([
+        ':professor_id' => $professor_id
+    ]);
+
+    $nomesTurmas = [];
+    $mediasTurmas = [];
+
+    while ($linha = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $nomesTurmas[] = $linha['nome'];
+        $mediasTurmas[] = round((float) $linha['media']);
+    }
+} catch (Throwable $e) {
+    error_log('Erro no painel: ' . $e->getMessage());
+
+    http_response_code(500);
+
+    echo 'Erro ao carregar o painel.';
+    exit;
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel do Professor</title>
-<link rel="stylesheet" href="css/painel.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Professor | Lumi</title>
+    <link rel="stylesheet" href="css/painel.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
+    <div class="sidebar">
+        <img src="img/logo.png" class="logo" alt="Lumi">
+        <h2>Lumi</h2>
+        <ul>
+            <li class="ativo">
+                🏠 Dashboard
+            </li>
+            <li>
+                <a href="turmas.php">
+                    📚 Turmas
+                </a>
+            </li>
+            <li>
+                <a href="logout.php">
+                    🚪 Sair
+                </a>
+            </li>
+        </ul>
+    </div>
 
-<div class="sidebar">
-    <img src="img/logo.png" class="logo">
-    <h2>Lumi</h2>
+    <div class="conteudo">
+        <h1>
+            Bem-vindo, <?= htmlspecialchars($_SESSION['nome']) ?>!
+        </h1>
+        <p>
+            Tenha uma ótima aula hoje.
+        </p>
 
-  <ul>
-<li class="ativo">
-    🏠 Dashboard
-</li>
+        <div class="cards">
+            <div class="card">
+                <h3>👨‍🎓 Alunos</h3>
+                <span>
+                    <?= $totalAlunos ?>
+                </span>
+            </div>
 
-<li>
-    <a href="turmas.php">📚 Turmas</a>
-</li>
+            <div class="card">
+                <h3>📚 Turmas</h3>
+                <span>
+                    <?= $totalTurmas ?>
+                </span>
+            </div>
 
-<li>
-    <a href="logout.php">🚪 Sair</a>
-</li>
-</ul>
+            <div class="card">
+                <h3>⭐ Média</h3>
+                <span>
+                    <?= round($media) ?>%
+                </span>
+            </div>
 
-</div>
-<div class="conteudo">
-    <h1>Bem-vindo, <?php echo $_SESSION['nome']; ?>!</h1>
-    <p>Tenha uma ótima aula hoje.</p>
-    <div class="cards">
-        <div class="card">
-            <h3>👨‍🎓 Alunos</h3>
-            <span><?php echo $totalAlunos; ?></span>
+            <div class="card">
+                <h3>🏆 Atividades</h3>
+                <span>
+                    <?= $totalLicoes ?>
+                </span>
+            </div>
         </div>
-        <div class="card">
-            <h3>📚 Turmas</h3>
-            <span><?php echo $totalTurmas; ?></span>
-        </div>
-        <div class="card">
-            <h3>⭐ Média</h3>
-            <span><?php echo round($media); ?>%</span>
-        </div>
-        <div class="card">
-            <h3>🏆 Atividades</h3>
-            <span><?php echo $totalLicoes; ?></span>
+
+        <div class="grafico">
+            <h2>
+                Desempenho dos alunos
+            </h2>
+            <canvas id="grafico"></canvas>
         </div>
     </div>
-    <div class="grafico">
-        <h2>Desempenho dos alunos</h2>
-        <canvas id="grafico"></canvas>
-    </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script>
-const nomesTurmas = <?php echo json_encode($nomesTurmas); ?>;
-const mediasTurmas = <?php echo json_encode($mediasTurmas); ?>;
-</script>
+    <script>
+        const nomesTurmas =
+            <?= json_encode($nomesTurmas, JSON_UNESCAPED_UNICODE) ?>;
 
-<script src="js/painel.js"></script>
+        const mediasTurmas =
+            <?= json_encode($mediasTurmas) ?>;
+    </script>
+
+    <script src="js/painel.js"></script>
 
 </body>
+
 </html>

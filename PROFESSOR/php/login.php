@@ -1,47 +1,59 @@
 <?php
+declare(strict_types=1);
+
 session_start();
 
-require_once __DIR__ . "/conexao.php";
+require_once __DIR__ . '/conexao.php';
 
-if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    header("Location: ../index.html");
-    exit();
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: ../index.php');
+    exit;
 }
 
-$email = trim($_POST["email"] ?? "");
-$senha = $_POST["senha"] ?? "";
+$email = trim($_POST['email'] ?? '');
+$senha = $_POST['senha'] ?? '';
 
-if ($email === "" || $senha === "") {
-    header("Location: ../index.html?erro=preencha");
-    exit();
+if ($email === '' || $senha === '') {
+    header('Location: ../index.php?erro=preencha');
+    exit;
 }
 
-$sql = "SELECT id,nome,email,senha,foto FROM professores WHERE email = :email LIMIT 1";
+try {
+    $sql = "SELECT id, nome, email, senha, foto FROM professores WHERE email = :email LIMIT 1";
 
-$stmt = $conexao->prepare($sql);
-$stmt->execute([
-    ":email" => $email
-]);
+    $stmt = $conexao->prepare($sql);
 
-$professor = $stmt->fetch();
+    $stmt->execute([
+        ':email' => $email
+    ]);
 
-if (!$professor) {
-    header("Location: ../index.html?erro=login");
-    exit();
+    $professor = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$professor) {
+        header('Location: ../index.php?erro=usuario');
+        exit;
+    }
+
+    if (!password_verify($senha, $professor['senha'])) {
+        header('Location: ../index.php?erro=senha');
+        exit;
+    }
+
+    session_regenerate_id(true);
+
+    $_SESSION['id'] = (int) $professor['id'];
+    $_SESSION['nome'] = $professor['nome'];
+    $_SESSION['email'] = $professor['email'];
+    $_SESSION['foto'] = $professor['foto'] ?? 'padrao.png';
+    $_SESSION['login_google'] = false;
+
+    header('Location: ../painel.php');
+    exit;
+} catch (Throwable $e) {
+    error_log('Erro no login: ' . $e->getMessage());
+
+    http_response_code(500);
+
+    echo 'Erro interno ao realizar o login.';
+    exit;
 }
-
-if (!password_verify($senha, $professor["senha"])) {
-    header("Location: ../index.html?erro=login");
-    exit();
-}
-
-session_regenerate_id(true);
-
-$_SESSION["professor_id"] = $professor["id"];
-$_SESSION["professor_nome"] = $professor["nome"];
-$_SESSION["professor_email"] = $professor["email"];
-$_SESSION["professor_foto"] = $professor["foto"];
-
-header("Location: ../painel.php");
-exit();
-?>
