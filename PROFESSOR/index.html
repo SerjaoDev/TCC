@@ -70,119 +70,42 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
-        const botaoGoogle =
-            document.getElementById("googleLogin");
-        const mensagem =
-            document.getElementById("googleMensagem");
+        const provider = new firebase.auth.GoogleAuthProvider();
 
-        function mostrarMensagem(texto, sucesso = false) {
-            mensagem.textContent = texto;
-            mensagem.style.display = "block";
-            mensagem.style.color =
-                sucesso ? "#2e7d32" : "#d32f2f";
-        }
+        firebase.auth()
+            .signInWithPopup(provider)
+            .then(async (result) => {
 
-        botaoGoogle.addEventListener(
-            "click",
-            async function () {
-                botaoGoogle.disabled = true;
-                botaoGoogle.style.opacity = "0.6";
+                const user = result.user;
+                const idToken = await user.getIdToken();
 
-                mostrarMensagem(
-                    "Conectando com o Google...",
-                    true
-                );
+                const resposta = await fetch('php/login_google.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        idToken: idToken
+                    })
+                });
 
-                try {
-                    const resultado =
-                        await signInWithPopup(
-                            auth,
-                            provider
-                        );
+                const dados = await resposta.json();
 
-                    const usuario =
-                        resultado.user;
-
-                    if (!usuario) {
-                        throw new Error(
-                            "Não foi possível obter o usuário."
-                        );
-                    }
-
-                    const idToken =
-                        await usuario.getIdToken();
-
-                    const resposta =
-                        await fetch(
-                            "/api/login_google.php",
-                            {
-                                method: "POST",
-
-                                headers: {
-                                    "Content-Type":
-                                        "application/json"
-                                },
-
-                                body: JSON.stringify({
-                                    idToken: idToken
-                                })
-                            }
-                        );
-
-                    const dados =
-                        await resposta.json();
-
-                    if (
-                        !resposta.ok ||
-                        !dados.sucesso
-                    ) {
-                        throw new Error(
-                            dados.mensagem ||
-                            "Não foi possível realizar o login."
-                        );
-                    }
-
-                    mostrarMensagem(
-                        "Login realizado! Redirecionando...",
-                        true
-                    );
-
-                    window.location.href =
-                        dados.redirecionar ||
-                        "/painel.php";
-                } catch (erro) {
-                    console.error(
-                        "Erro no login Google:",
-                        erro
-                    );
-
-                    if (
-                        erro.code ===
-                        "auth/popup-closed-by-user"
-                    ) {
-                        mostrarMensagem(
-                            "O login foi cancelado."
-                        );
-                    } else if (
-                        erro.code ===
-                        "auth/unauthorized-domain"
-                    ) {
-                        mostrarMensagem(
-                            "Este domínio não está autorizado no Firebase."
-                        );
-                    } else {
-                        mostrarMensagem(
-                            erro.message ||
-                            "Erro ao entrar com Google."
-                        );
-                    }
-                } finally {
-                    botaoGoogle.disabled = false;
-                    botaoGoogle.style.opacity = "1";
+                if (dados.sucesso) {
+                    window.location.href = dados.redirecionar;
+                } else {
+                    alert(dados.mensagem);
                 }
-            }
-        );
+
+            })
+            .catch((erro) => {
+                console.error('Erro Firebase:', erro);
+
+                alert(
+                    'Erro ao entrar com Google: ' +
+                    erro.message
+                );
+            });
     </script>
 
     <script src="js/script.js"></script>
