@@ -1,74 +1,200 @@
 <?php
 
-include("php/verificar.php");
-include("php/conexao.php");
+declare(strict_types=1);
 
-$id = $_GET["id"];
-$professor_id = $_SESSION["id"];
-$sql = "SELECT * FROM alunos 
-        WHERE id='$id' 
-        AND professor_id='$professor_id'";
-$resultado = $conexao->query($sql);
-$aluno = $resultado->fetch_assoc();
+require_once __DIR__ . '/php/verificar.php';
+require_once __DIR__ . '/php/conexao.php';
 
+$professorId = $_SESSION['id'] ?? null;
+
+$alunoId = filter_input(
+        INPUT_GET,
+        'id',
+        FILTER_VALIDATE_INT
+);
+
+if (!$professorId) {
+        header('Location: index.php');
+        exit;
+}
+
+if (!$alunoId) {
+        http_response_code(400);
+        exit('Aluno inválido.');
+}
+
+try {
+        $sql = "SELECT a.id, a.nome, a.usuario, a.data_nascimento, a.turma_id FROM alunos a WHERE a.id = :aluno_id AND a.professor_id = :professor_id LIMIT 1";
+
+        $stmt = $conexao->prepare($sql);
+
+        $stmt->execute([
+                ':aluno_id' => $alunoId,
+                ':professor_id' => $professorId
+        ]);
+
+        $aluno = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$aluno) {
+                http_response_code(404);
+                exit('Aluno não encontrado.');
+        }
+
+        $sqlTurmas = "SELECT id, nomeFROM turmas WHERE professor_id = :professor_id ORDER BY nome ASC";
+
+        $stmtTurmas = $conexao->prepare($sqlTurmas);
+
+        $stmtTurmas->execute([
+                ':professor_id' => $professorId
+        ]);
+
+        $turmas = $stmtTurmas->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+        error_log(
+                'Erro ao carregar edição do aluno: ' . $e->getMessage()
+        );
+
+        http_response_code(500);
+
+        exit('Não foi possível carregar os dados do aluno.');
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Editar Aluno | Lumi</title>
-<link rel="stylesheet" href="css/style.css">
+        <meta charset="UTF-8">
+        <meta
+                name="viewport"
+                content="width=device-width, initial-scale=1.0">
+        <title>Editar Aluno | Lumi</title>
+        <link
+                rel="stylesheet"
+                href="css/style.css">
 </head>
+
 <body>
+        <div class="login-card">
+                <img
+                        src="img/logo.png"
+                        class="logo"
+                        alt="Logo Lumi">
 
-<div class="login-card">
+                <h1>
+                        Editar Aluno
+                </h1>
 
-<h1>Editar Aluno</h1>
+                <p>
+                        Atualize os dados do aluno.
+                </p>
 
-<form action="php/editar_aluno.php" method="POST">
+                <form
+                        action="php/editar_aluno.php"
+                        method="POST"
+                        id="formEditarAluno">
 
-<input 
-type="hidden" 
-name="id"
-value="<?php echo $aluno['id']; ?>">
+                        <input
+                                type="hidden"
+                                name="id"
+                                value="<?= (int) $aluno['id']; ?>">
 
-<input 
-type="text"
-name="nome"
-value="<?php echo $aluno['nome']; ?>" required>
+                        <input
+                                type="text"
+                                name="nome"
+                                placeholder="Nome do aluno"
+                                value="<?= htmlspecialchars(
+                                                $aluno['nome'],
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                        ); ?>"
+                                minlength="3"
+                                maxlength="150"
+                                required>
 
-<input 
-type="text"
-name="usuario"
-value="<?php echo $aluno['usuario']; ?>" required>
+                        <input
+                                type="text"
+                                name="usuario"
+                                placeholder="Usuário de login"
+                                value="<?= htmlspecialchars(
+                                                $aluno['usuario'],
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                        ); ?>"
+                                maxlength="100"
+                                required>
 
-<input 
-type="date"
-name="data_nascimento"
-value="<?php echo $aluno['data_nascimento']; ?>" required>
+                        <input
+                                type="date"
+                                name="data_nascimento"
+                                value="<?= htmlspecialchars(
+                                                $aluno['data_nascimento'] ?? '',
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                        ); ?>">
 
-<input 
-type="text"
-name="turma"
-value="<?php echo $aluno['turma']; ?>" required>
+                        <select
+                                name="turma_id"
+                                required
+                                style="
+            width:100%;
+            padding:15px;
+            margin-bottom:18px;
+            border:2px solid #ddd;
+            border-radius:12px;
+            outline:none;
+            background:white;
+            font-family:'Poppins',sans-serif;
+            font-size:15px;
+        ">
 
-<button class="entrar">
-Salvar Alterações
-</button>
+                                <option value="">
+                                        Selecione a turma
+                                </option>
 
-</form>
+                                <?php foreach ($turmas as $turma): ?>
+                                        <option
+                                                value="<?= (int) $turma['id']; ?>"
+                                                <?= (
+                                                        (int) $turma['id'] ===
+                                                        (int) ($aluno['turma_id'] ?? 0)
+                                                ) ? 'selected' : ''; ?>>
 
-<div class="links">
+                                                <?= htmlspecialchars(
+                                                        $turma['nome'],
+                                                        ENT_QUOTES,
+                                                        'UTF-8'
+                                                ); ?>
+                                        </option>
+                                <?php endforeach; ?>
+                        </select>
 
-<a href="javascript:history.back()">
-Voltar
-</a>
+                        <button
+                                type="submit"
+                                class="entrar"
+                                id="botaoSalvar">
+                                Salvar Alterações
+                        </button>
+                </form>
 
-</div>
+                <div class="links">
+                        <a href="javascript:history.back()">
+                                Voltar
+                        </a>
+                </div>
+        </div>
 
-</div>
+        <script>
+                document
+                        .getElementById('formEditarAluno')
+                        .addEventListener('submit', function() {
 
+                                const botao = document.getElementById('botaoSalvar');
+
+                                botao.disabled = true;
+                                botao.textContent = 'Salvando...';
+                        });
+        </script>
 </body>
+
 </html>
