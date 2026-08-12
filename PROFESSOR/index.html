@@ -12,7 +12,11 @@
     <div class="background"></div>
     <div class="login-card">
         <img src="img/logo.png" class="logo" alt="Lumi">
-        <h1>Área do Professor</h1>
+
+        <h1>
+            Área do Professor
+        </h1>
+
         <p>
             Faça login para acessar seu painel.
         </p>
@@ -33,16 +37,17 @@
         </button>
 
         <p id="googleMensagem" style="
-                display:none;
-                margin-top:15px;
-                margin-bottom:0;
-                font-size:14px;
-            "></p>
+        display:none;
+        margin-top:15px;
+        margin-bottom:0;
+        font-size:14px;
+    "></p>
 
         <div class="links">
             <a href="cadastro.php">
                 Criar Conta
             </a>
+
             <a href="recuperar.php">
                 Esqueci minha senha
             </a>
@@ -52,18 +57,17 @@
     <script type="module">
         import {
             initializeApp
-        }
-            from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
         import {
             getAuth,
             GoogleAuthProvider,
             signInWithPopup
-        }
-            from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyBhCvVJlHIwEwiYShKXOkcHrzpMgxGwDFo",
+            apiKey:
+                "AIzaSyBhCvVJlHIwEwiYShKXOkcHrzpMgxGwDFo",
 
             authDomain:
                 "lumi-for-teachers.firebaseapp.com",
@@ -81,23 +85,29 @@
                 "1:1063473511779:web:8344fbd922b2c34bf4a756"
         };
 
-        const app =
-            initializeApp(firebaseConfig);
+        const app = initializeApp(
+            firebaseConfig
+        );
 
-        const auth =
-            getAuth(app);
+        const auth = getAuth(app);
 
         const provider =
             new GoogleAuthProvider();
 
         const botaoGoogle =
-            document.getElementById("googleLogin");
+            document.getElementById(
+                "googleLogin"
+            );
 
         const textoGoogle =
-            document.getElementById("googleTexto");
+            document.getElementById(
+                "googleTexto"
+            );
 
         const mensagem =
-            document.getElementById("googleMensagem");
+            document.getElementById(
+                "googleMensagem"
+            );
 
         botaoGoogle.addEventListener(
             "click",
@@ -121,16 +131,18 @@
                         resultado.user;
 
                     console.log(
-                        "Usuário Firebase:",
-                        user
+                        "Usuário autenticado:",
+                        user.email
                     );
 
                     const idToken =
                         await user.getIdToken(true);
 
-                    console.log(
-                        "ID Token obtido."
-                    );
+                    if (!idToken) {
+                        throw new Error(
+                            "Não foi possível obter o token do Firebase."
+                        );
+                    }
 
                     const resposta =
                         await fetch(
@@ -143,6 +155,7 @@
                                     "Accept":
                                         "application/json"
                                 },
+                                credentials: "same-origin",
                                 body:
                                     JSON.stringify({
                                         idToken:
@@ -155,7 +168,7 @@
                         await resposta.text();
 
                     console.log(
-                        "Resposta PHP:",
+                        "Resposta do servidor:",
                         textoResposta
                     );
 
@@ -168,11 +181,12 @@
                             );
                     } catch (erroJSON) {
                         console.error(
-                            "Resposta inválida do PHP:",
+                            "Resposta não é JSON:",
                             textoResposta
                         );
+
                         throw new Error(
-                            "O servidor retornou uma resposta inválida. Verifique o login_google.php."
+                            "O servidor retornou uma resposta inválida."
                         );
                     }
 
@@ -189,7 +203,8 @@
                     window.location.href =
                         dados.redirecionar ||
                         "painel.php";
-                } catch (erro) {
+                }
+                catch (erro) {
                     console.error(
                         "Erro no login Google:",
                         erro
@@ -217,7 +232,6 @@
             }
         );
     </script>
-
     <script src="js/script.js"></script>
 </body>
 
