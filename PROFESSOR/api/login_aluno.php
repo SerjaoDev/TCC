@@ -1,195 +1,155 @@
 <?php
+
 declare(strict_types=1);
 
 header('Content-Type: application/json; charset=UTF-8');
 
 require_once __DIR__ . '/../php/conexao.php';
 
-function responder(
-    bool $sucesso,
-    string $mensagem,
-    array $extra = []
-): never {
+$usuario = trim($_POST['usuario'] ?? '');
+$senha = $_POST['senha'] ?? '';
 
-    echo json_encode(
-        array_merge(
-            [
-                'sucesso' => $sucesso,
-                'mensagem' => $mensagem
-            ],
-            $extra
-        ),
-        JSON_UNESCAPED_UNICODE
-    );
+if ($usuario === '' || $senha === '') {
+
+    http_response_code(400);
+
+    echo json_encode([
+        'sucesso' => false,
+        'mensagem' => 'Preencha usuário e senha.'
+    ], JSON_UNESCAPED_UNICODE);
 
     exit;
 }
 
 try {
 
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-
-        http_response_code(405);
-
-        responder(
-            false,
-            'Método de requisição inválido.'
-        );
-    }
-
-    /*
-     * Primeiro tenta JSON.
-     */
-    $dados = [];
-
-    $corpo = file_get_contents(
-        'php://input'
-    );
-
-    if (
-        $corpo !== false &&
-        trim($corpo) !== ''
-    ) {
-
-        $json = json_decode(
-            $corpo,
-            true
-        );
-
-        if (is_array($json)) {
-            $dados = $json;
-        }
-    }
-
-    /*
-     * Caso seja formulário.
-     */
-    if (empty($dados)) {
-        $dados = $_POST;
-    }
-
-    $usuario = trim(
-        (string) (
-            $dados['usuario'] ?? ''
-        )
-    );
-
-    $senha = (string) (
-        $dados['senha'] ?? ''
-    );
-
-    if (
-        $usuario === '' ||
-        $senha === ''
-    ) {
-
-        http_response_code(400);
-
-        responder(
-            false,
-            'Preencha usuário e senha.'
-        );
-    }
-
-    $stmt = $conexao->prepare(
-        "
+    $stmt = $conexao->prepare("
         SELECT
             id,
+            professor_id,
             nome,
             usuario,
             senha,
+            foto,
             turma_id
         FROM alunos
         WHERE usuario = :usuario
         LIMIT 1
-        "
-    );
+    ");
 
     $stmt->execute([
         ':usuario' => $usuario
     ]);
 
-    $aluno = $stmt->fetch(
-        PDO::FETCH_ASSOC
-    );
+    $aluno = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$aluno) {
 
         http_response_code(401);
 
-        responder(
-            false,
-            'Aluno não encontrado.'
-        );
+        echo json_encode([
+            'sucesso' => false,
+            'mensagem' => 'Usuário ou senha incorretos.'
+        ], JSON_UNESCAPED_UNICODE);
+
+        exit;
     }
 
-    if (
-        empty($aluno['senha']) ||
-        !password_verify(
-            $senha,
-            $aluno['senha']
-        )
-    ) {
+    if (!password_verify($senha, $aluno['senha'])) {
 
         http_response_code(401);
 
-        responder(
-            false,
-            'Senha incorreta.'
-        );
+        echo json_encode([
+            'sucesso' => false,
+            'mensagem' => 'Usuário ou senha incorretos.'
+        ], JSON_UNESCAPED_UNICODE);
+
+        exit;
     }
 
-    /*
-     * Busca progresso.
-     */
-    $stmt = $conexao->prepare(
-        "
+    $stmt = $conexao->prepare("
         SELECT
+            nivel_atual,
             estrelas,
             moedas,
             licoes_concluidas,
-            acertos
+            acertos,
+            erros,
+            tempo_estudo,
+            ultimo_acesso
         FROM progresso
         WHERE aluno_id = :aluno_id
         LIMIT 1
-        "
-    );
+    ");
 
     $stmt->execute([
         ':aluno_id' => $aluno['id']
     ]);
 
-    $progresso = $stmt->fetch(
-        PDO::FETCH_ASSOC
-    );
+    $progresso = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    responder(
-        true,
-        'Login realizado com sucesso.',
-        [
-            'aluno' => [
-                'id' => (int) $aluno['id'],
-                'nome' => $aluno['nome'],
-                'turma' => $aluno['turma_id'],
-                'estrelas' =>
-                    (int) (
-                        $progresso['estrelas'] ?? 0
-                    ),
-                'moedas' =>
-                    (int) (
-                        $progresso['moedas'] ?? 0
-                    ),
-                'licoes' =>
-                    (int) (
-                        $progresso['licoes_concluidas'] ?? 0
-                    ),
-                'acertos' =>
-                    (float) (
-                        $progresso['acertos'] ?? 0
-                    )
-            ]
+    if (!$progresso) {
+
+        $stmt = $conexao->prepare("
+            INSERT INTO progresso (aluno_id)
+            VALUES (:aluno_id)
+            ON CONFLICT (aluno_id) DO NOTHING
+        ");
+
+        $stmt->execute([
+            ':aluno_id' => $aluno['id']
+        ]);
+
+        $stmt = $conexao->prepare("
+            SELECT
+                nivel_atual,
+                estrelas,
+                moedas,
+                licoes_concluidas,
+                acertos,
+                erros,
+                tempo_estudo,
+                ultimo_acesso
+            FROM progresso
+            WHERE aluno_id = :aluno_id
+            LIMIT 1
+        ");
+
+        $stmt->execute([
+            ':aluno_id' => $aluno['id']
+        ]);
+
+        $progresso = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    $stmt = $conexao->prepare("
+        UPDATE progresso
+        SET ultimo_acesso = CURRENT_TIMESTAMP
+        WHERE aluno_id = :aluno_id
+    ");
+
+    $stmt->execute([
+        ':aluno_id' => $aluno['id']
+    ]);
+
+    echo json_encode([
+        'sucesso' => true,
+        'aluno' => [
+            'id' => (int) $aluno['id'],
+            'nome' => $aluno['nome'],
+            'turma' => $aluno['turma_id'] !== null
+                ? (int) $aluno['turma_id']
+                : null,
+            'foto' => $aluno['foto'] ?? 'padrao.png',
+            'nivel' => (int) ($progresso['nivel_atual'] ?? 1),
+            'estrelas' => (int) ($progresso['estrelas'] ?? 0),
+            'moedas' => (int) ($progresso['moedas'] ?? 0),
+            'licoes' => (int) ($progresso['licoes_concluidas'] ?? 0),
+            'acertos' => (int) ($progresso['acertos'] ?? 0),
+            'erros' => (int) ($progresso['erros'] ?? 0),
+            'tempo_estudo' => (int) ($progresso['tempo_estudo'] ?? 0)
         ]
-    );
+    ], JSON_UNESCAPED_UNICODE);
 
 } catch (Throwable $e) {
 
@@ -200,8 +160,10 @@ try {
 
     http_response_code(500);
 
-    responder(
-        false,
-        'Erro interno ao realizar login.'
-    );
+    echo json_encode([
+        'sucesso' => false,
+        'mensagem' => 'Erro interno ao realizar login.'
+    ], JSON_UNESCAPED_UNICODE);
 }
+
+exit;

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 header('Content-Type: application/json; charset=UTF-8');
@@ -22,31 +23,21 @@ try {
 
     $licoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    echo json_encode(
-        [
-            'sucesso' => true,
-            'licoes' => $licoes
-        ],
-        JSON_UNESCAPED_UNICODE
-    );
-
-    exit;
+    echo json_encode([
+        'sucesso' => true,
+        'licoes' => $licoes
+    ], JSON_UNESCAPED_UNICODE);
 
 } catch (Throwable $e) {
 
-    error_log(
-        'Erro buscar_licoes.php: ' . $e->getMessage()
-    );
+    error_log('Erro buscar_licoes.php: ' . $e->getMessage());
 
     http_response_code(500);
 
-    echo json_encode(
-        [
-            'sucesso' => false,
-            'mensagem' => 'Erro ao buscar lições.'
-        ],
-        JSON_UNESCAPED_UNICODE
-    );
-
-    exit;
+    echo json_encode([
+        'sucesso' => false,
+        'mensagem' => 'Erro ao buscar lições.'
+    ], JSON_UNESCAPED_UNICODE);
 }
+
+exit;

@@ -1,9 +1,7 @@
 <?php
+
 declare(strict_types=1);
 
-/*
- * Obtém apenas o caminho da URL.
- */
 $uri = parse_url(
     $_SERVER['REQUEST_URI'] ?? '/',
     PHP_URL_PATH
@@ -14,18 +12,22 @@ $uri = '/' . ltrim(
     '/'
 );
 
-/*
- * Normaliza barras duplicadas.
- */
 $uri = preg_replace(
     '#/+#',
     '/',
     $uri
 );
 
-/*
- * Proteção contra path traversal.
- */
+if ($uri === '/') {
+
+    $index = __DIR__ . '/../index.html';
+
+    if (is_file($index)) {
+        require $index;
+        exit;
+    }
+}
+
 if (
     str_contains($uri, '..') ||
     str_contains($uri, "\0")
@@ -37,138 +39,98 @@ if (
         'Content-Type: application/json; charset=UTF-8'
     );
 
-    echo json_encode(
-        [
-            'sucesso' => false,
-            'mensagem' => 'Requisição inválida.'
-        ],
-        JSON_UNESCAPED_UNICODE
-    );
+    echo json_encode([
+        'sucesso' => false,
+        'mensagem' => 'Requisição inválida.'
+    ], JSON_UNESCAPED_UNICODE);
 
     exit;
 }
 
-/*
- * Página inicial.
- */
-if ($uri === '/') {
+$arquivo = realpath(
+    __DIR__ . '/..' . $uri
+);
 
-    $index = dirname(__DIR__) . '/index.html';
+$raiz = realpath(
+    __DIR__ . '/..'
+);
 
-    if (is_file($index)) {
-        require $index;
-        exit;
-    }
+if (
+    $arquivo === false ||
+    $raiz === false ||
+    !str_starts_with($arquivo, $raiz)
+) {
 
     http_response_code(404);
 
     header(
-        'Content-Type: text/plain; charset=UTF-8'
+        'Content-Type: application/json; charset=UTF-8'
     );
 
-    echo 'index.html não encontrado.';
+    echo json_encode([
+        'sucesso' => false,
+        'mensagem' => 'Página não encontrada.'
+    ], JSON_UNESCAPED_UNICODE);
 
     exit;
 }
 
-/*
- * Caminho físico solicitado.
- */
-$arquivo = dirname(__DIR__) . $uri;
-
-/*
- * PHP
- */
 if (
     is_file($arquivo) &&
-    strtolower(
-        pathinfo(
-            $arquivo,
-            PATHINFO_EXTENSION
-        )
-    ) === 'php'
+    strtolower(pathinfo($arquivo, PATHINFO_EXTENSION)) === 'php'
 ) {
 
     require $arquivo;
-
     exit;
 }
 
-/*
- * HTML
- */
 if (
     is_file($arquivo) &&
-    strtolower(
-        pathinfo(
-            $arquivo,
-            PATHINFO_EXTENSION
-        )
-    ) === 'html'
+    strtolower(pathinfo($arquivo, PATHINFO_EXTENSION)) === 'html'
 ) {
 
     require $arquivo;
-
     exit;
 }
 
-/*
- * Arquivos estáticos.
- */
-if (is_file($arquivo)) {
+$tipos = [
+    'css'  => 'text/css; charset=UTF-8',
+    'js'   => 'application/javascript; charset=UTF-8',
+    'png'  => 'image/png',
+    'jpg'  => 'image/jpeg',
+    'jpeg' => 'image/jpeg',
+    'gif'  => 'image/gif',
+    'svg'  => 'image/svg+xml',
+    'webp' => 'image/webp',
+    'ico'  => 'image/x-icon'
+];
 
-    $extensao = strtolower(
-        pathinfo(
-            $arquivo,
-            PATHINFO_EXTENSION
-        )
+$extensao = strtolower(
+    pathinfo($arquivo, PATHINFO_EXTENSION)
+);
+
+if (
+    is_file($arquivo) &&
+    isset($tipos[$extensao])
+) {
+
+    header(
+        'Content-Type: ' . $tipos[$extensao]
     );
 
-    $tipos = [
-        'css'  => 'text/css; charset=UTF-8',
-        'js'   => 'application/javascript; charset=UTF-8',
-        'json' => 'application/json; charset=UTF-8',
-
-        'png'  => 'image/png',
-        'jpg'  => 'image/jpeg',
-        'jpeg' => 'image/jpeg',
-        'gif'  => 'image/gif',
-        'svg'  => 'image/svg+xml',
-        'webp' => 'image/webp',
-        'ico'  => 'image/x-icon',
-
-        'woff'  => 'font/woff',
-        'woff2' => 'font/woff2'
-    ];
-
-    if (isset($tipos[$extensao])) {
-
-        header(
-            'Content-Type: ' .
-            $tipos[$extensao]
-        );
-
-        readfile($arquivo);
-
-        exit;
-    }
+    readfile($arquivo);
+    exit;
 }
 
-/*
- * 404.
- */
 http_response_code(404);
 
 header(
     'Content-Type: application/json; charset=UTF-8'
 );
 
-echo json_encode(
-    [
-        'sucesso' => false,
-        'mensagem' => 'Página não encontrada.'
-    ],
-    JSON_UNESCAPED_UNICODE
-);
+echo json_encode([
+    'sucesso' => false,
+    'mensagem' => 'Página não encontrada.'
+], JSON_UNESCAPED_UNICODE);
 
 exit;

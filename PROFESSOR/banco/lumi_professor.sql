@@ -1,3 +1,12 @@
+DROP TABLE IF EXISTS desempenho CASCADE;
+DROP TABLE IF EXISTS progresso CASCADE;
+DROP TABLE IF EXISTS aluno_turma CASCADE;
+DROP TABLE IF EXISTS alunos CASCADE;
+DROP TABLE IF EXISTS turmas CASCADE;
+DROP TABLE IF EXISTS notificacoes CASCADE;
+DROP TABLE IF EXISTS licoes CASCADE;
+DROP TABLE IF EXISTS professores CASCADE;
+
 CREATE TABLE professores (
 id SERIAL PRIMARY KEY,
 nome VARCHAR(150) NOT NULL,
@@ -77,3 +86,9 @@ CONSTRAINT fk_notificacao_professor FOREIGN KEY(professor_id) REFERENCES profess
 CREATE INDEX idx_alunos_usuario ON alunos(usuario);
 CREATE INDEX idx_alunos_turma ON alunos(turma_id);
 CREATE INDEX idx_desempenho_aluno ON desempenho(aluno_id);
+
+ALTER TABLE professores
+ADD COLUMN IF NOT EXISTS firebase_uid VARCHAR(255);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_professores_firebase_uid
+ON professores(firebase_uid);
