@@ -1,159 +1,107 @@
 <?php
+
 declare(strict_types=1);
 
 header('Content-Type: application/json; charset=UTF-8');
 
 require_once __DIR__ . '/../php/conexao.php';
 
-function responder(
-    bool $sucesso,
-    string $mensagem,
-    array $extra = []
-): never {
-
+function resposta(bool $sucesso, string $mensagem, array $extra = []): never
+{
     echo json_encode(
-        array_merge(
-            [
-                'sucesso' => $sucesso,
-                'mensagem' => $mensagem
-            ],
-            $extra
-        ),
+        array_merge([
+            'sucesso' => $sucesso,
+            'mensagem' => $mensagem
+        ], $extra),
         JSON_UNESCAPED_UNICODE
     );
 
     exit;
 }
 
+$aluno_id = filter_input(INPUT_POST, 'aluno_id', FILTER_VALIDATE_INT);
+$licao_id = filter_input(INPUT_POST, 'licao_id', FILTER_VALIDATE_INT);
+
+$resultado = trim($_POST['resultado'] ?? '');
+$pontuacao = (int) ($_POST['pontuacao'] ?? 0);
+$tempo = (int) ($_POST['tempo_gasto'] ?? 0);
+
+if (!$aluno_id || !$licao_id) {
+    http_response_code(400);
+
+    resposta(
+        false,
+        'Aluno ou lição não informado.'
+    );
+}
+
+if ($pontuacao < 0) {
+    $pontuacao = 0;
+}
+
+if ($tempo < 0) {
+    $tempo = 0;
+}
+
 try {
 
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    $conexao->beginTransaction();
 
-        http_response_code(405);
-
-        responder(
-            false,
-            'Método de requisição inválido.'
-        );
-    }
-
-    /*
-     * Aceita JSON
-     */
-    $dados = [];
-
-    $conteudo = file_get_contents('php://input');
-
-    if ($conteudo !== false && trim($conteudo) !== '') {
-
-        $json = json_decode(
-            $conteudo,
-            true
-        );
-
-        if (is_array($json)) {
-            $dados = $json;
-        }
-    }
-
-    /*
-     * Se não veio JSON,
-     * usa POST tradicional.
-     */
-    if (empty($dados)) {
-        $dados = $_POST;
-    }
-
-    $alunoId = filter_var(
-        $dados['aluno_id'] ?? null,
-        FILTER_VALIDATE_INT
-    );
-
-    $licaoId = filter_var(
-        $dados['licao_id'] ?? null,
-        FILTER_VALIDATE_INT
-    );
-
-    $resultado = $dados['resultado'] ?? null;
-
-    $pontuacao = (float) (
-        $dados['pontuacao'] ?? 0
-    );
-
-    $tempo = (int) (
-        $dados['tempo_gasto'] ?? 0
-    );
-
-    if (!$alunoId || !$licaoId) {
-
-        http_response_code(400);
-
-        responder(
-            false,
-            'Aluno ou lição não informado.'
-        );
-    }
-
-    /*
-     * Verifica se o aluno existe.
-     */
-    $stmt = $conexao->prepare(
-        'SELECT id FROM alunos WHERE id = :id LIMIT 1'
-    );
+    $stmt = $conexao->prepare("
+        SELECT id
+        FROM alunos
+        WHERE id = :aluno_id
+        LIMIT 1
+    ");
 
     $stmt->execute([
-        ':id' => $alunoId
+        ':aluno_id' => $aluno_id
     ]);
 
-    if (!$stmt->fetch()) {
+    if (!$stmt->fetchColumn()) {
+        $conexao->rollBack();
 
         http_response_code(404);
 
-        responder(
+        resposta(
             false,
             'Aluno não encontrado.'
         );
     }
 
-    /*
-     * Verifica se a lição existe.
-     */
-    $stmt = $conexao->prepare(
-        'SELECT id FROM licoes WHERE id = :id LIMIT 1'
-    );
+    $stmt = $conexao->prepare("
+        SELECT id
+        FROM licoes
+        WHERE id = :licao_id
+        LIMIT 1
+    ");
 
     $stmt->execute([
-        ':id' => $licaoId
+        ':licao_id' => $licao_id
     ]);
 
-    if (!$stmt->fetch()) {
+    if (!$stmt->fetchColumn()) {
+        $conexao->rollBack();
 
         http_response_code(404);
 
-        responder(
+        resposta(
             false,
             'Lição não encontrada.'
         );
     }
 
-    $conexao->beginTransaction();
-
-    /*
-     * Registra o desempenho.
-     */
     $sql = "
-        INSERT INTO desempenho
-        (
+        INSERT INTO desempenho (
             aluno_id,
             licao_id,
             resultado,
             pontuacao,
             tempo_gasto
         )
-        VALUES
-        (
-            :aluno,
-            :licao,
+        VALUES (
+            :aluno_id,
+            :licao_id,
             :resultado,
             :pontuacao,
             :tempo
@@ -163,66 +111,61 @@ try {
     $stmt = $conexao->prepare($sql);
 
     $stmt->execute([
-        ':aluno' => $alunoId,
-        ':licao' => $licaoId,
+        ':aluno_id' => $aluno_id,
+        ':licao_id' => $licao_id,
         ':resultado' => $resultado,
         ':pontuacao' => $pontuacao,
         ':tempo' => $tempo
     ]);
 
-    /*
-     * Atualiza o progresso.
-     *
-     * Se ainda não existir registro,
-     * cria um.
-     */
-    $sql = "
-        INSERT INTO progresso
-        (
+    $stmt = $conexao->prepare("
+        INSERT INTO progresso (
             aluno_id,
             licoes_concluidas,
             acertos,
-            estrelas,
-            moedas
+            tempo_estudo,
+            ultimo_acesso
         )
-        VALUES
-        (
-            :aluno,
-            1,
-            :acertos,
+        VALUES (
+            :aluno_id,
             0,
-            0
+            0,
+            0,
+            CURRENT_TIMESTAMP
         )
-        ON CONFLICT (aluno_id)
-        DO UPDATE SET
-            licoes_concluidas =
-                progresso.licoes_concluidas + 1,
-
-            acertos =
-                progresso.acertos + EXCLUDED.acertos
-    ";
-
-    $stmt = $conexao->prepare($sql);
+        ON CONFLICT (aluno_id) DO NOTHING
+    ");
 
     $stmt->execute([
-        ':aluno' => $alunoId,
-        ':acertos' => $pontuacao
+        ':aluno_id' => $aluno_id
+    ]);
+
+    $stmt = $conexao->prepare("
+        UPDATE progresso
+        SET
+            licoes_concluidas = licoes_concluidas + 1,
+            acertos = acertos + :pontuacao,
+            tempo_estudo = tempo_estudo + :tempo,
+            ultimo_acesso = CURRENT_TIMESTAMP
+        WHERE aluno_id = :aluno_id
+    ");
+
+    $stmt->execute([
+        ':pontuacao' => $pontuacao,
+        ':tempo' => $tempo,
+        ':aluno_id' => $aluno_id
     ]);
 
     $conexao->commit();
 
-    responder(
+    resposta(
         true,
         'Progresso salvo com sucesso.'
     );
 
 } catch (Throwable $e) {
 
-    if (
-        isset($conexao) &&
-        $conexao instanceof PDO &&
-        $conexao->inTransaction()
-    ) {
+    if ($conexao->inTransaction()) {
         $conexao->rollBack();
     }
 
@@ -233,8 +176,8 @@ try {
 
     http_response_code(500);
 
-    responder(
+    resposta(
         false,
-        'Erro ao salvar o progresso.'
+        'Erro ao salvar progresso.'
     );
 }
