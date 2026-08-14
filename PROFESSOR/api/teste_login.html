@@ -3,14 +3,26 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Teste Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Login do Aluno | Lumi</title>
 </head>
 
 <body>
+    <h1>Login do Aluno</h1>
     <form action="login_aluno.php" method="POST">
-        <input name="usuario" placeholder="Usuário">
-        <input name="senha" type="password" placeholder="Senha">
-        <button>
+        <label>
+            Usuário
+        </label>
+        <br>
+        <input type="text" name="usuario" autocomplete="username" required>
+        <br><br>
+        <label>
+            Senha
+        </label>
+        <br>
+        <input type="password" name="senha" autocomplete="current-password" required>
+        <br><br>
+        <button type="submit">
             Entrar
         </button>
     </form>
