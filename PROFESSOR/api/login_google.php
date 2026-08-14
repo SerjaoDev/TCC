@@ -1,21 +1,52 @@
 <?php
 declare(strict_types=1);
 
-session_start();
+/*
+ * Não exibir warnings/notices diretamente.
+ * Eles quebrariam o JSON.
+ */
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
 
-header('Content-Type: application/json; charset=UTF-8');
+error_reporting(E_ALL);
 
-require_once __DIR__ . '/conexao.php';
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+header(
+    'Content-Type: application/json; charset=UTF-8'
+);
+
+require_once __DIR__ . '/../php/conexao.php';
 require_once __DIR__ . '/firebase.php';
 
-function resposta(bool $sucesso, string $mensagem, array $extra = []): never
-{
+function responder(
+    bool $sucesso,
+    string $mensagem,
+    array $extra = [],
+    int $status = 200
+): never {
+
+    http_response_code($status);
+
+    /*
+     * Limpa qualquer saída acidental.
+     */
+    if (ob_get_level() > 0) {
+        ob_clean();
+    }
+
     echo json_encode(
-        array_merge([
-            'sucesso' => $sucesso,
-            'mensagem' => $mensagem
-        ], $extra),
-        JSON_UNESCAPED_UNICODE
+        array_merge(
+            [
+                'sucesso' => $sucesso,
+                'mensagem' => $mensagem
+            ],
+            $extra
+        ),
+        JSON_UNESCAPED_UNICODE |
+        JSON_UNESCAPED_SLASHES
     );
 
     exit;
@@ -23,109 +54,223 @@ function resposta(bool $sucesso, string $mensagem, array $extra = []): never
 
 try {
 
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        http_response_code(405);
+    if (
+        $_SERVER['REQUEST_METHOD'] !== 'POST'
+    ) {
 
-        resposta(
+        responder(
             false,
-            'Método de requisição inválido.'
+            'Método de requisição inválido.',
+            [],
+            405
         );
     }
 
-    $corpo = file_get_contents('php://input');
+    $corpo = file_get_contents(
+        'php://input'
+    );
 
-    if ($corpo === false || trim($corpo) === '') {
-        http_response_code(400);
+    if (
+        $corpo === false ||
+        trim($corpo) === ''
+    ) {
 
-        resposta(
+        responder(
             false,
-            'Nenhum dado foi recebido.'
+            'Nenhum dado foi recebido.',
+            [],
+            400
         );
     }
 
-    $dados = json_decode($corpo, true);
+    $dados = json_decode(
+        $corpo,
+        true
+    );
 
     if (!is_array($dados)) {
-        http_response_code(400);
 
-        resposta(
+        responder(
             false,
-            'JSON inválido.'
+            'JSON inválido.',
+            [],
+            400
         );
     }
 
-    $idToken = trim($dados['idToken'] ?? '');
+    $idToken = trim(
+        (string) (
+            $dados['idToken'] ?? ''
+        )
+    );
 
     if ($idToken === '') {
-        http_response_code(400);
 
-        resposta(
+        responder(
             false,
-            'Token do Firebase não informado.'
+            'Token do Firebase não informado.',
+            [],
+            400
         );
     }
 
+    /*
+     * Firebase.
+     */
     $auth = firebaseAuth();
 
-    $tokenVerificado = $auth->verifyIdToken($idToken);
+    $token = $auth->verifyIdToken(
+        $idToken
+    );
 
-    $firebaseUid = $tokenVerificado
-        ->claims()
-        ->get('sub');
+    $claims = $token->claims();
 
-    $email = $tokenVerificado
-        ->claims()
-        ->get('email');
+    $firebaseUid = (string) (
+        $claims->get('sub')
+    );
 
-    $nome = $tokenVerificado
-        ->claims()
-        ->get('name');
+    $email = (string) (
+        $claims->get('email')
+    );
 
-    if (!$firebaseUid || !$email) {
-        http_response_code(401);
+    $nome = (string) (
+        $claims->get('name', 'Professor')
+    );
 
-        resposta(
+    if (
+        $firebaseUid === '' ||
+        $email === ''
+    ) {
+
+        responder(
             false,
-            'Token do Firebase inválido ou incompleto.'
+            'Token do Firebase inválido ou incompleto.',
+            [],
+            401
         );
     }
 
-    $stmt = $conexao->prepare("SELECT id,nome,email,foto,firebase_uid FROM professores WHERE firebase_uid = :firebase_uid LIMIT 1");
+    /*
+     * Procura pelo Firebase UID.
+     */
+    $stmt = $conexao->prepare(
+        "
+        SELECT
+            id,
+            nome,
+            email,
+            foto,
+            firebase_uid
+        FROM professores
+        WHERE firebase_uid = :firebase_uid
+        LIMIT 1
+        "
+    );
 
     $stmt->execute([
         ':firebase_uid' => $firebaseUid
     ]);
 
-    $professor = $stmt->fetch(PDO::FETCH_ASSOC);
+    $professor = $stmt->fetch(
+        PDO::FETCH_ASSOC
+    );
 
+    /*
+     * Caso ainda não exista pelo UID,
+     * procura pelo e-mail.
+     */
     if (!$professor) {
-        $stmt = $conexao->prepare("SELECT id,nome,email,foto,firebase_uid FROM professores WHERE LOWER(email) = LOWER(:email) LIMIT 1");
+
+        $stmt = $conexao->prepare(
+            "
+            SELECT
+                id,
+                nome,
+                email,
+                foto,
+                firebase_uid
+            FROM professores
+            WHERE LOWER(email) = LOWER(:email)
+            LIMIT 1
+            "
+        );
 
         $stmt->execute([
             ':email' => $email
         ]);
 
-        $professor = $stmt->fetch(PDO::FETCH_ASSOC);
+        $professor = $stmt->fetch(
+            PDO::FETCH_ASSOC
+        );
 
+        /*
+         * Vincula a conta existente ao Firebase.
+         */
         if ($professor) {
-            $stmt = $conexao->prepare("UPDATE professores SET firebase_uid = :firebase_uid WHERE id = :id");
+
+            $stmt = $conexao->prepare(
+                "
+                UPDATE professores
+                SET firebase_uid = :firebase_uid
+                WHERE id = :id
+                "
+            );
 
             $stmt->execute([
                 ':firebase_uid' => $firebaseUid,
                 ':id' => $professor['id']
             ]);
+
+            $professor['firebase_uid'] =
+                $firebaseUid;
         }
     }
 
+    /*
+     * Se ainda não existe professor,
+     * cria automaticamente.
+     */
     if (!$professor) {
-        $nomeFinal = trim($nome ?: 'Professor');
+
+        $nomeFinal = trim($nome);
+
+        if ($nomeFinal === '') {
+            $nomeFinal = 'Professor';
+        }
 
         $senhaAleatoria = password_hash(
-            bin2hex(random_bytes(32)),
+            bin2hex(
+                random_bytes(32)
+            ),
             PASSWORD_DEFAULT
         );
 
-        $stmt = $conexao->prepare("INSERT INTO professores (nome,email,senha,foto,firebase_uid) VALUES (:nome,:email,:senha,:foto,:firebase_uid) RETURNING id,nome,email,foto,firebase_uid");
+        $stmt = $conexao->prepare(
+            "
+            INSERT INTO professores
+            (
+                nome,
+                email,
+                senha,
+                foto,
+                firebase_uid
+            )
+            VALUES
+            (
+                :nome,
+                :email,
+                :senha,
+                :foto,
+                :firebase_uid
+            )
+            RETURNING
+                id,
+                nome,
+                email,
+                foto,
+                firebase_uid
+            "
+        );
 
         $stmt->execute([
             ':nome' => $nomeFinal,
@@ -135,40 +280,102 @@ try {
             ':firebase_uid' => $firebaseUid
         ]);
 
-        $professor = $stmt->fetch(PDO::FETCH_ASSOC);
+        $professor = $stmt->fetch(
+            PDO::FETCH_ASSOC
+        );
     }
 
-    if (!$professor || empty($professor['id'])) {
+    /*
+     * Validação final.
+     */
+    if (
+        !$professor ||
+        empty($professor['id'])
+    ) {
+
         throw new RuntimeException(
             'Professor não pôde ser localizado ou criado.'
         );
     }
 
+    /*
+     * Cria a sessão do professor.
+     */
+    if (
+        session_status() !==
+        PHP_SESSION_ACTIVE
+    ) {
+        session_start();
+    }
+
     session_regenerate_id(true);
 
-    $_SESSION['id'] = (int) $professor['id'];
-    $_SESSION['nome'] = $professor['nome'];
-    $_SESSION['email'] = $professor['email'];
-    $_SESSION['foto'] = $professor['foto'] ?? 'padrao.png';
+    $_SESSION['id'] =
+        (int) $professor['id'];
+
+    $_SESSION['nome'] =
+        $professor['nome'];
+
+    $_SESSION['email'] =
+        $professor['email'];
+
+    $_SESSION['foto'] =
+        $professor['foto'] ??
+        'padrao.png';
+
     $_SESSION['login_google'] = true;
 
-    resposta(
+    responder(
         true,
         'Login realizado com sucesso.',
         [
-            'redirecionar' => 'painel.php'
+            'redirecionar' =>
+                'painel.php'
         ]
     );
-} catch (Throwable $e) {
+
+} catch (
+    Kreait\Firebase\Exception\AuthException |
+    Kreait\Firebase\Exception\FirebaseException $e
+) {
+
     error_log(
-        'LOGIN GOOGLE ERROR: ' .
+        'Firebase login error: ' .
         $e->getMessage()
     );
 
-    http_response_code(500);
-
-    resposta(
+    responder(
         false,
-        'Erro no login Google: ' . $e->getMessage()
+        'Não foi possível validar sua conta Google.',
+        [],
+        401
+    );
+
+} catch (PDOException $e) {
+
+    error_log(
+        'Database login Google error: ' .
+        $e->getMessage()
+    );
+
+    responder(
+        false,
+        'Erro ao acessar o banco de dados.',
+        [],
+        500
+    );
+
+} catch (Throwable $e) {
+
+    error_log(
+        'Login Google error: ' .
+        $e->getMessage()
+    );
+
+    responder(
+        false,
+        'Não foi possível realizar o login com Google.',
+        [],
+        500
     );
 }
