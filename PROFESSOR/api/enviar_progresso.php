@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 header('Content-Type: application/json; charset=UTF-8');
@@ -44,7 +43,6 @@ if ($tempo < 0) {
 }
 
 try {
-
     $conexao->beginTransaction();
 
     $stmt = $conexao->prepare("
@@ -162,9 +160,7 @@ try {
         true,
         'Progresso salvo com sucesso.'
     );
-
 } catch (Throwable $e) {
-
     if ($conexao->inTransaction()) {
         $conexao->rollBack();
     }

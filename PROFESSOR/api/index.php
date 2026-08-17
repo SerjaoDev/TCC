@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 $uri = parse_url(
@@ -19,7 +18,6 @@ $uri = preg_replace(
 );
 
 if ($uri === '/') {
-
     $index = __DIR__ . '/../index.html';
 
     if (is_file($index)) {
@@ -32,7 +30,6 @@ if (
     str_contains($uri, '..') ||
     str_contains($uri, "\0")
 ) {
-
     http_response_code(400);
 
     header(
@@ -60,7 +57,6 @@ if (
     $raiz === false ||
     !str_starts_with($arquivo, $raiz)
 ) {
-
     http_response_code(404);
 
     header(
@@ -79,7 +75,6 @@ if (
     is_file($arquivo) &&
     strtolower(pathinfo($arquivo, PATHINFO_EXTENSION)) === 'php'
 ) {
-
     require $arquivo;
     exit;
 }
@@ -88,7 +83,6 @@ if (
     is_file($arquivo) &&
     strtolower(pathinfo($arquivo, PATHINFO_EXTENSION)) === 'html'
 ) {
-
     require $arquivo;
     exit;
 }
@@ -113,7 +107,6 @@ if (
     is_file($arquivo) &&
     isset($tipos[$extensao])
 ) {
-
     header(
         'Content-Type: ' . $tipos[$extensao]
     );

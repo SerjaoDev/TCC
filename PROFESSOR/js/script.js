@@ -1,17 +1,26 @@
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", () => {
     console.log("Sistema Lumi carregado.");
 
-    const botoes = document.querySelectorAll("button");
+    const formulariosExcluir =
+        document.querySelectorAll(
+            'form[data-confirmar-exclusao]'
+        );
 
-    botoes.forEach(function(botao){
-        botao.addEventListener("click",function(){
-            if(botao.classList.contains("excluir")){
-                const confirmar = confirm("Tem certeza que deseja excluir?");
+    formulariosExcluir.forEach((formulario) => {
+        formulario.addEventListener(
+            "submit",
+            (event) => {
+                const mensagem =
+                    formulario.dataset.confirmarExclusao ||
+                    "Tem certeza que deseja excluir este item?";
 
-                if(!confirmar){
+                const confirmar =
+                    window.confirm(mensagem);
+
+                if (!confirmar) {
                     event.preventDefault();
                 }
             }
-        });
+        );
     });
 });

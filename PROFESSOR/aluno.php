@@ -1,47 +1,95 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/php/verificar.php';
 require_once __DIR__ . '/php/conexao.php';
 
-$id = filter_input(
+$professorId = filter_var(
+    $_SESSION['id'] ?? null,
+    FILTER_VALIDATE_INT
+);
+
+$alunoId = filter_input(
     INPUT_GET,
     'id',
     FILTER_VALIDATE_INT
 );
 
-if (!$id) {
+if (!$professorId) {
+    header('Location: index.php');
+    exit;
+}
+
+if (!$alunoId) {
     http_response_code(400);
     exit('Aluno inválido.');
 }
 
-$professorId = (int) $_SESSION['id'];
+try {
+    $sql = "
+        SELECT
+            a.id,
+            a.nome,
+            a.usuario,
+            a.foto,
+            a.data_nascimento,
+            a.turma_id,
+            t.nome AS turma_nome
+        FROM alunos a
+        LEFT JOIN turmas t
+            ON t.id = a.turma_id
+        WHERE
+            a.id = :aluno_id
+            AND a.professor_id = :professor_id
+        LIMIT 1
+    ";
 
-$sql = "SELECT id,nome,usuario,foto,data_nascimento,turma_id FROM alunos WHERE id = :id AND professor_id = :professor_id LIMIT 1";
+    $stmt = $conexao->prepare($sql);
 
-$stmt = $conexao->prepare($sql);
+    $stmt->execute([
+        ':aluno_id' => $alunoId,
+        ':professor_id' => $professorId
+    ]);
 
-$stmt->execute([
-    ':id' => $id,
-    ':professor_id' => $professorId
-]);
+    $aluno = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$aluno = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$aluno) {
+        http_response_code(404);
+        exit('Aluno não encontrado.');
+    }
 
-if (!$aluno) {
-    http_response_code(404);
-    exit('Aluno não encontrado.');
+    $sqlProgresso = "
+        SELECT
+            nivel_atual,
+            estrelas,
+            moedas,
+            licoes_concluidas,
+            acertos,
+            erros,
+            tempo_estudo,
+            ultimo_acesso
+        FROM progresso
+        WHERE aluno_id = :aluno_id
+        LIMIT 1
+    ";
+
+    $stmtProgresso = $conexao->prepare($sqlProgresso);
+
+    $stmtProgresso->execute([
+        ':aluno_id' => $alunoId
+    ]);
+
+    $progresso = $stmtProgresso->fetch(PDO::FETCH_ASSOC);
+} catch (Throwable $e) {
+    error_log(
+        'Erro ao carregar aluno: ' . $e->getMessage()
+    );
+
+    http_response_code(500);
+
+    exit('Não foi possível carregar os dados do aluno.');
 }
-
-$sqlProgresso = "SELECT nivel_atual,estrelas,moedas,licoes_concluidas,acertos,erros,tempo_estudo,ultimo_acesso FROM progresso WHERE aluno_id = :aluno_id LIMIT 1";
-
-$stmtProgresso = $conexao->prepare($sqlProgresso);
-
-$stmtProgresso->execute([
-    ':aluno_id' => $id
-]);
-
-$progresso = $stmtProgresso->fetch(PDO::FETCH_ASSOC);
 
 $estrelas = (int) ($progresso['estrelas'] ?? 0);
 
@@ -51,66 +99,97 @@ $licoesConcluidas =
     (int) ($progresso['licoes_concluidas'] ?? 0);
 
 $acertos =
-    (int) ($progresso['acertos'] ?? 0);
+    (float) ($progresso['acertos'] ?? 0);
 
+$acertos = max(
+    0,
+    min(100, $acertos)
+);
+
+$erros =
+    (int) ($progresso['erros'] ?? 0);
+
+$nivelAtual =
+    (int) ($progresso['nivel_atual'] ?? 0);
+
+$tempoEstudo =
+    (int) ($progresso['tempo_estudo'] ?? 0);
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+        content="width=device-width, initial-scale=1.0">
     <title>
-        <?php echo htmlspecialchars($aluno['nome']); ?> | Lumi
+        <?= htmlspecialchars(
+            (string) $aluno['nome'],
+            ENT_QUOTES,
+            'UTF-8'
+        ) ?> | Lumi
     </title>
     <link
         rel="stylesheet"
-        href="css/aluno.css"
-    >
+        href="css/aluno.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
+        rel="stylesheet">
 </head>
+
 <body>
     <main class="conteudo">
-        <h1>
-            <?php echo htmlspecialchars($aluno['nome']); ?>
-        </h1>
-
+        <div class="topo-aluno">
+            <div>
+                <h1>
+                    <?= htmlspecialchars(
+                        (string) $aluno['nome'],
+                        ENT_QUOTES,
+                        'UTF-8'
+                    ) ?>
+                </h1>
+                <?php if (!empty($aluno['turma_nome'])): ?>
+                    <p>
+                        Turma:
+                        <strong>
+                            <?= htmlspecialchars(
+                                (string) $aluno['turma_nome'],
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>
+                        </strong>
+                    </p>
+                <?php endif; ?>
+            </div>
+        </div>
         <div class="cards">
             <div class="card">
                 <h3>⭐ Estrelas</h3>
                 <span>
-                    <?php echo $estrelas; ?>
+                    <?= $estrelas ?>
                 </span>
             </div>
-
             <div class="card">
                 <h3>🪙 Moedas</h3>
                 <span>
-                    <?php echo $moedas; ?>
+                    <?= $moedas ?>
                 </span>
             </div>
-
             <div class="card">
                 <h3>📚 Lições</h3>
                 <span>
-                    <?php echo $licoesConcluidas; ?>
+                    <?= $licoesConcluidas ?>
                 </span>
             </div>
-
             <div class="card">
                 <h3>🎯 Acertos</h3>
                 <span>
-                    <?php echo $acertos; ?>%
+                    <?= round($acertos) ?>%
                 </span>
             </div>
         </div>
-
         <section class="historico">
             <h2>
                 Histórico de atividades
@@ -119,34 +198,40 @@ $acertos =
                 <p>
                     Nível atual:
                     <strong>
-                        <?php
-                        echo (int) $progresso['nivel_atual'];
-                        ?>
+                        <?= $nivelAtual ?>
                     </strong>
                 </p>
                 <p>
                     Acertos:
                     <strong>
-                        <?php echo $acertos; ?>%
+                        <?= round($acertos) ?>%
                     </strong>
                 </p>
                 <p>
                     Erros:
                     <strong>
-                        <?php
-                        echo (int) ($progresso['erros'] ?? 0);
-                        ?>
+                        <?= $erros ?>
                     </strong>
                 </p>
                 <p>
                     Tempo de estudo:
                     <strong>
-                        <?php
-                        echo (int) ($progresso['tempo_estudo'] ?? 0);
-                        ?>
+                        <?= $tempoEstudo ?>
                         minutos
                     </strong>
                 </p>
+                <?php if (!empty($progresso['ultimo_acesso'])): ?>
+                    <p>
+                        Último acesso:
+                        <strong>
+                            <?= htmlspecialchars(
+                                (string) $progresso['ultimo_acesso'],
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>
+                        </strong>
+                    </p>
+                <?php endif; ?>
             <?php else: ?>
                 <p>
                     O progresso aparecerá aqui quando o aluno
@@ -154,17 +239,24 @@ $acertos =
                 </p>
             <?php endif; ?>
         </section>
-
-        <a
-            href="dados_aluno.php?id=<?php echo $aluno['id']; ?>"
-        >
-            <button
-                type="button"
-                class="acesso"
-            >
+        <div class="acoes-aluno">
+            <a
+                href="dados_aluno.php?id=<?= (int) $aluno['id'] ?>"
+                class="acesso">
                 🔑 Ver acesso do aluno
-            </button>
-        </a>
+            </a>
+            <a
+                href="editar_aluno.php?id=<?= (int) $aluno['id'] ?>"
+                class="acesso">
+                ✏️ Editar aluno
+            </a>
+            <a
+                href="alunos.php"
+                class="acesso">
+                ← Voltar para alunos
+            </a>
+        </div>
     </main>
 </body>
+
 </html>

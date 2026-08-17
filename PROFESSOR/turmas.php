@@ -31,22 +31,23 @@ require_once __DIR__ . '/php/listar_turmas.php';
             src="img/logo.png"
             class="logo"
             alt="Lumi">
-
         <h2>
             Lumi
         </h2>
-
         <ul>
             <li>
                 <a href="painel.php">
                     🏠 Dashboard
                 </a>
             </li>
-
+            <li>
+                <a href="alunos.php">
+                    👨‍🎓 Alunos
+                </a>
+            </li>
             <li class="ativo">
                 📚 Turmas
             </li>
-
             <li>
                 <a href="logout.php">
                     🚪 Sair
@@ -54,44 +55,48 @@ require_once __DIR__ . '/php/listar_turmas.php';
             </li>
         </ul>
     </div>
-
     <div class="conteudo">
         <div class="cabecalho">
-            <h1>
-                Turmas
-            </h1>
-
-            <a href="adicionar_turma.php">
-                <button
-                    type="button"
-                    class="novo">
-                    + Nova Turma
-                </button>
+            <div>
+                <h1>
+                    Turmas
+                </h1>
+                <p>
+                    Organize seus alunos por turma.
+                </p>
+            </div>
+            <a
+                href="adicionar_turma.php"
+                class="novo">
+                + Nova Turma
             </a>
         </div>
-
         <div class="turmas-container">
             <?php if (empty($turmas)): ?>
                 <div class="sem-turmas">
                     <h2>
                         Nenhuma turma cadastrada
                     </h2>
-
                     <p>
-                        Crie sua primeira turma para começar a cadastrar alunos.
+                        Crie sua primeira turma para
+                        começar a cadastrar alunos.
                     </p>
-
-                    <a href="adicionar_turma.php">
-                        <button
-                            type="button"
-                            class="novo">
-                            + Criar primeira turma
-                        </button>
+                    <a
+                        href="adicionar_turma.php"
+                        class="novo">
+                        + Criar primeira turma
                     </a>
                 </div>
 
             <?php else: ?>
                 <?php foreach ($turmas as $turma): ?>
+                    <?php
+                    $quantidadeAlunos =
+                        (int) (
+                            $turma['quantidade_alunos']
+                            ?? 0
+                        );
+                    ?>
                     <div class="card">
                         <h2>
                             <?= htmlspecialchars(
@@ -100,33 +105,24 @@ require_once __DIR__ . '/php/listar_turmas.php';
                                 'UTF-8'
                             ) ?>
                         </h2>
-
                         <p>
                             👨‍🎓
-                            <?= (int) $turma['quantidade_alunos'] ?>
-                            aluno<?= ((int) $turma['quantidade_alunos'] === 1) ? '' : 's' ?>
+                            <?= $quantidadeAlunos ?>
+                            aluno<?= $quantidadeAlunos === 1
+                                        ? ''
+                                        : 's' ?>
                         </p>
-
                         <div class="acoes">
                             <a
-                                href="relatorios.php?turma=<?= (int) $turma['id'] ?>">
-
-                                <button
-                                    type="button"
-                                    class="abrir">
-                                    Abrir Turma
-                                </button>
+                                href="relatorios.php?turma=<?= (int) $turma['id'] ?>"
+                                class="abrir">
+                                Abrir Turma
                             </a>
-
                             <a
                                 href="php/excluir_turma.php?id=<?= (int) $turma['id'] ?>"
+                                class="excluir"
                                 onclick="return confirmarExclusao();">
-
-                                <button
-                                    type="button"
-                                    class="excluir">
-                                    Excluir
-                                </button>
+                                Excluir
                             </a>
                         </div>
                     </div>

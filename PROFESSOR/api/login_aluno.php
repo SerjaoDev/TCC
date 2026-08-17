@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 header('Content-Type: application/json; charset=UTF-8');
@@ -10,7 +9,6 @@ $usuario = trim($_POST['usuario'] ?? '');
 $senha = $_POST['senha'] ?? '';
 
 if ($usuario === '' || $senha === '') {
-
     http_response_code(400);
 
     echo json_encode([
@@ -22,7 +20,6 @@ if ($usuario === '' || $senha === '') {
 }
 
 try {
-
     $stmt = $conexao->prepare("
         SELECT
             id,
@@ -44,7 +41,6 @@ try {
     $aluno = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$aluno) {
-
         http_response_code(401);
 
         echo json_encode([
@@ -56,7 +52,6 @@ try {
     }
 
     if (!password_verify($senha, $aluno['senha'])) {
-
         http_response_code(401);
 
         echo json_encode([
@@ -89,7 +84,6 @@ try {
     $progresso = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$progresso) {
-
         $stmt = $conexao->prepare("
             INSERT INTO progresso (aluno_id)
             VALUES (:aluno_id)
@@ -150,9 +144,7 @@ try {
             'tempo_estudo' => (int) ($progresso['tempo_estudo'] ?? 0)
         ]
     ], JSON_UNESCAPED_UNICODE);
-
 } catch (Throwable $e) {
-
     error_log(
         'Erro login_aluno.php: ' .
         $e->getMessage()
