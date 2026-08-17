@@ -1,30 +1,48 @@
 <?php
-session_start();
+declare(strict_types=1);
 
-require_once __DIR__ . "/conexao.php";
+require_once __DIR__ . '/verificar.php';
+require_once __DIR__ . '/conexao.php';
 
-if (!isset($_SESSION["professor_id"])) {
-    header("Location: ../index.html");
-    exit();
-}
-
-$professorId = $_SESSION["professor_id"];
-
-$sql = "SELECT a.id,a.nome,a.usuario,a.foto,a.data_nascimento,a.turma_id,t.nome AS turma_nome,a.data_cadastro FROM alunos a LEFT JOIN turmas t ON t.id = a.turma_id WHERE a.professor_id = :professor_id ORDER BY a.nome ASC";
+$professorId =
+    (int) $_SESSION['professor_id'];
 
 try {
+    $sql = "
+        SELECT
+            a.id,
+            a.nome,
+            a.usuario,
+            a.foto,
+            a.data_nascimento,
+            a.turma_id,
+            t.nome AS turma_nome,
+            a.data_cadastro
+        FROM alunos a
+
+        LEFT JOIN turmas t
+            ON t.id = a.turma_id
+            AND t.professor_id = a.professor_id
+
+        WHERE a.professor_id = :professor_id
+
+        ORDER BY a.nome ASC
+    ";
+
     $stmt = $conexao->prepare($sql);
 
     $stmt->execute([
-        ":professor_id" => $professorId
+        ':professor_id' => $professorId
     ]);
-    
-    $alunos = $stmt;
-} catch (PDOException $erro) {
-    http_response_code(500);
 
-    echo "Erro ao carregar os alunos.";
+    $alunos = $stmt->fetchAll(
+        PDO::FETCH_ASSOC
+    );
+} catch (Throwable $e) {
+    error_log(
+        'ERRO LISTAR ALUNOS: ' .
+        $e->getMessage()
+    );
 
-    exit();
+    $alunos = [];
 }
-?>

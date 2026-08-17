@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 header('Content-Type: application/json; charset=UTF-8');
@@ -27,9 +26,7 @@ try {
         'sucesso' => true,
         'licoes' => $licoes
     ], JSON_UNESCAPED_UNICODE);
-
 } catch (Throwable $e) {
-
     error_log('Erro buscar_licoes.php: ' . $e->getMessage());
 
     http_response_code(500);

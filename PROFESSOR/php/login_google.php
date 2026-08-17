@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 session_start();
 
-header('Content-Type: application/json; charset=UTF-8');
+header(
+    'Content-Type: application/json; charset=UTF-8'
+);
 
 require_once __DIR__ . '/conexao.php';
 require_once __DIR__ . '/firebase.php';
@@ -12,43 +14,27 @@ function resposta(
     bool $sucesso,
     string $mensagem,
     array $extra = []
-): void {
-
-    $resposta = array_merge(
-        [
-            'sucesso' => $sucesso,
-            'mensagem' => $mensagem
-        ],
-        $extra
-    );
-
+): never {
     echo json_encode(
-        $resposta,
-        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+        array_merge(
+            [
+                'sucesso' => $sucesso,
+                'mensagem' => $mensagem
+            ],
+            $extra
+        ),
+        JSON_UNESCAPED_UNICODE |
+        JSON_UNESCAPED_SLASHES
     );
 
     exit;
 }
 
-$corpo = '';
-$dados = [];
-
-$idToken = '';
-$firebaseUid = '';
-$email = '';
-$nome = '';
-
-$nomeFinal = '';
-$senhaAleatoria = '';
-
-$professor = false;
-
 try {
     if (
-        !isset($_SERVER['REQUEST_METHOD']) ||
-        $_SERVER['REQUEST_METHOD'] !== 'POST'
+        ($_SERVER['REQUEST_METHOD'] ?? '')
+        !== 'POST'
     ) {
-
         http_response_code(405);
 
         resposta(
@@ -57,22 +43,14 @@ try {
         );
     }
 
-    $corpoRecebido = file_get_contents('php://input');
+    $corpo = file_get_contents(
+        'php://input'
+    );
 
-    if ($corpoRecebido === false) {
-
-        http_response_code(400);
-
-        resposta(
-            false,
-            'Não foi possível ler os dados enviados.'
-        );
-    }
-
-    $corpo = trim($corpoRecebido);
-
-    if ($corpo === '') {
-
+    if (
+        $corpo === false ||
+        trim($corpo) === ''
+    ) {
         http_response_code(400);
 
         resposta(
@@ -81,15 +59,12 @@ try {
         );
     }
 
-    $dadosDecodificados = json_decode(
+    $dados = json_decode(
         $corpo,
         true
     );
 
-    if (
-        !is_array($dadosDecodificados)
-    ) {
-
+    if (!is_array($dados)) {
         http_response_code(400);
 
         resposta(
@@ -98,8 +73,6 @@ try {
         );
     }
 
-    $dados = $dadosDecodificados;
-
     $idToken = trim(
         (string) (
             $dados['idToken'] ?? ''
@@ -107,7 +80,6 @@ try {
     );
 
     if ($idToken === '') {
-
         http_response_code(400);
 
         resposta(
@@ -122,29 +94,24 @@ try {
         $idToken
     );
 
+    $claims = $token->claims();
+
     $firebaseUid = (string) (
-        $token
-            ->claims()
-            ->get('sub')
+        $claims->get('sub')
     );
 
     $email = (string) (
-        $token
-            ->claims()
-            ->get('email')
+        $claims->get('email')
     );
 
     $nome = (string) (
-        $token
-            ->claims()
-            ->get('name')
+        $claims->get('name')
     );
 
     if (
         $firebaseUid === '' ||
         $email === ''
     ) {
-
         http_response_code(401);
 
         resposta(
@@ -167,18 +134,17 @@ try {
         "
     );
 
-    $stmt->execute(
-        [
-            ':firebase_uid' => $firebaseUid
-        ]
-    );
+    $stmt->execute([
+        ':firebase_uid' =>
+            $firebaseUid
+    ]);
 
-    $professor = $stmt->fetch(
-        PDO::FETCH_ASSOC
-    );
+    $professor =
+        $stmt->fetch(
+            PDO::FETCH_ASSOC
+        );
 
-    if ($professor === false) {
-
+    if (!$professor) {
         $stmt = $conexao->prepare(
             "
             SELECT
@@ -193,18 +159,16 @@ try {
             "
         );
 
-        $stmt->execute(
-            [
-                ':email' => $email
-            ]
-        );
+        $stmt->execute([
+            ':email' => $email
+        ]);
 
-        $professor = $stmt->fetch(
-            PDO::FETCH_ASSOC
-        );
+        $professor =
+            $stmt->fetch(
+                PDO::FETCH_ASSOC
+            );
 
-        if ($professor !== false) {
-
+        if ($professor) {
             $stmt = $conexao->prepare(
                 "
                 UPDATE professores
@@ -213,33 +177,36 @@ try {
                 "
             );
 
-            $stmt->execute(
-                [
-                    ':firebase_uid' => $firebaseUid,
-                    ':id' => $professor['id']
-                ]
-            );
+            $stmt->execute([
+                ':firebase_uid' =>
+                    $firebaseUid,
 
-            $professor['firebase_uid'] = $firebaseUid;
+                ':id' =>
+                    (int) $professor['id']
+            ]);
+
+            $professor['firebase_uid'] =
+                $firebaseUid;
         }
     }
 
-    if ($professor === false) {
-
+    if (!$professor) {
         $nomeFinal = trim($nome);
 
         if ($nomeFinal === '') {
             $nomeFinal = 'Professor';
         }
 
-        $senhaTemporaria = bin2hex(
-            random_bytes(32)
-        );
+        $senhaTemporaria =
+            bin2hex(
+                random_bytes(32)
+            );
 
-        $senhaAleatoria = password_hash(
-            $senhaTemporaria,
-            PASSWORD_DEFAULT
-        );
+        $senhaHash =
+            password_hash(
+                $senhaTemporaria,
+                PASSWORD_DEFAULT
+            );
 
         $stmt = $conexao->prepare(
             "
@@ -268,28 +235,33 @@ try {
             "
         );
 
+        $stmt->execute([
+            ':nome' =>
+                $nomeFinal,
 
-        $stmt->execute(
-            [
-                ':nome' => $nomeFinal,
-                ':email' => $email,
-                ':senha' => $senhaAleatoria,
-                ':foto' => 'padrao.png',
-                ':firebase_uid' => $firebaseUid
-            ]
-        );
+            ':email' =>
+                $email,
 
+            ':senha' =>
+                $senhaHash,
 
-        $professor = $stmt->fetch(
-            PDO::FETCH_ASSOC
-        );
+            ':foto' =>
+                'padrao.png',
+
+            ':firebase_uid' =>
+                $firebaseUid
+        ]);
+
+        $professor =
+            $stmt->fetch(
+                PDO::FETCH_ASSOC
+            );
     }
 
     if (
         !is_array($professor) ||
         empty($professor['id'])
     ) {
-
         throw new RuntimeException(
             'Professor não pôde ser localizado ou criado.'
         );
@@ -297,16 +269,18 @@ try {
 
     session_regenerate_id(true);
 
+    $_SESSION['professor_id'] =
+        (int) $professor['id'];
 
-    $_SESSION['id'] = (int) $professor['id'];
+    $_SESSION['professor_nome'] =
+        (string) $professor['nome'];
 
-    $_SESSION['nome'] = (string) $professor['nome'];
+    $_SESSION['professor_email'] =
+        (string) $professor['email'];
 
-    $_SESSION['email'] = (string) $professor['email'];
-
-    $_SESSION['foto'] =
+    $_SESSION['professor_foto'] =
         !empty($professor['foto'])
-            ? $professor['foto']
+            ? (string) $professor['foto']
             : 'padrao.png';
 
     $_SESSION['login_google'] = true;
@@ -315,23 +289,34 @@ try {
         true,
         'Login realizado com sucesso.',
         [
-            'redirecionar' => 'painel.php'
+            'redirecionar' =>
+                'painel.php'
         ]
     );
+} catch (
+    \Kreait\Firebase\Exception\Auth\FailedToVerifyToken $e
+) {
+    error_log(
+        'FIREBASE TOKEN INVÁLIDO: ' .
+        $e->getMessage()
+    );
 
+    http_response_code(401);
 
+    resposta(
+        false,
+        'Token do Google inválido ou expirado.'
+    );
 } catch (Throwable $e) {
     error_log(
         'LOGIN GOOGLE ERROR: ' .
         $e->getMessage()
     );
 
-
     http_response_code(500);
 
     resposta(
         false,
-        'Erro no login Google: ' .
-        $e->getMessage()
+        'Erro interno no login Google.'
     );
 }

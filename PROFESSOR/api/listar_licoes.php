@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 header('Content-Type: application/json; charset=UTF-8');
@@ -7,7 +6,6 @@ header('Content-Type: application/json; charset=UTF-8');
 require_once __DIR__ . '/../php/conexao.php';
 
 try {
-
     $stmt = $conexao->prepare("
         SELECT
             id,
@@ -26,9 +24,7 @@ try {
         'sucesso' => true,
         'licoes' => $stmt->fetchAll(PDO::FETCH_ASSOC)
     ], JSON_UNESCAPED_UNICODE);
-
 } catch (Throwable $e) {
-
     error_log(
         'Erro listar_licoes.php: ' .
         $e->getMessage()
