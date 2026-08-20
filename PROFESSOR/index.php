@@ -1,9 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 session_start();
 
-if (!empty($_SESSION['id'])) {
+if (
+    isset($_SESSION['professor_id']) &&
+    is_numeric($_SESSION['professor_id'])
+) {
     header('Location: painel.php');
     exit;
 }
@@ -74,11 +78,12 @@ if (!empty($_SESSION['id'])) {
         <p
             id="googleMensagem"
             style="
-            display:none;
-            margin-top:15px;
-            margin-bottom:0;
-            font-size:14px;
-        "></p>
+                display:none;
+                margin-top:15px;
+                margin-bottom:0;
+                font-size:14px;
+            ">
+        </p>
         <div class="links">
             <a href="cadastro.php">
                 Criar Conta
@@ -104,15 +109,10 @@ if (!empty($_SESSION['id'])) {
 
         const firebaseConfig = {
             apiKey: "AIzaSyBhCvVJlHIwEwiYShKXOkcHrzpMgxGwDFo",
-
             authDomain: "lumi-for-teachers.firebaseapp.com",
-
             projectId: "lumi-for-teachers",
-
             storageBucket: "lumi-for-teachers.firebasestorage.app",
-
             messagingSenderId: "1063473511779",
-
             appId: "1:1063473511779:web:8344fbd922b2c34bf4a756"
         };
 
@@ -165,7 +165,9 @@ if (!empty($_SESSION['id'])) {
                         resultado.user;
 
                     const idToken =
-                        await user.getIdToken(true);
+                        await user.getIdToken(
+                            true
+                        );
 
                     if (!idToken) {
                         throw new Error(
@@ -204,7 +206,6 @@ if (!empty($_SESSION['id'])) {
                             'Resposta inválida:',
                             textoResposta
                         );
-
                         throw new Error(
                             'O servidor retornou uma resposta inválida.'
                         );
@@ -223,7 +224,6 @@ if (!empty($_SESSION['id'])) {
                     window.location.href =
                         dados.redirecionar ||
                         'painel.php';
-
                 } catch (erro) {
                     console.error(
                         'Erro no login Google:',
@@ -252,7 +252,6 @@ if (!empty($_SESSION['id'])) {
             }
         );
     </script>
-
     <script src="js/script.js"></script>
 </body>
 
