@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 session_start();
 
-if (
-    isset($_SESSION['professor_id']) &&
-    is_numeric($_SESSION['professor_id'])
-) {
+if (!empty($_SESSION['id'])) {
     header('Location: painel.php');
     exit;
 }
@@ -97,15 +94,13 @@ if (
     <script type="module">
         import {
             initializeApp
-        }
-        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
         import {
             getAuth,
             GoogleAuthProvider,
             signInWithPopup
-        }
-        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBhCvVJlHIwEwiYShKXOkcHrzpMgxGwDFo",
@@ -181,7 +176,6 @@ if (
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
-
                                     'Accept': 'application/json'
                                 },
                                 credentials: 'same-origin',
@@ -206,6 +200,7 @@ if (
                             'Resposta inválida:',
                             textoResposta
                         );
+
                         throw new Error(
                             'O servidor retornou uma resposta inválida.'
                         );
