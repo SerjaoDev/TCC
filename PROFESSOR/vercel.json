@@ -8,33 +8,31 @@
   },
 
   "routes": [
+
     {
       "src": "/css/(.*)",
       "dest": "/css/$1"
     },
+
     {
       "src": "/js/(.*)",
       "dest": "/js/$1"
     },
+
     {
       "src": "/img/(.*)",
       "dest": "/img/$1"
     },
+
     {
       "src": "/banco/(.*)",
       "status": 403
     },
+
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/(.*\\.php)",
-      "dest": "/$1"
-    },
-    {
-      "src": "/",
-      "dest": "/index.php"
+      "src": "/(.*)",
+      "dest": "/api/index.php"
     }
+
   ]
 }
