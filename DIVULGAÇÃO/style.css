@@ -752,32 +752,32 @@ main {
 }
 
 @media(max-width:1024px) {
-    .header{
-        height:auto;
-        padding:18px 5%;
-        flex-direction:column;
-        gap:18px;
-        border-radius:0 0 25px 25px;
+    .header {
+        height: auto;
+        padding: 18px 5%;
+        flex-direction: column;
+        gap: 18px;
+        border-radius: 0 0 25px 25px;
     }
 
-    .logo{
-        font-size:1.4rem;
+    .logo {
+        font-size: 1.4rem;
     }
 
-    .logo img{
-        width:45px;
+    .logo img {
+        width: 45px;
     }
 
-    .navbar{
-        display:flex;
-        flex-wrap:wrap;
-        justify-content:center;
-        gap:10px;
+    .navbar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
     }
 
-    .navbar a{
-        padding:10px 15px;
-        font-size:.95rem;
+    .navbar a {
+        padding: 10px 15px;
+        font-size: .95rem;
     }
 
     .hero {
@@ -799,35 +799,35 @@ main {
         padding: 90px 6%;
     }
 
-    .header{
-        position:relative;
-        padding:20px;
+    .header {
+        position: relative;
+        padding: 20px;
     }
 
-    .navbar{
-        display:flex;
-        flex-wrap:wrap;
-        justify-content:center;
-        gap:8px;
+    .navbar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
     }
 
-    .navbar a{
-        padding:8px 12px;
-        font-size:.85rem;
+    .navbar a {
+        padding: 8px 12px;
+        font-size: .85rem;
     }
 
-    .hero{
-        padding-top:60px;
-        flex-direction:column-reverse;
-        text-align:center;
+    .hero {
+        padding-top: 60px;
+        flex-direction: column-reverse;
+        text-align: center;
     }
 
-    .hero h1{
-        font-size:2.5rem;
+    .hero h1 {
+        font-size: 2.5rem;
     }
 
-    .hero p{
-        font-size:1rem;
+    .hero p {
+        font-size: 1rem;
     }
 
     .mascote {
