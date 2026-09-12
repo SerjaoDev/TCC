@@ -243,8 +243,7 @@ main {
 .met-card,
 .beneficio-card,
 .mvv-card,
-.membro,
-.breve-card {
+.membro {
     position: relative;
     background: var(--branco);
     padding: 35px;
@@ -260,8 +259,7 @@ main {
 .met-card::before,
 .beneficio-card::before,
 .mvv-card::before,
-.membro::before,
-.breve-card::before {
+.membro::before {
     content: "";
     position: absolute;
     top: 0;
@@ -275,8 +273,7 @@ main {
 .met-card:hover,
 .beneficio-card:hover,
 .mvv-card:hover,
-.membro:hover,
-.breve-card:hover {
+.membro:hover {
     transform: translateY(-10px);
     border-color: var(--amarelo);
     box-shadow: var(--sombra-hover);
@@ -299,8 +296,7 @@ main {
 .met-card h3,
 .beneficio-card h3,
 .mvv-card h3,
-.membro h3,
-.breve-card h3 {
+.membro h3 {
     font-size: 1.45rem;
     margin-bottom: 15px;
     color: var(--texto);
@@ -417,8 +413,7 @@ main {
 .met-card,
 .beneficio-card,
 .mvv-card,
-.membro,
-.breve-card {
+.membro {
     animation: fadeUp .8s ease;
 }
 
@@ -582,28 +577,8 @@ main {
     margin-top: 10px;
 }
 
-.em-breve {
-    background: linear-gradient(180deg, #FFFDF8, #FFF6DE);
-}
-
-.container-breve {
-    max-width: 1200px;
-    margin: auto;
-}
-
-.cards-breve {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-}
-
-.breve-card .card-icon {
-    background: linear-gradient(135deg, #A5D6A7, #66BB6A);
-}
-
 .beneficio-card:hover .card-icon,
 .met-card:hover .card-icon,
-.breve-card:hover .card-icon,
 .membro:hover .foto,
 .mvv-card:hover .card-icon {
     transform: scale(1.08);
@@ -613,61 +588,13 @@ main {
 .objetivo h2,
 .quem-somos h2,
 .beneficios h2,
-.missao-visao-valores h2,
-.em-breve h2 {
+.missao-visao-valores h2 {
     margin-bottom: 20px;
 }
 
 .objetivo p,
 .subtitulo {
     max-width: 760px;
-}
-
-.download {
-    padding: 140px 8%;
-    background: linear-gradient(135deg, var(--amarelo), #FFE78C);
-}
-
-.download-container {
-    max-width: 900px;
-    margin: auto;
-    text-align: center;
-}
-
-.download .titulo {
-    color: #333;
-}
-
-.download p {
-    max-width: 700px;
-    margin: 25px auto 45px;
-    line-height: 1.8;
-    color: #555;
-}
-
-.btn-download {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    padding: 20px 42px;
-    background: #333;
-    color: #fff;
-    font-size: 1.1rem;
-    font-weight: 600;
-    border-radius: 60px;
-    transition: var(--transicao);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, .18);
-}
-
-.btn-download:hover {
-    transform: translateY(-6px);
-    background: #222;
-    box-shadow: 0 20px 35px rgba(0, 0, 0, .25);
-}
-
-.btn-download span {
-    font-size: 1.6rem;
 }
 
 .footer {
@@ -858,15 +785,10 @@ main {
         font-size: 2.2rem;
     }
 
-    .btn-download {
-        width: 100%;
-    }
-
     .card,
     .met-card,
     .beneficio-card,
     .mvv-card,
-    .breve-card,
     .membro {
         padding: 28px;
     }
