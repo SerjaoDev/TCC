@@ -8,9 +8,9 @@ O **Lumi** é um projeto desenvolvido como **Trabalho de Conclusão de Curso (TC
 
 A plataforma reúne **atividades lúdicas, educativas e interativas** para crianças, proporcionando uma experiência de aprendizado mais dinâmica e envolvente.
 
-Além disso, o Lumi disponibiliza uma **sala de aula virtual para professores**, permitindo:
+Além disso, o Lumi disponibiliza uma **plataforma de monitoramento para os professores**, permitindo:
 
-* 📚 Criar e organizar atividades;
+* 📚 Organizar atividades;
 * 👨‍🏫 Gerenciar turmas;
 * 📊 Acompanhar o desempenho dos alunos em tempo real;
 * 📈 Facilitar o planejamento das aulas por meio de uma plataforma simples e intuitiva.
