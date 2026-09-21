@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUMI - Atividade J (Nível 2)</title>
+    <title>LUMI - Atividade 7 (Nível 2)</title>
     <link rel="icon" type="image/png" href="../img/logo.png">
     
     <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch-polyfill@1.0.2/DragDropTouch.js"></script>
