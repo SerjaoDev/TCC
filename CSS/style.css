@@ -1,0 +1,161 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Comic Sans MS', sans-serif;
+}
+
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #fff4c5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    transition: opacity 0.8s ease;
+}
+
+.splash-logo {
+    width: min(320px, 60vw);
+    height: auto;
+    animation: pulso 2s infinite ease-in-out;
+}
+
+@keyframes pulso {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+}
+
+#main-screen {
+    width: 100vw;
+    height: 100vh;
+    background: url('../img/caminho.png') no-repeat center bottom / cover;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10vw;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+#main-screen.ativo {
+    opacity: 1;
+}
+
+.nuvens-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.nuvem {
+    position: absolute;
+    top: 5%;
+    width: 45vw;
+    max-width: 650px;
+    opacity: 0.85;
+}
+
+.nuvem1 {
+    left: -50%;
+    animation: moverNuvem 35s linear infinite;
+}
+
+.nuvem2 {
+    left: -50%;
+    animation: moverNuvem 35s linear infinite 17.5s;
+}
+
+@keyframes moverNuvem {
+    0% { left: -50%; }
+    100% { left: 110%; }
+}
+
+.estrela {
+    position: absolute;
+    width: min(45px, 5vw);
+    height: auto;
+    pointer-events: none;
+    animation: brinhoEstrela 2.5s infinite alternate ease-in-out;
+}
+
+.est-1 { top: 12%; left: 15%; animation-delay: 0s; }
+.est-2 { top: 25%; left: 45%; animation-delay: 0.6s; }
+.est-3 { top: 10%; right: 18%; animation-delay: 1.2s; }
+.est-4 { top: 40%; left: 8%; animation-delay: 1.8s; }
+
+@keyframes brinhoEstrela {
+    0% { transform: scale(0.8) rotate(-10deg); opacity: 0.5; }
+    100% { transform: scale(1.2) rotate(10deg); opacity: 1; }
+}
+
+.lado-esquerdo {
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.letreiro-img {
+    width: min(280px, 26vw);
+    height: auto;
+}
+
+.mascote-flutuante {
+    width: min(220px, 20vw);
+    height: auto;
+    animation: flutuar 3.5s infinite ease-in-out;
+}
+
+@keyframes flutuar {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-18px); }
+}
+
+.lado-direito {
+    display: none;
+}
+
+.btn-comecar {
+    width: min(240px, 22vw);
+    height: auto;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.btn-comecar:hover {
+    transform: scale(1.06);
+    filter: brightness(1.08);
+}
+
+.btn-comecar:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+    .letreiro-img { width: 200px; }
+    .mascote-flutuante { width: 160px; }
+    .btn-comecar { width: 180px; }
+}

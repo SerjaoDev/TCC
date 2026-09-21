@@ -1,0 +1,237 @@
+#trilha-container {
+    width: 100vw;
+    height: 100vh;
+    background: url('../img/caminho.png') no-repeat center bottom / cover;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    overflow: hidden;
+}
+
+.trilha-header {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+}
+
+.btn-voltar {
+    background: #FF5722;
+    color: #FFF;
+    text-decoration: none;
+    padding: 10px 22px;
+    border-radius: 20px;
+    font-weight: bold;
+    box-shadow: 0 4px 0 #E64A19;
+    transition: transform 0.2s ease;
+}
+
+.btn-voltar:hover {
+    transform: scale(1.05);
+}
+
+.header-logo {
+    width: 150px;
+    height: auto;
+}
+
+.carrossel-wrapper {
+    width: 320px;
+    overflow: visible;
+    z-index: 10;
+    margin: auto 0;
+}
+
+.carrossel-track {
+    display: flex;
+    gap: 30px;
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.card-atividade {
+    min-width: 320px;
+    height: 380px;
+    border-radius: 28px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    border: 5px solid #FFFFFF;
+    transform: scale(0.88);
+    opacity: 0.5;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    position: relative;
+}
+
+.card-atividade.ativo {
+    transform: scale(1.05);
+    opacity: 1;
+}
+
+
+.card-atividade:nth-child(1) {
+    background: linear-gradient(145deg, #00aeff 0%, #f1fdff 100%);
+}
+.card-atividade:nth-child(2) {
+    background: linear-gradient(145deg, #1669df 0%, #a9e0da 100%);
+}
+.card-atividade:nth-child(3) {
+    background: linear-gradient(145deg, #6b3eff 0%, #c8c6cf 100%);
+}
+.card-atividade:nth-child(4) {
+    background: linear-gradient(145deg, #790ae0 0%, #d6c3e9 100%);
+}
+.card-atividade:nth-child(5) {
+    background: linear-gradient(145deg, #f18797 0%, #ebdadd 100%);
+}
+.card-atividade.ativo {
+    transform: scale(1.05);
+    opacity: 1;
+}
+
+.card-badge {
+    position: absolute;
+    top: -16px;
+    background: #7C4DFF;
+    color: #FFF;
+    padding: 6px 20px;
+    border-radius: 14px;
+    font-weight: bold;
+    font-size: 1rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.card-imagem {
+    width: 100%;
+    height: 190px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.card-imagem img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.15));
+}
+
+.card-atividade h3 {
+    color: #333;
+    font-size: 1.2rem;
+    margin: 5px 0;
+}
+
+.btn-jogar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 12px;
+    background: #FEE792;
+    color: #FFF;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2rem;
+    border-radius: 18px;
+    box-shadow: 0 5px 0 #302f2a3b;
+    transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+.btn-jogar:hover {
+    transform: translateY(-2px);
+    background: #ffe75d;
+}
+
+.btn-jogar:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #388E3C;
+}
+
+.carrossel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #FFD500;
+    border: 4px solid #FFF;
+    color: #333;
+    font-size: 2rem;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 20;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease;
+}
+
+.carrossel-btn:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+
+.btn-prev { left: 4vw; }
+.btn-next { right: 4vw; }
+
+.carrossel-indicadores {
+    display: flex;
+    gap: 12px;
+    z-index: 10;
+    margin-bottom: 15px;
+}
+
+.dot {
+    width: 14px;
+    height: 14px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+}
+
+.dot.ativo {
+    background: #FFD500;
+    transform: scale(1.35);
+}
+
+.topo-navegacao {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 15px 20px;
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.btn-login-img {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-login-img img {
+    height: 45px;
+    width: auto;
+    display: block;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.btn-login-img:hover img {
+    transform: scale(1.08);
+    filter: brightness(1.1);
+}
