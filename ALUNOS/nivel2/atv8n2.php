@@ -11,10 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
 
     try {
         $stmt = $pdo->prepare("
-            INSERT INTO progresso (aluno_id, nivel_atual, licoes_concluidas)
-            VALUES (:aluno_id, 2, 1)
+            INSERT INTO progresso (aluno_id, estrutura_id, nivel_atual, licoes_concluidas)
+            VALUES (:aluno_id, 2, 8, 1)
             ON DUPLICATE KEY UPDATE
-                nivel_atual = GREATEST(nivel_atual, 2),
                 licoes_concluidas = licoes_concluidas + 1
         ");
         $stmt->execute([':aluno_id' => $aluno_id]);

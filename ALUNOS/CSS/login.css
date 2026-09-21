@@ -1,5 +1,5 @@
 body.login-body {
-    background-color: #f7f8fc;
+    background-color: #fff4c580;
     font-family: 'Poppins', Arial, sans-serif;
     display: flex;
     justify-content: center;
@@ -11,7 +11,7 @@ body.login-body {
 }
 
 .login-card {
-    background: #ffffff;
+    background: #fff4c5;
     width: 100%;
     max-width: 380px;
     padding: 40px 30px;
@@ -122,7 +122,7 @@ body.login-body {
 }
 
 .perfil-info {
-    background-color: #f8fafc;
+    background-color: #ffffffa1;
     border: 1.5px solid #e2e8f0;
     border-radius: 16px;
     padding: 15px;

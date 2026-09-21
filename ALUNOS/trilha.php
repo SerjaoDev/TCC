@@ -112,6 +112,13 @@ $nome_aluno = $aluno_logado ? $_SESSION['aluno_nome'] : '';
     <h3>OS FONEMAS</h3>
     <a href="nivel5/nivel5.php" class="btn-jogar">COMEÇAR</a>
 </div>
+
+<div class="card-atividade">
+    <div class="card-imagem">
+        <img src="img/n6.png" alt="Casinha N6" onerror="this.src='img/lumi.png'">
+    </div>
+    <a href="" class="btn-jogar">EM BREVE</a>
+</div>
             </div>
         </div>
 
@@ -123,6 +130,7 @@ $nome_aluno = $aluno_logado ? $_SESSION['aluno_nome'] : '';
             <span class="dot" onclick="irParaCard(2)"></span>
             <span class="dot" onclick="irParaCard(3)"></span>
             <span class="dot" onclick="irParaCard(4)"></span>
+            <span class="dot" onclick="irParaCard(5)"></span>
         </div>
     </div>
 

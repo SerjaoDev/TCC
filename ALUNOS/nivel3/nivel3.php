@@ -4,7 +4,7 @@ require_once '../conexao.php';
 
 $estrutura_id = 3;
 $nivel_atual = 1;
-$total_niveis = 25;
+$total_niveis = 26;
 $titulo = 'AS SÍLABAS COMPLEXAS';
 $fundo = 'fn3.png';
 $cor_linha = '#FFEB3B';
@@ -35,6 +35,7 @@ $atividades_arquivos = [
     23 => 'atv23n3.php',
     24 => 'atv24n3.php',
     25 => 'atv25n3.php',
+    26 => 'atv26n3.php',
 ];
 
 $aluno_id = $_SESSION['aluno_id'] ?? 1;
@@ -140,7 +141,7 @@ if ($aluno_id) {
                 <?php 
                     $acesa = ($i === 1) || in_array($i - 1, $fasesConcluidas);
                     $classe_posicao = ($i % 2 == 0) ? 'pos-direita' : 'pos-esquerda';
-                    $link_destino = $atividades_arquivos[$i] ?? "atv{$i}n2.php";
+                    $link_destino = $atividades_arquivos[$i] ?? "atv{$i}n3.php";
                 ?>
                 <div class="no-lampada <?= $classe_posicao ?> <?= $acesa ? 'acesa' : 'apagada' ?>" data-fase="<?= $i ?>">
                     <?php if ($acesa): ?>

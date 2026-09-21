@@ -11,10 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
 
     try {
         $stmt = $pdo->prepare("
-            INSERT INTO progresso (aluno_id, nivel_atual, licoes_concluidas) 
-            VALUES (:aluno_id, 4, 1) 
+            INSERT INTO progresso (aluno_id, estrutura_id, nivel_atual, licoes_concluidas) 
+            VALUES (:aluno_id, 1, 4, 1) 
             ON DUPLICATE KEY UPDATE 
-                nivel_atual = GREATEST(nivel_atual, 4),
                 licoes_concluidas = licoes_concluidas + 1
         ");
         $stmt->execute([':aluno_id' => $aluno_id]);
@@ -402,9 +401,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             transition: all 0.2s;
         }
 
-        .btn-avancar:hover {
+        .btn-avancar:hover:not(:disabled) {
             background-color: #1a1a1a;
             color: #ffffff;
+        }
+
+        .btn-avancar:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            border-color: #888888;
+            color: #888888;
         }
 
         #etapa5 {

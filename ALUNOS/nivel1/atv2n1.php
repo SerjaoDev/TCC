@@ -11,10 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
 
     try {
         $stmt = $pdo->prepare("
-            INSERT INTO progresso (aluno_id, nivel_atual, licoes_concluidas)
-            VALUES (:aluno_id, 2, 1)
+            INSERT INTO progresso (aluno_id, estrutura_id, nivel_atual, licoes_concluidas)
+            VALUES (:aluno_id, 1, 2, 1)
             ON DUPLICATE KEY UPDATE 
-                nivel_atual = GREATEST(nivel_atual, 2),
                 licoes_concluidas = licoes_concluidas + 1
         ");
         $stmt->execute([':aluno_id' => $aluno_id]);
@@ -34,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
     <title>LUMI - Atividade 2 (Nível 1)</title>
     <link rel="icon" type="image/png" href="../img/logo.png">
     <style>
-         * {
+        * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -252,8 +251,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             100% { transform: translateY(105vh) rotate(720deg) translateX(50px); opacity: 0.8; }
         }
 
-        .esconder { display: none !important; }
-
         .btn-voltar {
             position: absolute;
             top: 20px;
@@ -280,7 +277,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
         .circulo-verde { width: 280px; height: 280px; background-color: #b1e0a8; top: 12%; right: 18%; }
         .circulo-amarelo { width: 320px; height: 320px; background-color: #fce892; bottom: -80px; right: -50px; }
 
-            .card-letra-wrapper {
+        .card-letra-wrapper {
             position: relative;
             display: flex;
             flex-direction: column;
@@ -338,7 +335,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             align-items: center;
         }
 
-        .etapa-simples { max-width: 450px; }
+        .etapa-simples {
+            max-width: 450px;
+        }
 
         .conteudo-etapa {
             display: flex;
@@ -371,8 +370,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             transition: transform 0.1s;
         }
 
-        .btn-palavra:active { transform: scale(0.98); }
-        .btn-palavra img { width: 42px; height: 42px; object-fit: contain; }
+        .btn-palavra:active {
+            transform: scale(0.98);
+        }
+
+        .btn-palavra img {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+        }
 
         .btn-avancar {
             width: 100%;
@@ -402,8 +408,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             opacity: 0.4;
             cursor: not-allowed;
             pointer-events: none;
-            border-color: #888;
-            color: #888;
+            border-color: #888888;
+            color: #888888;
         }
 
         .controles-etapa {

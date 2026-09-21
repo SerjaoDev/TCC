@@ -8,7 +8,7 @@ if (!isset($_SESSION['aluno_id'])) {
 }
 
 $aluno_id = $_SESSION['aluno_id'];
-$stmt = $pdo->prepare("SELECT nivel_atual FROM progresso WHERE aluno_id = :id");
+$stmt = $pdo->prepare("SELECT MAX(nivel_atual) AS nivel_atual FROM progresso WHERE aluno_id = :id");
 $stmt->execute([':id' => $aluno_id]);
 $progresso = $stmt->fetch(PDO::FETCH_ASSOC);
 

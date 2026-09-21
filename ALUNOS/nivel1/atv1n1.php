@@ -11,10 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
 
     try {
         $stmt = $pdo->prepare("
-            INSERT INTO progresso (aluno_id, nivel_atual, licoes_concluidas)
-            VALUES (:aluno_id, 1, 1)
+            INSERT INTO progresso (aluno_id, estrutura_id, nivel_atual, licoes_concluidas)
+            VALUES (:aluno_id, 1, 1, 1)
             ON DUPLICATE KEY UPDATE
-                nivel_atual = GREATEST(nivel_atual, 1),
                 licoes_concluidas = licoes_concluidas + 1
         ");
         $stmt->execute([':aluno_id' => $aluno_id]);
@@ -236,57 +235,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
         @keyframes cairConfete {
             0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 1; }
             100% { transform: translateY(105vh) rotate(720deg) translateX(50px); opacity: 0.8; }
-        }
-
-        .nuvem-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 50%;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        .nuvem {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.85);
-            border-radius: 50px;
-            opacity: 0.8;
-            animation: moverNuvem linear infinite;
-        }
-
-        .nuvem::before, .nuvem::after {
-            content: '';
-            position: absolute;
-            background: rgba(255, 255, 255, 0.85);
-            border-radius: 50%;
-        }
-
-        .nuvem1 { width: 140px; height: 45px; top: 15%; left: -150px; animation-duration: 8s; }
-        .nuvem1::before { width: 50px; height: 50px; top: -20px; left: 25px; }
-        .nuvem1::after { width: 40px; height: 40px; top: -15px; left: 60px; }
-
-        .nuvem2 { width: 180px; height: 55px; top: 35%; left: -200px; animation-duration: 11s; animation-delay: 1s; }
-        .nuvem2::before { width: 65px; height: 65px; top: -25px; left: 30px; }
-        .nuvem2::after { width: 50px; height: 50px; top: -20px; left: 80px; }
-
-        .nuvem3 { width: 120px; height: 40px; top: 8%; left: -130px; animation-duration: 9.5s; animation-delay: 2.5s; }
-        .nuvem3::before { width: 45px; height: 45px; top: -15px; left: 20px; }
-        .nuvem3::after { width: 35px; height: 35px; top: -10px; left: 50px; }
-
-        @keyframes moverNuvem {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(calc(100vw + 250px)); }
-        }
-
-        .esconder {
-            display: none !important;
-        }
-
-        .transicao-oculta {
-            opacity: 0 !important;
-            visibility: hidden !important;
         }
 
         @keyframes balancarErro {

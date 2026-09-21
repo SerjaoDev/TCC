@@ -3,7 +3,6 @@ session_start();
 require_once '../conexao.php';
 
 $estrutura_id = 4;
-$nivel_atual = 1;
 $total_niveis = 20;
 $titulo = 'AS PALAVRAS';
 $fundo = 'fn4.png';
@@ -37,8 +36,11 @@ $fasesConcluidas = [];
 
 if ($aluno_id) {
     try {
-        $stmt = $pdo->prepare("SELECT nivel_atual FROM progresso WHERE aluno_id = :aluno_id");
-        $stmt->execute([':aluno_id' => $aluno_id]);
+        $stmt = $pdo->prepare("SELECT nivel_atual FROM progresso WHERE aluno_id = :aluno_id AND estrutura_id = :estrutura_id");
+        $stmt->execute([
+            ':aluno_id'     => $aluno_id,
+            ':estrutura_id' => $estrutura_id
+        ]);
         $fasesConcluidas = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN, 0));
     } catch (PDOException $e) {
         $fasesConcluidas = [];
@@ -51,7 +53,7 @@ if ($aluno_id) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LUMI - <?= $titulo ?></title>
-    <link rel="icon" type="../image/png" href="img/logo.png">
+    <link rel="icon" type="image/png" href="../img/logo.png">
     <link rel="stylesheet" href="../css/fases.css">
     <style>
         html, body { 
@@ -124,18 +126,19 @@ if ($aluno_id) {
             <svg class="svg-circuito" id="svg-circuito"></svg>
             <?php for ($i = $total_niveis; $i >= 1; $i--): ?>
                 <?php 
-                    $acesa = ($i <= $nivel_atual);
+                    $acesa = ($i === 1) || in_array($i - 1, $fasesConcluidas);
                     $classe_posicao = ($i % 2 == 0) ? 'pos-direita' : 'pos-esquerda';
+                    $link_destino = $atividades_arquivos[$i] ?? "atv{$i}n4.php";
                 ?>
                 <div class="no-lampada <?= $classe_posicao ?> <?= $acesa ? 'acesa' : 'apagada' ?>" data-fase="<?= $i ?>">
                     <?php if ($acesa): ?>
-                        <a href="aula.php?estrutura=<?= $estrutura_id ?>&fase=<?= $i ?>" class="link-lampada">
-                            <img src="../img/lampada_acesa.png" alt="Nível <?= $i ?>" class="img-lampada" onerror="this.src='img/logo.png'">
+                        <a href="<?= $link_destino ?>" class="link-lampada" title="Ir para Atividade <?= $i ?>">
+                            <img src="../img/lampada_acesa.png" alt="Atividade <?= $i ?>" class="img-lampada" onerror="this.src='../img/logo.png'">
                             <span class="num-fase"><?= $i ?></span>
                         </a>
                     <?php else: ?>
-                        <div class="lampada-desativada" title="Complete o nível <?= $i - 1 ?> para desbloquear!">
-                            <img src="../img/lampada_apagada.png" alt="Nível <?= $i ?> Apagado" class="img-lampada" onerror="this.src='img/logo.png'">
+                        <div class="lampada-desativada" title="Complete a atividade <?= $i - 1 ?> para desbloquear!">
+                            <img src="../img/lampada_apagada.png" alt="Atividade <?= $i ?> Apagada" class="img-lampada" onerror="this.src='../img/logo.png'">
                             <span class="num-fase"><?= $i ?></span>
                         </div>
                     <?php endif; ?>
