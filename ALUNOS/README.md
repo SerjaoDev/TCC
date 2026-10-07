@@ -1,2 +1,2 @@
-# oficial
-
+# LUMI
+## Versão de estudantes
