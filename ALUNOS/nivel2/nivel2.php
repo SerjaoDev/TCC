@@ -4,7 +4,7 @@ require_once '../conexao.php';
 
 $estrutura_id = 2;
 $nivel_atual = 1;
-$total_niveis = 20;
+$total_niveis = 22;
 $titulo = 'AS SÍLABAS FÁCEIS';
 $fundo = 'fn2.png';
 $cor_linha = '#FF3D00';
@@ -29,7 +29,9 @@ $atividades_arquivos = [
     17 => 'atv17n2.php',
     18 => 'atv18n2.php',
     19 => 'atv19n2.php',
-    20 => 'atv20n2.php',                    
+    20 => 'atv20n2.php', 
+    21 => 'atv21n2.php',
+    22 => 'atv22n2.php'
 ];
 
 $aluno_id = $_SESSION['aluno_id'] ?? 1;

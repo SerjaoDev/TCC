@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: url('../img/iniciando1.png') no-repeat center center / cover;
+            background: url('../img/iniciando2.png') no-repeat center center / cover;
             z-index: 9999;
             transition: opacity 1s ease-out, visibility 1s ease-out;
         }
@@ -891,7 +891,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
                     <img src="../img/buzina.png" alt="Buzina" onerror="this.src='../img/logo.png'">
                 </div>
 
-                <!-- Pegadinhas / Erradas (5) -->
                 <div class="card-img-e4" id="e4-img-11" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ERRADA">
                     <img src="../img/queijo.png" alt="Queijo" onerror="this.src='../img/logo.png'">
                 </div>

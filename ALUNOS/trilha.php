@@ -114,11 +114,14 @@ $nome_aluno = $aluno_logado ? $_SESSION['aluno_nome'] : '';
 </div>
 
 <div class="card-atividade">
+    <div class="card-badge">FINAL</div>
     <div class="card-imagem">
-        <img src="img/n6.png" alt="Casinha N6" onerror="this.src='img/lumi.png'">
+        <img src="img/n6.png" alt="Casinha N6" onerror="this.src='img/diversao.jpg'">
     </div>
-    <a href="" class="btn-jogar">EM BREVE</a>
+    <h3>DIVERSÃO</h3>
+    <a href="nivel6/nivel6.php" class="btn-jogar">COMEÇAR</a>
 </div>
+
             </div>
         </div>
 

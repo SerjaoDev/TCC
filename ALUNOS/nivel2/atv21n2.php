@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
     try {
         $stmt = $pdo->prepare("
             INSERT INTO progresso (aluno_id, estrutura_id, nivel_atual, licoes_concluidas)
-            VALUES (:aluno_id, 2, 13, 1)
+            VALUES (:aluno_id, 2, 21, 1)
             ON DUPLICATE KEY UPDATE
                 licoes_concluidas = licoes_concluidas + 1
         ");
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUMI - Atividade Q (Nível 2)</title>
+    <title>LUMI - Atividade Z (Nível 2)</title>
     <link rel="icon" type="image/png" href="../img/logo.png">
     
     <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch-polyfill@1.0.2/DragDropTouch.js"></script>
@@ -701,39 +701,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
     <div class="circulo circulo-verde"></div>
     <div class="circulo circulo-amarelo"></div>
 
-    <!-- ETAPA 1: Apresentação das Sílabas da letra Q (QU) -->
+    <!-- ETAPA 1: Apresentação das Sílabas da letra Z -->
     <div id="etapa1" class="etapa-container">
         <div class="grid-cards-etapa1">
             <div class="card-bloco-etapa1">
-                <div class="card-amarelo-q3"><span>QUA</span></div>
-                <button class="btn-som-q3" onclick="tocarSom('somQUA')">
+                <div class="card-amarelo-f3"><span>ZA</span></div>
+                <button class="btn-som-f3" onclick="tocarSom('somZA')">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
                 </button>
             </div>
             <div class="card-bloco-etapa1">
-                <div class="card-amarelo-q3"><span>QUE</span></div>
-                <button class="btn-som-q3" onclick="tocarSom('somQUE')">
+                <div class="card-amarelo-f3"><span>ZE</span></div>
+                <button class="btn-som-f3" onclick="tocarSom('somZE')">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
                 </button>
             </div>
             <div class="card-bloco-etapa1">
-                <div class="card-amarelo-q3"><span>QUI</span></div>
-                <button class="btn-som-q3" onclick="tocarSom('somQUI')">
+                <div class="card-amarelo-f3"><span>ZI</span></div>
+                <button class="btn-som-f3" onclick="tocarSom('somZI')">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
                 </button>
             </div>
             <div class="card-bloco-etapa1">
-                <div class="card-amarelo-q3"><span>QUO</span></div>
-                <button class="btn-som-q3" onclick="tocarSom('somQUO')">
+                <div class="card-amarelo-f3"><span>ZO</span></div>
+                <button class="btn-som-f3" onclick="tocarSom('somZO')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                </button>
+            </div>
+            <div class="card-bloco-etapa1">
+                <div class="card-amarelo-f3"><span>ZU</span></div>
+                <button class="btn-som-f3" onclick="tocarSom('somZU')">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
                 </button>
             </div>
         </div>
 
-        <button class="btn-avancar-q3" onclick="mudarEtapa('etapa1', 'etapa2')">➔</button>
+        <button class="btn-avancar-f3" onclick="mudarEtapa('etapa1', 'etapa2')">➔</button>
     </div>
-
-    <!-- ETAPA 2: Ligação Q -> UA/UE/UI/UO + Imagens Alinhadas -->
+    <!-- ETAPA 2: Ligação Z -> Vogais + Imagens Alinhadas -->
     <div id="etapa2" class="etapa-container esconder">
         <div class="painel-ligacao-container">
             <svg class="svg-setas">
@@ -742,70 +747,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
                         <path d="M 0 0 L 10 5 L 0 10 z" fill="#1a1a1a"/>
                     </marker>
                 </defs>
-                <line x1="140" y1="240" x2="255" y2="90" stroke="#1a1a1a" stroke-width="2.5" marker-end="url(#arrow)" />
-                <line x1="140" y1="240" x2="255" y2="175" stroke="#1a1a1a" stroke-width="2.5" marker-end="url(#arrow)" />
-                <line x1="140" y1="240" x2="255" y2="260" stroke="#1a1a1a" stroke-width="2.5" marker-end="url(#arrow)" />
-                <line x1="140" y1="240" x2="255" y2="345" stroke="#1a1a1a" stroke-width="2.5" marker-end="url(#arrow)" />
+                <line x1="160" y1="240" x2="275" y2="50" stroke="#1a1a1a" stroke-width="2.5" marker-end="url(#arrow)" />
+                <line x1="160" y1="240" x2="275" y2="125" stroke="#1a1a1a" stroke-width="2.5" marker-end="url(#arrow)" />
+                <line x1="160" y1="240" x2="275" y2="240" stroke="#1a1a1a" stroke-width="2.5" marker-end="url(#arrow)" />
+                <line x1="160" y1="240" x2="275" y2="355" stroke="#1a1a1a" stroke-width="2.5" marker-end="url(#arrow)" />
+                <line x1="160" y1="240" x2="275" y2="430" stroke="#1a1a1a" stroke-width="2.5" marker-end="url(#arrow)" />
             </svg>
 
-            <!-- Círculo com a letra Q -->
-            <div class="circulo-letra-b">Q</div>
+            <div class="circulo-letra-b">Z</div>
 
-            <!-- Coluna de Círculos com Vogais Combinadas -->
-            <div class="coluna-vogais-q2">
-                <div class="circulo-vogal">UA</div>
-                <div class="circulo-vogal">UE</div>
-                <div class="circulo-vogal">UI</div>
-                <div class="circulo-vogal">UO</div>
+            <div class="coluna-vogais-f2">
+                <div class="circulo-vogal">A</div>
+                <div class="circulo-vogal">E</div>
+                <div class="circulo-vogal">I</div>
+                <div class="circulo-vogal">O</div>
+                <div class="circulo-vogal">U</div>
             </div>
 
-            <!-- Coluna do Sinal de Igual -->
             <div class="coluna-igual">
                 <div class="sinal-igual">=</div>
                 <div class="sinal-igual">=</div>
                 <div class="sinal-igual">=</div>
                 <div class="sinal-igual">=</div>
+                <div class="sinal-igual">=</div>
             </div>
 
-            <!-- Coluna de Drop dos Quadrados das Sílabas -->
             <div class="coluna-drops">
-                <div class="quadrado-drop" data-esperado="QUA" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilaba(event)"></div>
-                <div class="quadrado-drop" data-esperado="QUE" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilaba(event)"></div>
-                <div class="quadrado-drop" data-esperado="QUI" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilaba(event)"></div>
-                <div class="quadrado-drop" data-esperado="QUO" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilaba(event)"></div>
+                <div class="quadrado-drop" data-esperado="ZA" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilaba(event)"></div>
+                <div class="quadrado-drop" data-esperado="ZE" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilaba(event)"></div>
+                <div class="quadrado-drop" data-esperado="ZI" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilaba(event)"></div>
+                <div class="quadrado-drop" data-esperado="ZO" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilaba(event)"></div>
+                <div class="quadrado-drop" data-esperado="ZU" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilaba(event)"></div>
             </div>
 
-            <!-- Coluna de Figuras Correspondentes Alinhadas (Letra Q) -->
             <div class="coluna-figuras-alinhadas">
                 <div class="card-figura-alinhada">
-                    <span class="texto-figura-q2">QUADRO</span>
-                    <img src="../img/quadro.png" class="img-figura-q2" alt="Quadro">
+                    <span class="texto-figura-f2">Zangado</span>
+                    <img src="" class="img-figura-f2" alt="Zangado" onerror="this.style.display='none'">
                 </div>
                 <div class="card-figura-alinhada">
-                    <span class="texto-figura-q2">QUEIJO</span>
-                    <img src="../img/queijo.png" class="img-figura-q2" alt="Queijo">
+                    <span class="texto-figura-f2">Zebra</span>
+                    <img src="" class="img-figura-f2" alt="Zebra" onerror="this.style.display='none'">
                 </div>
                 <div class="card-figura-alinhada">
-                    <span class="texto-figura-q2">QUIMONO</span>
-                    <img src="../img/quimono.png" class="img-figura-q2" alt="Quimono">
+                    <span class="texto-figura-f2">Zíper</span>
+                    <img src="" class="img-figura-f2" alt="Zíper" onerror="this.style.display='none'">
                 </div>
                 <div class="card-figura-alinhada">
-                    <span class="texto-figura-q2">QUOTA</span>
-                    <img src="../img/quota.png" class="img-figura-q2" alt="Quota">
+                    <span class="texto-figura-f2">Zoológico</span>
+                    <img src="" class="img-figura-f2" alt="Zoológico" onerror="this.style.display='none'">
+                </div>
+                <div class="card-figura-alinhada">
+                    <span class="texto-figura-f2">Zumbi</span>
+                    <img src="" class="img-figura-f2" alt="Zumbi" onerror="this.style.display='none'">
                 </div>
             </div>
         </div>
 
-        <!-- Sílabas da letra Q para arrastar -->
         <div class="container-opcoes-arrastaveis">
-            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="QUE">QUE</div>
-            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="QUA">QUA</div>
-            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="QUO">QUO</div>
-            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="QUI">QUI</div>
+            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="ZO">ZO</div>
+            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="ZA">ZA</div>
+            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="ZU">ZU</div>
+            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="ZE">ZE</div>
+            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="ZI">ZI</div>
         </div>
     </div>
-
-    <!-- ÁUDIOS DAS SÍLABAS E PALAVRAS -->
     <!-- ETAPA 3 -->
     <div id="etapa3" class="etapa-container esconder">
         <div class="container-topo-e3">
@@ -816,28 +822,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
 
         <div class="fila-fotos-e3">
             <div class="card-foto-item">
-                <img src="../img/quadro.png" alt="Quadro">
-                <div class="quadrado-drop drop-silaba-e3" data-esperado="QUA" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilabaEtapa3(event)"></div>
+                <img src="" alt="Zangado" onerror="this.style.display='none'">
+                <div class="quadrado-drop drop-silaba-e3" data-esperado="ZA" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilabaEtapa3(event)"></div>
             </div>
             <div class="card-foto-item">
-                <img src="../img/queijo.png" alt="Queijo">
-                <div class="quadrado-drop drop-silaba-e3" data-esperado="QUE" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilabaEtapa3(event)"></div>
+                <img src="" alt="Zebra" onerror="this.style.display='none'">
+                <div class="quadrado-drop drop-silaba-e3" data-esperado="ZE" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilabaEtapa3(event)"></div>
             </div>
             <div class="card-foto-item">
-                <img src="../img/quimono.png" alt="Quimono">
-                <div class="quadrado-drop drop-silaba-e3" data-esperado="QUI" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilabaEtapa3(event)"></div>
+                <img src="" alt="Zíper" onerror="this.style.display='none'">
+                <div class="quadrado-drop drop-silaba-e3" data-esperado="ZI" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilabaEtapa3(event)"></div>
             </div>
             <div class="card-foto-item">
-                <img src="../img/quota.png" alt="Quota">
-                <div class="quadrado-drop drop-silaba-e3" data-esperado="QUO" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilabaEtapa3(event)"></div>
+                <img src="" alt="Zoológico" onerror="this.style.display='none'">
+                <div class="quadrado-drop drop-silaba-e3" data-esperado="ZO" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilabaEtapa3(event)"></div>
+            </div>
+            <div class="card-foto-item">
+                <img src="" alt="Zumbi" onerror="this.style.display='none'">
+                <div class="quadrado-drop drop-silaba-e3" data-esperado="ZU" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilabaEtapa3(event)"></div>
             </div>
         </div>
 
         <div class="container-blocos-baixo">
-            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="QUA">QUA</div>
-            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="QUE">QUE</div>
-            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="QUI">QUI</div>
-            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="QUO">QUO</div>
+            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="ZA">ZA</div>
+            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="ZE">ZE</div>
+            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="ZI">ZI</div>
+            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="ZO">ZO</div>
+            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="ZU">ZU</div>
         </div>
     </div>
     <!-- ETAPA 4 (ARRASTAR IMAGENS PARA AS SÍLABAS) -->
@@ -845,64 +856,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
         <div class="painel-etapa4-container">
             <div class="coluna-silabas-e4">
         <div class="linha-bi-e4">
-            <button class="btn-som-f3" onclick="tocarSom('somQUA')">
+            <button class="btn-som-f3" onclick="tocarSom('somZA')">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
             </button>
-            <div class="card-silaba-e4" data-esperado="QUA" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarImagemEtapa4(event)">QUA</div>
+            <div class="card-silaba-e4" data-esperado="ZA" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarImagemEtapa4(event)">ZA</div>
         </div>
         <div class="linha-bi-e4">
-            <button class="btn-som-f3" onclick="tocarSom('somQUE')">
+            <button class="btn-som-f3" onclick="tocarSom('somZE')">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
             </button>
-            <div class="card-silaba-e4" data-esperado="QUE" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarImagemEtapa4(event)">QUE</div>
+            <div class="card-silaba-e4" data-esperado="ZE" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarImagemEtapa4(event)">ZE</div>
         </div>
         <div class="linha-bi-e4">
-            <button class="btn-som-f3" onclick="tocarSom('somQUI')">
+            <button class="btn-som-f3" onclick="tocarSom('somZI')">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
             </button>
-            <div class="card-silaba-e4" data-esperado="QUI" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarImagemEtapa4(event)">QUI</div>
+            <div class="card-silaba-e4" data-esperado="ZI" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarImagemEtapa4(event)">ZI</div>
         </div>
         <div class="linha-bi-e4">
-            <button class="btn-som-f3" onclick="tocarSom('somQUO')">
+            <button class="btn-som-f3" onclick="tocarSom('somZO')">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
             </button>
-            <div class="card-silaba-e4" data-esperado="QUO" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarImagemEtapa4(event)">QUO</div>
+            <div class="card-silaba-e4" data-esperado="ZO" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarImagemEtapa4(event)">ZO</div>
+        </div>
+        <div class="linha-bi-e4">
+            <button class="btn-som-f3" onclick="tocarSom('somZU')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            </button>
+            <div class="card-silaba-e4" data-esperado="ZU" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarImagemEtapa4(event)">ZU</div>
         </div>
             </div>
 
             <div class="grid-15-imagens-e4">
                 <!-- Certas -->
-                <div class="card-img-e4" id="e4-img-1" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="QUA">
-                    <img src="../img/quadro.png" alt="Quadro" onerror="this.src='../img/logo.png'">
-                </div>
-                <div class="card-img-e4" id="e4-img-2" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="QUA">
+                <div class="card-img-e4" id="e4-img-1" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ZA">
                     <img src="" alt="" onerror="this.style.display='none'">
                 </div>
-                <div class="card-img-e4" id="e4-img-3" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="QUE">
-                    <img src="../img/queijo.png" alt="Queijo" onerror="this.src='../img/logo.png'">
-                </div>
-                <div class="card-img-e4" id="e4-img-4" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="QUE">
+                <div class="card-img-e4" id="e4-img-2" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ZA">
                     <img src="" alt="" onerror="this.style.display='none'">
                 </div>
-                <div class="card-img-e4" id="e4-img-5" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="QUI">
-                    <img src="../img/quimono.png" alt="Quimono" onerror="this.src='../img/logo.png'">
-                </div>
-                <div class="card-img-e4" id="e4-img-6" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="QUI">
+                <div class="card-img-e4" id="e4-img-3" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ZE">
                     <img src="" alt="" onerror="this.style.display='none'">
                 </div>
-                <div class="card-img-e4" id="e4-img-7" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="QUO">
-                    <img src="../img/quota.png" alt="Quota" onerror="this.src='../img/logo.png'">
+                <div class="card-img-e4" id="e4-img-4" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ZE">
+                    <img src="" alt="" onerror="this.style.display='none'">
                 </div>
-                <div class="card-img-e4" id="e4-img-8" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="QUO">
+                <div class="card-img-e4" id="e4-img-5" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ZI">
+                    <img src="" alt="" onerror="this.style.display='none'">
+                </div>
+                <div class="card-img-e4" id="e4-img-6" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ZI">
+                    <img src="" alt="" onerror="this.style.display='none'">
+                </div>
+                <div class="card-img-e4" id="e4-img-7" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ZO">
+                    <img src="" alt="" onerror="this.style.display='none'">
+                </div>
+                <div class="card-img-e4" id="e4-img-8" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ZO">
+                    <img src="" alt="" onerror="this.style.display='none'">
+                </div>
+                <div class="card-img-e4" id="e4-img-9" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ZU">
+                    <img src="" alt="" onerror="this.style.display='none'">
+                </div>
+                <div class="card-img-e4" id="e4-img-10" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ZU">
                     <img src="" alt="" onerror="this.style.display='none'">
                 </div>
                 <!-- Pegadinhas / Erradas -->
-                <div class="card-img-e4" id="e4-img-9" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ERRADA">
-                    <img src="" alt="" onerror="this.style.display='none'">
-                </div>
-                <div class="card-img-e4" id="e4-img-10" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ERRADA">
-                    <img src="" alt="" onerror="this.style.display='none'">
-                </div>
                 <div class="card-img-e4" id="e4-img-11" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ERRADA">
                     <img src="" alt="" onerror="this.style.display='none'">
                 </div>
@@ -912,13 +929,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
                 <div class="card-img-e4" id="e4-img-13" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ERRADA">
                     <img src="" alt="" onerror="this.style.display='none'">
                 </div>
+                <div class="card-img-e4" id="e4-img-14" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ERRADA">
+                    <img src="" alt="" onerror="this.style.display='none'">
+                </div>
+                <div class="card-img-e4" id="e4-img-15" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ERRADA">
+                    <img src="" alt="" onerror="this.style.display='none'">
+                </div>
             </div>
         </div>
     </div>
-    <audio id="somQUA" src="../audios/Silaba QUA.m4a"></audio>
-    <audio id="somQUE" src="../audios/Silaba QUE.m4a"></audio>
-    <audio id="somQUI" src="../audios/Silaba QUI.m4a"></audio>
-    <audio id="somQUO" src="../audios/Silaba QUO.m4a"></audio>
+    <audio id="somZA" src="../audios/Silaba ZA.m4a"></audio>
+    <audio id="somZE" src="../audios/Silaba ZE.m4a"></audio>
+    <audio id="somZI" src="../audios/Silaba ZI.m4a"></audio>
+    <audio id="somZO" src="../audios/Silaba ZO.m4a"></audio>
+    <audio id="somZU" src="../audios/Silaba ZU.m4a"></audio>
+    <audio id="somCE" src="../audios/Silaba CE.m4a"></audio>
+    <audio id="somCI" src="../audios/Silaba CI.m4a"></audio>
+    <audio id="somCO" src="../audios/Silaba CO.m4a"></audio>
+    <audio id="somCU" src="../audios/Silaba CU.m4a"></audio>
 
     <audio id="somInstrucaoE3" src="../audios/instrucao_etapa3.m4a"></audio>
     <audio id="somAcerto" src="../audios/acerto.mp3"></audio>
@@ -976,7 +1004,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
         }
 
         let acertosEtapa2 = 0;
-        const TOTAL_ETAPA2 = 4;
+        const TOTAL_ETAPA2 = 5;
 
         function soltarSilaba(e) {
             e.preventDefault();
@@ -1032,7 +1060,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
 
         /* ETAPA 3 */
         let acertosEtapa3 = 0;
-        const TOTAL_ETAPA3 = 4;
+        const TOTAL_ETAPA3 = 5;
 
         function soltarSilabaEtapa3(e) {
             e.preventDefault();
@@ -1073,7 +1101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
 
         /* ETAPA 4 - ARRASTAR IMAGENS */
         let acertosEtapa4 = 0;
-        const TOTAL_ETAPA4 = 8;
+        const TOTAL_ETAPA4 = 10;
         let idImagemArrastada = null;
 
         function arrastarImagemE4(e) {

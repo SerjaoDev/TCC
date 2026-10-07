@@ -93,7 +93,7 @@
 }
 
 .card-atividade:nth-child(6) {
-    background: linear-gradient(145deg, #f1ef87 0%, #d1f3d0 100%);
+    background: linear-gradient(145deg, #009625 0%, #3fffa6 100%);
 }
 .card-atividade.ativo {
     transform: scale(1.05);

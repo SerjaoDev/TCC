@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUMI - Atividade 10 (Nível 2)</title>
+    <title>LUMI - Atividade M (Nível 2)</title>
     <link rel="icon" type="image/png" href="../img/logo.png">
     
     <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch-polyfill@1.0.2/DragDropTouch.js"></script>
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: url('../img/iniciando1.png') no-repeat center center / cover;
+            background: url('../img/iniciando2.png') no-repeat center center / cover;
             z-index: 9999;
             transition: opacity 1s ease-out, visibility 1s ease-out;
         }
@@ -290,7 +290,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             align-items: center;
         }
 
-        /* --- ETAPA 1: SÍLABAS DO M --- */
+        /* ETAPA 1 */
         .grid-cards-etapa1 {
             display: flex;
             justify-content: center;
@@ -306,7 +306,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             gap: 15px;
         }
 
-        .card-amarelo-m3 {
+        .card-amarelo-f3 {
             width: 140px;
             height: 140px;
             background-color: #ffeb60;
@@ -318,13 +318,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             box-shadow: 0 6px 0px #1a1a1a;
         }
 
-        .card-amarelo-m3 span {
+        .card-amarelo-f3 span {
             font-size: 48px;
             font-weight: 900;
             color: #1a1a1a;
         }
 
-        .btn-som-m3 {
+        .btn-som-f3 {
             width: 52px;
             height: 52px;
             background-color: #ffffff;
@@ -338,12 +338,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             transition: transform 0.1s;
         }
 
-        .btn-som-m3:active {
+        .btn-som-f3:active {
             transform: translateY(2px);
             box-shadow: 0 1px 0px #1a1a1a;
         }
 
-        .btn-avancar-m3 {
+        .btn-avancar-f3 {
             width: 100%;
             max-width: 780px;
             height: 50px;
@@ -359,12 +359,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             transition: background-color 0.2s;
         }
 
-        .btn-avancar-m3:hover {
+        .btn-avancar-f3:hover {
             background-color: #1a1a1a;
             color: #ffffff;
         }
 
-        /* --- ETAPA 2: LIGAÇÃO DA LETRA M --- */
+        /* ETAPA 2 */
         .painel-ligacao-container {
             position: relative;
             display: flex;
@@ -385,9 +385,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             z-index: 1;
         }
 
-        .circulo-letra-b {
+        .box-letra-b-e2 {
             position: absolute;
-            left: 80px;
+            left: 120px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 2;
+        }
+
+        .circulo-letra-b {
             width: 80px;
             height: 80px;
             border: 3px solid #1a1a1a;
@@ -399,16 +406,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             font-size: 42px;
             font-weight: 900;
             color: #1a1a1a;
-            z-index: 2;
             box-shadow: 0 4px 0px #1a1a1a;
         }
 
-        .coluna-vogais-m2 {
+        .coluna-vogais-f2 {
             position: absolute;
-            left: 280px;
+            left: 400px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 25px;
             z-index: 2;
         }
 
@@ -429,7 +435,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
 
         .coluna-igual {
             position: absolute;
-            left: 360px;
+            left: 480px;
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -447,7 +453,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
 
         .coluna-drops {
             position: absolute;
-            left: 410px;
+            left: 540px;
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -458,6 +464,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             width: 110px;
             height: 60px;
             border: 3px solid #1a1a1a;
+            border-radius: 15px;
             background-color: #ffffff;
             display: flex;
             justify-content: center;
@@ -475,40 +482,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
 
         .quadrado-drop.concluido {
             background-color: #b1e0a8;
-        }
-
-        .coluna-figuras-alinhadas {
-            position: absolute;
-            left: 550px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            z-index: 2;
-        }
-
-        .card-figura-alinhada {
-            width: 260px;
-            height: 60px;
-            border: 3px solid #1a1a1a;
-            border-radius: 15px;
-            background-color: #ffffff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 15px;
-            box-shadow: 0 3px 0px #1a1a1a;
-        }
-
-        .img-figura-m2 {
-            width: 45px;
-            height: 45px;
-            object-fit: contain;
-        }
-
-        .texto-figura-m2 {
-            font-size: 26px;
-            font-weight: 900;
-            color: #1a1a1a;
         }
 
         .container-opcoes-arrastaveis {
@@ -539,6 +512,154 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             cursor: grabbing;
         }
 
+        /* ETAPA 3 */
+        .container-topo-e3 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .fila-fotos-e3 {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 25px;
+            overflow-x: auto;
+            padding: 10px 5px;
+        }
+
+        .card-foto-item {
+            background-color: #ffffff;
+            border: 3px solid #1a1a1a;
+            border-radius: 20px;
+            padding: 15px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 0 #1a1a1a;
+            min-width: 130px;
+            flex-shrink: 0;
+        }
+
+        .card-foto-item img {
+            width: 75px;
+            height: 75px;
+            object-fit: contain;
+        }
+
+        .drop-silaba-e3 {
+            width: 70px;
+            height: 55px;
+            border: 3px dashed #1a1a1a;
+            border-radius: 15px;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            font-weight: 900;
+            color: #1a1a1a;
+            transition: all 0.2s;
+        }
+
+        .drop-silaba-e3.concluido {
+            border-style: solid;
+            background-color: #b1e0a8;
+        }
+
+        .container-blocos-baixo {
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        /* ETAPA 4 (ARRASTAR IMAGEM PARA A SÍLABA) */
+        .painel-etapa4-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 35px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .coluna-silabas-e4 {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 15px;
+        }
+
+        .card-silaba-e4 {
+            width: 110px;
+            height: 60px;
+            background-color: #ffeb60;
+            border: 3px solid #1a1a1a;
+            border-radius: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 0px #1a1a1a;
+            font-size: 32px;
+            font-weight: 900;
+            color: #1a1a1a;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+
+        .card-silaba-e4.hover-drop {
+            background-color: #fff4a3;
+            transform: scale(1.05);
+        }
+
+        .linha-bi-e4 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .grid-15-imagens-e4 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            max-width: 480px;
+        }
+
+        .card-img-e4 {
+            width: 120px;
+            height: 60px;
+            background-color: #ffeb60;
+            border: 3px solid #1a1a1a;
+            border-radius: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: grab;
+            box-shadow: 0 4px 0px #1a1a1a;
+            transition: transform 0.15s, opacity 0.3s;
+            position: relative;
+            user-select: none;
+        }
+
+        .card-img-e4:active {
+            cursor: grabbing;
+        }
+
+        .card-img-e4 img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -700,12 +821,139 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
     </div>
 
     <!-- ÁUDIOS DAS SÍLABAS E PALAVRAS -->
+    <!-- ETAPA 3 -->
+    <div id="etapa3" class="etapa-container esconder">
+        <div class="container-topo-e3">
+            <button class="btn-som-f3" onclick="tocarSom('somInstrucaoE3')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            </button>
+        </div>
+
+        <div class="fila-fotos-e3">
+            <div class="card-foto-item">
+                <img src="../img/mala.png" alt="Mala">
+                <div class="quadrado-drop drop-silaba-e3" data-esperado="MA" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilabaEtapa3(event)"></div>
+            </div>
+            <div class="card-foto-item">
+                <img src="../img/meia.png" alt="Meia">
+                <div class="quadrado-drop drop-silaba-e3" data-esperado="ME" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilabaEtapa3(event)"></div>
+            </div>
+            <div class="card-foto-item">
+                <img src="../img/milho.png" alt="Milho">
+                <div class="quadrado-drop drop-silaba-e3" data-esperado="MI" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilabaEtapa3(event)"></div>
+            </div>
+            <div class="card-foto-item">
+                <img src="../img/moto.png" alt="Moto">
+                <div class="quadrado-drop drop-silaba-e3" data-esperado="MO" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilabaEtapa3(event)"></div>
+            </div>
+            <div class="card-foto-item">
+                <img src="../img/mula.png" alt="Mula">
+                <div class="quadrado-drop drop-silaba-e3" data-esperado="MU" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarSilabaEtapa3(event)"></div>
+            </div>
+        </div>
+
+        <div class="container-blocos-baixo">
+            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="MA">MA</div>
+            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="ME">ME</div>
+            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="MI">MI</div>
+            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="MO">MO</div>
+            <div class="silaba-opcao" draggable="true" ondragstart="arrastarSilaba(event)" data-silaba="MU">MU</div>
+        </div>
+    </div>
+    <!-- ETAPA 4 (ARRASTAR IMAGENS PARA AS SÍLABAS) -->
+    <div id="etapa4" class="etapa-container esconder">
+        <div class="painel-etapa4-container">
+            <div class="coluna-silabas-e4">
+        <div class="linha-bi-e4">
+            <button class="btn-som-f3" onclick="tocarSom('somMA')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            </button>
+            <div class="card-silaba-e4" data-esperado="MA" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarImagemEtapa4(event)">MA</div>
+        </div>
+        <div class="linha-bi-e4">
+            <button class="btn-som-f3" onclick="tocarSom('somME')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            </button>
+            <div class="card-silaba-e4" data-esperado="ME" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarImagemEtapa4(event)">ME</div>
+        </div>
+        <div class="linha-bi-e4">
+            <button class="btn-som-f3" onclick="tocarSom('somMI')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            </button>
+            <div class="card-silaba-e4" data-esperado="MI" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarImagemEtapa4(event)">MI</div>
+        </div>
+        <div class="linha-bi-e4">
+            <button class="btn-som-f3" onclick="tocarSom('somMO')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            </button>
+            <div class="card-silaba-e4" data-esperado="MO" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarImagemEtapa4(event)">MO</div>
+        </div>
+        <div class="linha-bi-e4">
+            <button class="btn-som-f3" onclick="tocarSom('somMU')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            </button>
+            <div class="card-silaba-e4" data-esperado="MU" ondragover="permitirDrop(event)" ondragleave="sairDrop(event)" ondrop="soltarImagemEtapa4(event)">MU</div>
+        </div>
+            </div>
+
+            <div class="grid-15-imagens-e4">
+                <!-- Certas -->
+                <div class="card-img-e4" id="e4-img-1" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="MA">
+                    <img src="../img/mala.png" alt="Mala" onerror="this.src='../img/logo.png'">
+                </div>
+                <div class="card-img-e4" id="e4-img-2" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="MA">
+                    <img src="" alt="" onerror="this.style.display='none'">
+                </div>
+                <div class="card-img-e4" id="e4-img-3" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ME">
+                    <img src="../img/meia.png" alt="Meia" onerror="this.src='../img/logo.png'">
+                </div>
+                <div class="card-img-e4" id="e4-img-4" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ME">
+                    <img src="" alt="" onerror="this.style.display='none'">
+                </div>
+                <div class="card-img-e4" id="e4-img-5" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="MI">
+                    <img src="../img/milho.png" alt="Milho" onerror="this.src='../img/logo.png'">
+                </div>
+                <div class="card-img-e4" id="e4-img-6" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="MI">
+                    <img src="" alt="" onerror="this.style.display='none'">
+                </div>
+                <div class="card-img-e4" id="e4-img-7" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="MO">
+                    <img src="../img/moto.png" alt="Moto" onerror="this.src='../img/logo.png'">
+                </div>
+                <div class="card-img-e4" id="e4-img-8" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="MO">
+                    <img src="" alt="" onerror="this.style.display='none'">
+                </div>
+                <div class="card-img-e4" id="e4-img-9" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="MU">
+                    <img src="../img/mula.png" alt="Mula" onerror="this.src='../img/logo.png'">
+                </div>
+                <div class="card-img-e4" id="e4-img-10" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="MU">
+                    <img src="" alt="" onerror="this.style.display='none'">
+                </div>
+                <!-- Pegadinhas / Erradas -->
+                <div class="card-img-e4" id="e4-img-11" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ERRADA">
+                    <img src="" alt="" onerror="this.style.display='none'">
+                </div>
+                <div class="card-img-e4" id="e4-img-12" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ERRADA">
+                    <img src="" alt="" onerror="this.style.display='none'">
+                </div>
+                <div class="card-img-e4" id="e4-img-13" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ERRADA">
+                    <img src="" alt="" onerror="this.style.display='none'">
+                </div>
+                <div class="card-img-e4" id="e4-img-14" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ERRADA">
+                    <img src="" alt="" onerror="this.style.display='none'">
+                </div>
+                <div class="card-img-e4" id="e4-img-15" draggable="true" ondragstart="arrastarImagemE4(event)" data-silaba-correta="ERRADA">
+                    <img src="" alt="" onerror="this.style.display='none'">
+                </div>
+            </div>
+        </div>
+    </div>
     <audio id="somMA" src="../audios/Silaba MA.m4a"></audio>
     <audio id="somME" src="../audios/Silaba ME.m4a"></audio>
     <audio id="somMI" src="../audios/Silaba MI.m4a"></audio>
     <audio id="somMO" src="../audios/Silaba MO.m4a"></audio>
     <audio id="somMU" src="../audios/Silaba MU.m4a"></audio>
 
+    <audio id="somInstrucaoE3" src="../audios/instrucao_etapa3.m4a"></audio>
     <audio id="somAcerto" src="../audios/acerto.mp3"></audio>
     <audio id="somErro" src="../audios/erro.mp3"></audio>
     <audio id="audioTentarNovamente" src="../audios/tentar_novamente.mp3"></audio>
@@ -724,7 +972,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             const el = document.getElementById(idAudio);
             if (el) {
                 el.currentTime = 0;
-                el.play();
+                el.play().catch(() => {});
             }
         }
 
@@ -788,19 +1036,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
 
                 if (acertosEtapa2 === TOTAL_ETAPA2) {
                     setTimeout(() => {
-                        fetch(window.location.href, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                            body: 'concluir_fase=1'
-                        }).finally(() => {
-                            document.getElementById('tela-parabens').classList.remove('esconder');
-                            gerarConfetes();
-                            tocarSom('somParabens');
-                            
-                            setTimeout(() => {
-                                window.location.href = "nivel2.php";
-                            }, 4500);
-                        });
+                        mudarEtapa('etapa2', 'etapa3');
                     }, 1000);
                 }
             } else {
@@ -825,6 +1061,104 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
                 confete.style.animationDelay = `${Math.random() * 2}s`;
                 container.appendChild(confete);
             }
+        }
+
+        /* ETAPA 3 */
+        let acertosEtapa3 = 0;
+        const TOTAL_ETAPA3 = 5;
+
+        function soltarSilabaEtapa3(e) {
+            e.preventDefault();
+            const dropzone = e.currentTarget;
+            dropzone.classList.remove('hover-drop');
+
+            if (dropzone.classList.contains('concluido')) return;
+
+            const silabaArrastada = (e.dataTransfer.getData("text/plain") || "").trim().toUpperCase();
+            const silabaEsperada = (dropzone.dataset.esperado || "").trim().toUpperCase();
+
+            if (silabaArrastada && silabaArrastada === silabaEsperada) {
+                tocarSom('somAcerto');
+
+                dropzone.textContent = silabaEsperada;
+                dropzone.classList.add('concluido');
+
+                const arrastaveis = document.querySelectorAll(`#etapa3 .silaba-opcao[data-silaba="${silabaEsperada}"]`);
+                for (let arrastavel of arrastaveis) {
+                    if (arrastavel.style.visibility !== 'hidden') {
+                        arrastavel.style.visibility = 'hidden';
+                        break;
+                    }
+                }
+
+                acertosEtapa3++;
+
+                if (acertosEtapa3 >= TOTAL_ETAPA3) {
+                    setTimeout(() => {
+                        mudarEtapa('etapa3', 'etapa4');
+                    }, 800);
+                }
+            } else {
+                tocarSom('somErro');
+                mostrarErroArraste(dropzone);
+            }
+        }
+
+        /* ETAPA 4 - ARRASTAR IMAGENS */
+        let acertosEtapa4 = 0;
+        const TOTAL_ETAPA4 = 10;
+        let idImagemArrastada = null;
+
+        function arrastarImagemE4(e) {
+            idImagemArrastada = e.currentTarget.id;
+            e.dataTransfer.setData("text/plain", e.currentTarget.id);
+        }
+
+        function soltarImagemEtapa4(e) {
+            e.preventDefault();
+            const dropzone = e.currentTarget;
+            dropzone.classList.remove('hover-drop');
+
+            const imgId = e.dataTransfer.getData("text/plain") || idImagemArrastada;
+            const cardImg = document.getElementById(imgId);
+
+            if (!cardImg || cardImg.style.visibility === 'hidden') return;
+
+            const silabaEsperada = (dropzone.dataset.esperado || "").trim().toUpperCase();
+            const silabaImagem = (cardImg.dataset.silabaCorreta || "").trim().toUpperCase();
+
+            if (silabaImagem === silabaEsperada) {
+                tocarSom('somAcerto');
+                cardImg.style.visibility = 'hidden';
+                cardImg.style.pointerEvents = 'none';
+
+                acertosEtapa4++;
+
+                if (acertosEtapa4 >= TOTAL_ETAPA4) {
+                    setTimeout(() => {
+                        concluirAtividade();
+                    }, 800);
+                }
+            } else {
+                tocarSom('somErro');
+                mostrarErroArraste(cardImg);
+            }
+        }
+
+        function concluirAtividade() {
+            document.getElementById('tela-parabens').classList.remove('esconder');
+            gerarConfetes();
+            tocarSom('somParabens');
+
+            fetch(window.location.href, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'concluir_fase=1'
+            }).catch(err => console.error("Erro ao registrar progresso:", err));
+
+            setTimeout(() => {
+                window.location.href = "nivel2.php";
+            }, 4500);
         }
 
         const audioFundo = document.getElementById('somFundo');

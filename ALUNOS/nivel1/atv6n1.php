@@ -656,6 +656,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
                     <span>MELANCIA</span>
                     <img src="../img/melancia.png" alt="Melancia">
                 </button>
+                <button class="btn-palavra" onclick="tocarSom('somMacaco')">
+                    <span>MACACO</span>
+                    <img src="../img/macaco.png" alt="Macaco">
+                </button>
             </div>
         </div>
         <button class="btn-avancar" onclick="mudarEtapa('etapa2', 'etapa3')">➔</button>
@@ -690,19 +694,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
                     <span>NUVENS</span>
                     <img src="../img/Nuvens.png" alt="Nuvens">
                 </button>
+                <button class="btn-palavra" onclick="tocarSom('somNavio')">
+                    <span>NAVIO</span>
+                    <img src="../img/Navio.png" alt="Navio">
+                </button>
+                <button class="btn-palavra" onclick="tocarSom('somNave')">
+                    <span>NAVE</span>
+                    <img src="../img/Nave.png" alt="Nave">
+                </button>
             </div>
         </div>
         <button class="btn-avancar" onclick="mudarEtapa('etapa4', 'etapa5')">➔</button>
     </div>
 
-    <div id="etapa5" class="etapa-container etapa-simples esconder">
-        <div class="card-letra-wrapper">
-            <div class="card-letra">
-                <span>Oo</span>
+    <div id="etapa5" class="etapa-container esconder">
+        <div class="conteudo-etapa">
+            <div class="card-letra-wrapper">
+                <div class="card-letra">
+                    <span>Oo</span>
+                </div>
             </div>
+
             <button class="btn-som" onclick="tocarSom('somLetraO')" title="Ouvir som da letra O">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
             </button>
+
+            <div class="lista-palavras">
+                <button class="btn-palavra" onclick="tocarSom('somOculos')">
+                    <span>ÓCULOS</span>
+                    <img src="../img/Oculos.png" alt="Oculos">
+                </button>
+                <button class="btn-palavra" onclick="tocarSom('somOvo')">
+                    <span>OVO</span>
+                    <img src="../img/Ovo.png" alt="Ovo">
+                </button>
+                <button class="btn-palavra" onclick="tocarSom('somOvelha')">
+                    <span>OVELHA</span>
+                    <img src="../img/Ovelha.png" alt="Ovelha">
+                </button>
+            </div>
         </div>
         <button class="btn-avancar" onclick="mudarEtapa('etapa5', 'etapa6')">➔</button>
     </div>
@@ -710,13 +740,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
     <div id="etapa6" class="esconder">
         <div class="jogo-wrapper-etapa6">
             <div class="painel-dropzones">
+                
+            <button class="btn-som" onclick="tocarSom('audioInstrucao')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                </button>
                 <div class="card-drop" data-letra="m" ondragover="permitirSoltar(event)" ondragleave="sairDrop(event)" ondrop="soltar(event)">
                     <span>Mm</span>
                 </div>
-
-                <button class="btn-som" onclick="tocarSom('audioInstrucao')">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-                </button>
 
                 <div class="card-drop" data-letra="n" ondragover="permitirSoltar(event)" ondragleave="sairDrop(event)" ondrop="soltar(event)">
                     <span>Nn</span>
@@ -752,13 +782,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
 
     <div id="etapa7" class="esconder">
         <div class="painel-letras">
+            
+        <button class="btn-som" onclick="tocarSom('audioInstrucao')" title="Ouvir instrução">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            </button>
+
             <div class="card-letra-arrastavel" draggable="true" ondragstart="arrastarLetra(event)" id="letra-M" data-letra="m">
                 <span>Mm</span>
             </div>
-
-            <button class="btn-som" onclick="tocarSom('audioInstrucao')" title="Ouvir instrução">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-            </button>
 
             <div class="card-letra-arrastavel" draggable="true" ondragstart="arrastarLetra(event)" id="letra-N" data-letra="n">
                 <span>Nn</span>
@@ -772,17 +803,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
         <div class="grid-palavras-jogo">
             <div class="card-palavra-drop" data-correta="m" data-resto="AÇÃ" data-audio="somMaca" ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
                 <span class="texto-palavra">_AÇÃ</span>
-                <img src="../img/maca.png" alt="Maçã" class="imagem-palavra">
+                <img src="../img/maca.png" alt="Maçã" class="imagem-palavra" onerror="this.parentElement.classList.add('esconder')">
+            </div>
+
+            <div class="card-palavra-drop" data-correta="n" data-resto="AVIO" data-audio="somMaca" ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
+                <span class="texto-palavra">_AVIO</span>
+                <img src="../img/navio.png" alt="Navio" class="imagem-palavra" onerror="this.parentElement.classList.add('esconder')">
+            </div>
+
+            <div class="card-palavra-drop" data-correta="o" data-resto="CULOS" data-audio="somMaca" ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
+                <span class="texto-palavra">_CULOS</span>
+                <img src="../img/oculos.png" alt="Oculos" class="imagem-palavra" onerror="this.parentElement.classList.add('esconder')">
+            </div>
+
+            <div class="card-palavra-drop" data-correta="n" data-resto="AVE" data-audio="somNave" ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
+                <span class="texto-palavra">_AVE</span>
+                <img src="../img/Nave.png" alt="Nave" class="imagem-palavra" onerror="this.parentElement.classList.add('esconder')">
+            </div>
+
+            <div class="card-palavra-drop" data-correta="m" data-resto="ELANCIA" data-audio="somMaca" ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
+                <span class="texto-palavra">_ELANCIA</span>
+                <img src="../img/melancia.png" alt="Melancia" class="imagem-palavra" onerror="this.parentElement.classList.add('esconder')">
+            </div>
+
+            <div class="card-palavra-drop" data-correta="o" data-resto="VO" data-audio="somOvo" ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
+                <span class="texto-palavra">_VO</span>
+                <img src="../img/ovo.png" alt="Ovo" class="imagem-palavra" onerror="this.parentElement.classList.add('esconder')">
             </div>
 
             <div class="card-palavra-drop" data-correta="n" data-resto="UVENS" data-audio="somNuvens" ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
                 <span class="texto-palavra">_UVENS</span>
-                <img src="../img/Nuvens.png" alt="Nuvens" class="imagem-palavra">
+                <img src="../img/Nuvens.png" alt="Nuvens" class="imagem-palavra" onerror="this.parentElement.classList.add('esconder')">
             </div>
 
-            <div class="card-palavra-drop" data-correta="m" data-resto="ELANCIA" data-audio="somMelancia" ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
-                <span class="texto-palavra">_ELANCIA</span>
-                <img src="../img/melancia.png" alt="Melancia" class="imagem-palavra">
+            <div class="card-palavra-drop" data-correta="m" data-resto="ACACO" data-audio="somMelancia" ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
+                <span class="texto-palavra">_ACACO</span>
+                <img src="../img/Macaco.png" alt="Macaco" class="imagem-palavra" onerror="this.parentElement.classList.add('esconder')">
+            </div>
+
+            <div class="card-palavra-drop" data-correta="o" data-resto="VELHA" data-audio="somOvelha" ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
+                <span class="texto-palavra">_VELHA</span>
+                <img src="../img/Ovelha.png" alt="Ovelha" class="imagem-palavra" onerror="this.parentElement.classList.add('esconder')">
             </div>
         </div>
     </div>
@@ -794,7 +855,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
 
     <audio id="somMaca" src="../audios/Maçã.mp3"></audio>
     <audio id="somMelancia" src="../audios/Melância.mp3"></audio>
+    <audio id="somMacaco" src="../audios/Macaco.mp3"></audio>
+
+    <audio id="somOvo" src="../audios/Ovo.mp3"></audio>
+    <audio id="somOculos" src="../audios/Oculos.mp3"></audio>
+    <audio id="somOvelha" src="../audios/Ovelha.mp3"></audio>
+
+    <audio id="somNavio" src="../audios/Navio.mp3"></audio>
+    <audio id="somNave" src="../audios/Nave.mp3"></audio>
     <audio id="somNuvens" src="../audios/Nuvens.mp3"></audio>
+
     
     <audio id="somAcerto" src="../audios/acerto.mp3"></audio>
     <audio id="somErro" src="../audios/erro.mp3"></audio>
@@ -816,6 +886,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             document.getElementById(proximaEtapa).classList.remove('esconder');
             if (proximaEtapa === 'etapa6') {
                 tocarSom('audioInstrucao');
+            }
+            if (proximaEtapa === 'etapa7') {
+                const total = contarPalavrasVisiveis();
+                acertosEtapa7 = 0;
+                TOTAL_ACERTOS_ETAPA7 = total;
+                if (total === 0) {
+                    concluirFase();
+                } else {
+                    tocarSom('audioInstrucao');
+                }
             }
         }
 
@@ -839,7 +919,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
         }
 
         let acertos = 0;
-        const TOTAL_ACERTOS = 3;
+        const TOTAL_ACERTOS = 9;
 
         function arrastar(event) {
             event.dataTransfer.setData("text/plain", event.target.id);
@@ -885,8 +965,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             }
         }
 
+        function contarPalavrasVisiveis() {
+            let total = 0;
+            document.querySelectorAll('#etapa7 .card-palavra-drop').forEach((card) => {
+                const img = card.querySelector('img.imagem-palavra');
+                if (img && img.complete && img.naturalWidth > 0) total++;
+            });
+            return total;
+        }
+
+        function concluirFase() {
+            fetch('atv6n1.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'concluir_fase=1'
+            }).finally(() => {
+                setTimeout(() => {
+                    const telaParabens = document.getElementById('tela-parabens');
+                    if (telaParabens) {
+                        telaParabens.classList.remove('esconder');
+                        gerarConfetes();
+                        tocarSom('somParabens');
+                    }
+                    setTimeout(() => {
+                        window.location.href = "nivel1.php";
+                    }, 4500);
+                }, 600);
+            });
+        }
+
         let acertosEtapa7 = 0;
-        const TOTAL_ACERTOS_ETAPA7 = 3;
+        let TOTAL_ACERTOS_ETAPA7 = 9;
 
         function arrastarLetra(event) {
             event.dataTransfer.setData("text/plain", event.target.dataset.letra);
@@ -931,25 +1040,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
                 }
 
                 if (acertosEtapa7 === TOTAL_ACERTOS_ETAPA7) {
-                    setTimeout(() => {
-                        fetch('atv6n1.php', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                            body: 'concluir_fase=1'
-                        }).finally(() => {
-                            setTimeout(() => {
-                                const telaParabens = document.getElementById('tela-parabens');
-                                if (telaParabens) {
-                                    telaParabens.classList.remove('esconder');
-                                    gerarConfetes();
-                                    tocarSom('somParabens');
-                                }
-                                setTimeout(() => {
-                                    window.location.href = "nivel1.php";
-                                }, 4500);
-                            }, 600);
-                        });
-                    }, 1000);
+                    setTimeout(() => concluirFase(), 1000);
                 }
             } else {
                 tocarSom('somErro');
