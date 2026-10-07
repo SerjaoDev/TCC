@@ -20,6 +20,8 @@ $atividades_arquivos = [
     8  => 'atv8n1.php',
     9  => 'atv9n1.php',
     10 => 'atv10n1.php',
+    11 => 'vogais.php',
+    12 => 'prova.php',
 ];
 
 $aluno_id = $_SESSION['aluno_id'] ?? 1;
