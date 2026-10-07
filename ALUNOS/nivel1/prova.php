@@ -2,864 +2,703 @@
 session_start();
 require_once '../conexao.php';
 
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-$aluno_id = $_SESSION['aluno_id'] ?? 1;
-
-/*
-|--------------------------------------------------------------------------
-| SALVAR RESULTADO DA PROVA
-|--------------------------------------------------------------------------
-*/
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['salvar_prova'])) {
-
-    header('Content-Type: application/json; charset=utf-8');
-
-    $nota = isset($_POST['nota']) ? (int) $_POST['nota'] : 0;
-    $total = isset($_POST['total']) ? (int) $_POST['total'] : 20;
-
-    if ($nota < 0) {
-        $nota = 0;
-    }
-
-    if ($nota > $total) {
-        $nota = $total;
-    }
-
-    $percentual = $total > 0
-        ? round(($nota / $total) * 100, 2)
-        : 0;
-
-    try {
-        $stmt = $pdo->prepare("
-            INSERT INTO provas
-            (aluno_id, nota, total, percentual)
-            VALUES
-            (:aluno_id, :nota, :total, :percentual)
-        ");
-
-        $stmt->execute([
-            ':aluno_id' => $aluno_id,
-            ':nota' => $nota,
-            ':total' => $total,
-            ':percentual' => $percentual
-        ]);
-
-        echo json_encode([
-            'status' => 'sucesso',
-            'nota' => $nota,
-            'total' => $total,
-            'percentual' => $percentual
-        ]);
-
-    } catch (PDOException $e) {
-
-        echo json_encode([
-            'status' => 'erro',
-            'mensagem' => $e->getMessage()
-        ]);
-    }
-
-    exit;
-}
-?>
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); $aluno_id = $_SESSION['aluno_id'] ?? 1; if
+($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['salvar_prova'])) { header('Content-Type: application/json;
+charset=utf-8'); $nota = isset($_POST['nota']) ? (int) $_POST['nota'] : 0; $total = isset($_POST['total']) ? (int)
+$_POST['total'] : 20; if ($nota < 0) { $nota = 0; } if ($nota > $total) { $nota = $total; } $percentual = $total > 0 ?
+round(($nota / $total) * 100, 2) : 0; try { $stmt = $pdo->prepare(" INSERT INTO provas (aluno_id, nota, total,
+percentual) VALUES (:aluno_id, :nota, :total, :percentual) "); $stmt->execute([ ':aluno_id' => $aluno_id, ':nota' =>
+$nota, ':total' => $total, ':percentual' => $percentual ]); echo json_encode([ 'status' => 'sucesso', 'nota' => $nota,
+'total' => $total, 'percentual' => $percentual ]); } catch (PDOException $e) { echo json_encode([ 'status' => 'erro',
+'mensagem' => $e->getMessage() ]); } exit; } ?>
 
 <!DOCTYPE html>
 <html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>LUMI - Prova Final do Alfabeto</title>
 
-    <link rel="icon" type="image/png" href="../img/logo.png">
+    <link rel="icon" type="image/png" href="../img/logo.png" />
 
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Fredoka', 'Comic Sans MS', sans-serif;
-            min-height: 100vh;
-            background: #f7f3cb;
-            color: #1a1a1a;
-            overflow-x: hidden;
-        }
-
-        /* =========================================================
-           FUNDO
-        ========================================================= */
-
-        .fundo {
-            position: fixed;
-            inset: 0;
-            overflow: hidden;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .bolha {
-            position: absolute;
-            border-radius: 50%;
-        }
-
-        .bolha1 {
-            width: 280px;
-            height: 280px;
-            background: #b1e0a8;
-            top: -80px;
-            right: 10%;
-        }
-
-        .bolha2 {
-            width: 300px;
-            height: 300px;
-            background: #f7d3ca;
-            bottom: -100px;
-            left: 10%;
-        }
-
-        .bolha3 {
-            width: 220px;
-            height: 220px;
-            background: #a8c3d1;
-            top: 30%;
-            left: -100px;
-        }
-
-        .bolha4 {
-            width: 250px;
-            height: 250px;
-            background: #fce892;
-            right: -80px;
-            bottom: 10%;
-        }
-
-        /* =========================================================
-           BOTÃO VOLTAR
-        ========================================================= */
-
-        .btn-voltar {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 100;
-
-            width: 48px;
-            height: 48px;
-
-            border: 3px solid #1a1a1a;
-            border-radius: 50%;
-
-            background: white;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            text-decoration: none;
-
-            color: #1a1a1a;
-            font-size: 24px;
-            font-weight: bold;
-
-            box-shadow: 0 5px 0 #1a1a1a;
-
-            transition: .2s;
-        }
-
-        .btn-voltar:hover {
-            transform: translateY(-2px);
-        }
-
-        /* =========================================================
-           CONTAINER
-        ========================================================= */
+      * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+      }
+
+      body {
+          font-family: 'Fredoka', 'Comic Sans MS', sans-serif;
+          min-height: 100vh;
+          background: #f7f3cb;
+          color: #1a1a1a;
+          overflow-x: hidden;
+      }
+
+      .fundo {
+          position: fixed;
+          inset: 0;
+          overflow: hidden;
+          pointer-events: none;
+          z-index: 0;
+      }
+
+      .bolha {
+          position: absolute;
+          border-radius: 50%;
+      }
+
+      .bolha1 {
+          width: 280px;
+          height: 280px;
+          background: #b1e0a8;
+          top: -80px;
+          right: 10%;
+      }
+
+      .bolha2 {
+          width: 300px;
+          height: 300px;
+          background: #f7d3ca;
+          bottom: -100px;
+          left: 10%;
+      }
+
+      .bolha3 {
+          width: 220px;
+          height: 220px;
+          background: #a8c3d1;
+          top: 30%;
+          left: -100px;
+      }
+
+      .bolha4 {
+          width: 250px;
+          height: 250px;
+          background: #fce892;
+          right: -80px;
+          bottom: 10%;
+      }
+
+      .btn-voltar {
+          position: fixed;
+          top: 20px;
+          left: 20px;
+          z-index: 100;
+
+          width: 48px;
+          height: 48px;
+
+          border: 3px solid #1a1a1a;
+          border-radius: 50%;
+
+          background: white;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          text-decoration: none;
+
+          color: #1a1a1a;
+          font-size: 24px;
+          font-weight: bold;
+
+          box-shadow: 0 5px 0 #1a1a1a;
+
+          transition: .2s;
+      }
+
+      .btn-voltar:hover {
+          transform: translateY(-2px);
+      }
+
+      .pagina {
+          position: relative;
+          z-index: 5;
+
+          min-height: 100vh;
+
+          display: flex;
+          justify-content: center;
+          align-items: center;
 
-        .pagina {
-            position: relative;
-            z-index: 5;
+          padding: 35px 20px;
+      }
 
-            min-height: 100vh;
+      .prova {
+          width: 100%;
+          max-width: 900px;
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+      }
 
-            padding: 35px 20px;
-        }
+      .cabecalho {
+          width: 100%;
+          max-width: 750px;
+          text-align: center;
 
-        .prova {
-            width: 100%;
-            max-width: 900px;
+          margin-bottom: 20px;
+      }
 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+      .titulo {
+          font-size: 42px;
+          font-weight: 900;
 
-        /* =========================================================
-           CABEÇALHO
-        ========================================================= */
+          color: #ff5252;
 
-        .cabecalho {
-            width: 100%;
-            max-width: 750px;
-            text-align: center;
+          text-shadow:
+              2px 2px 0 white,
+              -2px -2px 0 white,
+              2px -2px 0 white,
+              -2px 2px 0 white;
+      }
 
-            margin-bottom: 20px;
-        }
+      .subtitulo {
+          font-size: 22px;
+          font-weight: bold;
 
-        .titulo {
-            font-size: 42px;
-            font-weight: 900;
+          margin-top: 5px;
+      }
 
-            color: #ff5252;
+      .progresso-area {
+          width: 100%;
+          max-width: 700px;
 
-            text-shadow:
-                2px 2px 0 white,
-                -2px -2px 0 white,
-                2px -2px 0 white,
-                -2px 2px 0 white;
-        }
+          margin-bottom: 25px;
+      }
 
-        .subtitulo {
-            font-size: 22px;
-            font-weight: bold;
+      .progresso-info {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
 
-            margin-top: 5px;
-        }
+          font-size: 18px;
+          font-weight: bold;
 
-        /* =========================================================
-           PROGRESSO
-        ========================================================= */
+          margin-bottom: 8px;
+      }
 
-        .progresso-area {
-            width: 100%;
-            max-width: 700px;
+      .barra {
+          width: 100%;
+          height: 18px;
 
-            margin-bottom: 25px;
-        }
+          background: white;
 
-        .progresso-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+          border: 3px solid #1a1a1a;
+          border-radius: 20px;
 
-            font-size: 18px;
-            font-weight: bold;
+          overflow: hidden;
+      }
 
-            margin-bottom: 8px;
-        }
+      .barra-progresso {
+          width: 0%;
+          height: 100%;
 
-        .barra {
-            width: 100%;
-            height: 18px;
+          background: #4cd964;
 
-            background: white;
+          transition: width .4s ease;
+      }
 
-            border: 3px solid #1a1a1a;
-            border-radius: 20px;
+      .card-questao {
+          width: 100%;
+          max-width: 760px;
 
-            overflow: hidden;
-        }
+          background: rgba(255, 255, 255, .94);
 
-        .barra-progresso {
-            width: 0%;
-            height: 100%;
+          border: 4px solid #1a1a1a;
+          border-radius: 35px;
 
-            background: #4cd964;
+          padding: 30px;
 
-            transition: width .4s ease;
-        }
+          box-shadow: 0 9px 0 #1a1a1a;
 
-        /* =========================================================
-           CARD DA QUESTÃO
-        ========================================================= */
+          text-align: center;
+      }
 
-        .card-questao {
-            width: 100%;
-            max-width: 760px;
+      .numero-questao {
+          font-size: 18px;
+          font-weight: bold;
+          color: #7e57c2;
 
-            background: rgba(255, 255, 255, .94);
+          margin-bottom: 8px;
+      }
 
-            border: 4px solid #1a1a1a;
-            border-radius: 35px;
+      .instrucao {
+          font-size: 27px;
+          font-weight: 900;
 
-            padding: 30px;
+          margin-bottom: 20px;
+      }
 
-            box-shadow: 0 9px 0 #1a1a1a;
+      .btn-audio {
+          width: 72px;
+          height: 72px;
 
-            text-align: center;
-        }
+          border-radius: 50%;
 
-        .numero-questao {
-            font-size: 18px;
-            font-weight: bold;
-            color: #7e57c2;
+          border: 3px solid #1a1a1a;
 
-            margin-bottom: 8px;
-        }
+          background: #fde05f;
 
-        .instrucao {
-            font-size: 27px;
-            font-weight: 900;
+          cursor: pointer;
 
-            margin-bottom: 20px;
-        }
+          display: flex;
+          align-items: center;
+          justify-content: center;
 
-        /* =========================================================
-           ÁUDIO
-        ========================================================= */
+          margin: 0 auto 20px;
 
-        .btn-audio {
-            width: 72px;
-            height: 72px;
+          box-shadow: 0 5px 0 #1a1a1a;
 
-            border-radius: 50%;
+          transition: .15s;
+      }
 
-            border: 3px solid #1a1a1a;
+      .btn-audio:hover {
+          transform: scale(1.05);
+      }
 
-            background: #fde05f;
+      .btn-audio:active {
+          transform: translateY(4px);
+          box-shadow: 0 1px 0 #1a1a1a;
+      }
 
-            cursor: pointer;
+      .btn-audio svg {
+          width: 34px;
+          height: 34px;
+      }
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+      .imagem-questao {
+          width: 150px;
+          height: 150px;
 
-            margin: 0 auto 20px;
+          object-fit: contain;
 
-            box-shadow: 0 5px 0 #1a1a1a;
+          margin: 5px auto 20px;
 
-            transition: .15s;
-        }
+          display: block;
+      }
 
-        .btn-audio:hover {
-            transform: scale(1.05);
-        }
+      .letra-grande {
+          width: 180px;
+          height: 180px;
 
-        .btn-audio:active {
-            transform: translateY(4px);
-            box-shadow: 0 1px 0 #1a1a1a;
-        }
+          margin: 0 auto 20px;
 
-        .btn-audio svg {
-            width: 34px;
-            height: 34px;
-        }
+          background: #fde05f;
 
-        /* =========================================================
-           IMAGEM
-        ========================================================= */
+          border: 4px solid #1a1a1a;
+          border-radius: 35px;
 
-        .imagem-questao {
-            width: 150px;
-            height: 150px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
 
-            object-fit: contain;
+          box-shadow: 0 8px 0 #1a1a1a;
 
-            margin: 5px auto 20px;
+          font-size: 85px;
+          font-weight: 900;
+      }
 
-            display: block;
-        }
+      .palavra-grande {
+          font-size: 48px;
+          font-weight: 900;
+          letter-spacing: 4px;
 
-        /* =========================================================
-           LETRA GRANDE
-        ========================================================= */
+          margin: 15px 0 25px;
+      }
 
-        .letra-grande {
-            width: 180px;
-            height: 180px;
+      .lacuna {
+          color: #ff5252;
+      }
 
-            margin: 0 auto 20px;
+      .alternativas {
+          display: grid;
 
-            background: #fde05f;
+          grid-template-columns: repeat(2, 1fr);
 
-            border: 4px solid #1a1a1a;
-            border-radius: 35px;
+          gap: 15px;
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+          width: 100%;
+          max-width: 580px;
 
-            box-shadow: 0 8px 0 #1a1a1a;
+          margin: 0 auto;
+      }
 
-            font-size: 85px;
-            font-weight: 900;
-        }
+      .alternativa {
+          min-height: 70px;
 
-        /* =========================================================
-           PALAVRA
-        ========================================================= */
+          border: 3px solid #1a1a1a;
+          border-radius: 22px;
 
-        .palavra-grande {
-            font-size: 48px;
-            font-weight: 900;
-            letter-spacing: 4px;
+          background: #fde05f;
 
-            margin: 15px 0 25px;
-        }
+          box-shadow: 0 6px 0 #1a1a1a;
 
-        .lacuna {
-            color: #ff5252;
-        }
+          cursor: pointer;
 
-        /* =========================================================
-           ALTERNATIVAS
-        ========================================================= */
+          font-family: inherit;
 
-        .alternativas {
-            display: grid;
+          font-size: 30px;
+          font-weight: 900;
 
-            grid-template-columns: repeat(2, 1fr);
+          transition: .15s;
 
-            gap: 15px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+      }
 
-            width: 100%;
-            max-width: 580px;
+      .alternativa:hover:not(:disabled) {
+          transform: translateY(-3px);
+          background: #fff29c;
+      }
 
-            margin: 0 auto;
-        }
+      .alternativa:active:not(:disabled) {
+          transform: translateY(3px);
+          box-shadow: 0 2px 0 #1a1a1a;
+      }
 
-        .alternativa {
-            min-height: 70px;
+      .alternativa:disabled {
+          cursor: default;
+      }
 
-            border: 3px solid #1a1a1a;
-            border-radius: 22px;
+      .alternativa.correta {
+          background: #4cd964 !important;
+          color: #000;
+      }
 
-            background: #fde05f;
+      .alternativa.errada {
+          background: #ff8a80 !important;
+      }
 
-            box-shadow: 0 6px 0 #1a1a1a;
+      .feedback {
+          min-height: 42px;
 
-            cursor: pointer;
+          margin-top: 20px;
 
-            font-family: inherit;
+          font-size: 22px;
+          font-weight: 900;
+      }
 
-            font-size: 30px;
-            font-weight: 900;
+      .feedback.acerto {
+          color: #22a447;
+      }
 
-            transition: .15s;
+      .feedback.erro {
+          color: #e53935;
+      }
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+      .btn-proxima {
+          width: 100%;
+          max-width: 580px;
 
-        .alternativa:hover:not(:disabled) {
-            transform: translateY(-3px);
-            background: #fff29c;
-        }
+          height: 55px;
 
-        .alternativa:active:not(:disabled) {
-            transform: translateY(3px);
-            box-shadow: 0 2px 0 #1a1a1a;
-        }
+          margin-top: 15px;
 
-        .alternativa:disabled {
-            cursor: default;
-        }
+          border: 3px solid #1a1a1a;
+          border-radius: 30px;
 
-        .alternativa.correta {
-            background: #4cd964 !important;
-            color: #000;
-        }
+          background: #42a5f5;
 
-        .alternativa.errada {
-            background: #ff8a80 !important;
-        }
+          color: white;
 
-        /* =========================================================
-           FEEDBACK
-        ========================================================= */
+          font-family: inherit;
 
-        .feedback {
-            min-height: 42px;
+          font-size: 25px;
+          font-weight: 900;
 
-            margin-top: 20px;
+          cursor: pointer;
 
-            font-size: 22px;
-            font-weight: 900;
-        }
+          box-shadow: 0 6px 0 #1a1a1a;
 
-        .feedback.acerto {
-            color: #22a447;
-        }
+          transition: .15s;
+      }
 
-        .feedback.erro {
-            color: #e53935;
-        }
+      .btn-proxima:hover {
+          transform: translateY(-2px);
+      }
 
-        /* =========================================================
-           BOTÃO PRÓXIMA
-        ========================================================= */
+      .btn-proxima:active {
+          transform: translateY(3px);
+          box-shadow: 0 2px 0 #1a1a1a;
+      }
 
-        .btn-proxima {
-            width: 100%;
-            max-width: 580px;
+      .btn-proxima:disabled {
+          display: none;
+      }
 
-            height: 55px;
+      #resultado {
+          position: fixed;
 
-            margin-top: 15px;
+          inset: 0;
 
-            border: 3px solid #1a1a1a;
-            border-radius: 30px;
+          z-index: 1000;
 
-            background: #42a5f5;
+          background: #fbf5c8;
 
-            color: white;
+          display: none;
 
-            font-family: inherit;
+          justify-content: center;
+          align-items: center;
 
-            font-size: 25px;
-            font-weight: 900;
+          padding: 25px;
 
-            cursor: pointer;
+          overflow: hidden;
+      }
 
-            box-shadow: 0 6px 0 #1a1a1a;
+      #resultado.mostrar {
+          display: flex;
+      }
 
-            transition: .15s;
-        }
+      .resultado-conteudo {
+          position: relative;
+          z-index: 5;
 
-        .btn-proxima:hover {
-            transform: translateY(-2px);
-        }
+          width: 100%;
+          max-width: 650px;
 
-        .btn-proxima:active {
-            transform: translateY(3px);
-            box-shadow: 0 2px 0 #1a1a1a;
-        }
+          text-align: center;
 
-        .btn-proxima:disabled {
-            display: none;
-        }
+          background: white;
 
-        /* =========================================================
-           TELA FINAL
-        ========================================================= */
+          border: 4px solid #1a1a1a;
+          border-radius: 40px;
 
-        #resultado {
-            position: fixed;
+          padding: 40px 30px;
 
-            inset: 0;
+          box-shadow: 0 10px 0 #1a1a1a;
+      }
 
-            z-index: 1000;
+      .resultado-titulo {
+          font-size: 52px;
+          font-weight: 900;
 
-            background: #fbf5c8;
+          color: #ff5252;
 
-            display: none;
+          margin-bottom: 10px;
+      }
 
-            justify-content: center;
-            align-items: center;
+      .mascote {
+          width: 150px;
+          max-width: 45vw;
 
-            padding: 25px;
+          margin: 10px auto;
 
-            overflow: hidden;
-        }
+          object-fit: contain;
+      }
 
-        #resultado.mostrar {
-            display: flex;
-        }
+      .estrelas {
+          font-size: 45px;
 
-        .resultado-conteudo {
-            position: relative;
-            z-index: 5;
+          margin: 10px 0;
+      }
 
-            width: 100%;
-            max-width: 650px;
+      .resultado-nota {
+          font-size: 30px;
+          font-weight: 900;
 
-            text-align: center;
+          margin: 10px 0;
+      }
 
-            background: white;
+      .resultado-mensagem {
+          font-size: 22px;
+          font-weight: bold;
 
-            border: 4px solid #1a1a1a;
-            border-radius: 40px;
+          line-height: 1.4;
 
-            padding: 40px 30px;
+          margin: 15px auto;
 
-            box-shadow: 0 10px 0 #1a1a1a;
-        }
+          max-width: 500px;
+      }
 
-        .resultado-titulo {
-            font-size: 52px;
-            font-weight: 900;
+      .btn-final {
+          display: inline-flex;
 
-            color: #ff5252;
+          min-height: 55px;
 
-            margin-bottom: 10px;
-        }
+          padding: 0 35px;
 
-        .mascote {
-            width: 150px;
-            max-width: 45vw;
+          border-radius: 30px;
 
-            margin: 10px auto;
+          border: 3px solid #1a1a1a;
 
-            object-fit: contain;
-        }
+          background: #fde05f;
 
-        .estrelas {
-            font-size: 45px;
+          box-shadow: 0 6px 0 #1a1a1a;
 
-            margin: 10px 0;
-        }
+          text-decoration: none;
 
-        .resultado-nota {
-            font-size: 30px;
-            font-weight: 900;
+          align-items: center;
+          justify-content: center;
 
-            margin: 10px 0;
-        }
+          color: #1a1a1a;
 
-        .resultado-mensagem {
-            font-size: 22px;
-            font-weight: bold;
+          font-family: inherit;
 
-            line-height: 1.4;
+          font-size: 22px;
+          font-weight: 900;
 
-            margin: 15px auto;
+          margin-top: 15px;
 
-            max-width: 500px;
-        }
+          cursor: pointer;
+      }
 
-        .btn-final {
-            display: inline-flex;
+      .btn-final:active {
+          transform: translateY(4px);
+          box-shadow: 0 2px 0 #1a1a1a;
+      }
 
-            min-height: 55px;
+      .confete {
+          position: absolute;
 
-            padding: 0 35px;
+          top: -30px;
 
-            border-radius: 30px;
+          width: 12px;
+          height: 20px;
 
-            border: 3px solid #1a1a1a;
+          animation: cair linear forwards;
 
-            background: #fde05f;
+          z-index: 1;
+      }
 
-            box-shadow: 0 6px 0 #1a1a1a;
+      @keyframes cair {
 
-            text-decoration: none;
+          from {
+              transform:
+                  translateY(-30px) rotate(0deg);
+          }
 
-            align-items: center;
-            justify-content: center;
+          to {
+              transform:
+                  translateY(110vh) rotate(720deg);
+          }
+      }
 
-            color: #1a1a1a;
+      @media (max-width: 650px) {
 
-            font-family: inherit;
+          .pagina {
+              padding: 25px 12px;
+          }
 
-            font-size: 22px;
-            font-weight: 900;
+          .titulo {
+              font-size: 31px;
+          }
 
-            margin-top: 15px;
+          .subtitulo {
+              font-size: 18px;
+          }
 
-            cursor: pointer;
-        }
+          .card-questao {
+              padding: 22px 15px;
+              border-radius: 28px;
+          }
 
-        .btn-final:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 #1a1a1a;
-        }
+          .instrucao {
+              font-size: 22px;
+          }
 
-        /* =========================================================
-           CONFETES
-        ========================================================= */
+          .letra-grande {
+              width: 145px;
+              height: 145px;
 
-        .confete {
-            position: absolute;
+              font-size: 65px;
+          }
 
-            top: -30px;
+          .imagem-questao {
+              width: 125px;
+              height: 125px;
+          }
 
-            width: 12px;
-            height: 20px;
+          .palavra-grande {
+              font-size: 34px;
+          }
 
-            animation: cair linear forwards;
+          .alternativa {
+              min-height: 62px;
+              font-size: 25px;
+          }
 
-            z-index: 1;
-        }
+          .resultado-titulo {
+              font-size: 39px;
+          }
 
-        @keyframes cair {
+          .resultado-nota {
+              font-size: 25px;
+          }
+      }
 
-            from {
-                transform:
-                    translateY(-30px) rotate(0deg);
-            }
+      @media (max-width: 420px) {
 
-            to {
-                transform:
-                    translateY(110vh) rotate(720deg);
-            }
-        }
+          .alternativas {
+              grid-template-columns: 1fr 1fr;
+              gap: 10px;
+          }
 
-        /* =========================================================
-           RESPONSIVO
-        ========================================================= */
+          .alternativa {
+              font-size: 22px;
+              min-height: 58px;
+          }
 
-        @media (max-width: 650px) {
-
-            .pagina {
-                padding: 25px 12px;
-            }
-
-            .titulo {
-                font-size: 31px;
-            }
-
-            .subtitulo {
-                font-size: 18px;
-            }
-
-            .card-questao {
-                padding: 22px 15px;
-                border-radius: 28px;
-            }
-
-            .instrucao {
-                font-size: 22px;
-            }
-
-            .letra-grande {
-                width: 145px;
-                height: 145px;
-
-                font-size: 65px;
-            }
-
-            .imagem-questao {
-                width: 125px;
-                height: 125px;
-            }
-
-            .palavra-grande {
-                font-size: 34px;
-            }
-
-            .alternativa {
-                min-height: 62px;
-                font-size: 25px;
-            }
-
-            .resultado-titulo {
-                font-size: 39px;
-            }
-
-            .resultado-nota {
-                font-size: 25px;
-            }
-        }
-
-        @media (max-width: 420px) {
-
-            .alternativas {
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-
-            .alternativa {
-                font-size: 22px;
-                min-height: 58px;
-            }
-
-            .btn-voltar {
-                width: 42px;
-                height: 42px;
-                top: 12px;
-                left: 12px;
-            }
-        }
+          .btn-voltar {
+              width: 42px;
+              height: 42px;
+              top: 12px;
+              left: 12px;
+          }
+      }
     </style>
+  </head>
 
-</head>
-
-<body>
-
+  <body>
     <div class="fundo">
-        <div class="bolha bolha1"></div>
-        <div class="bolha bolha2"></div>
-        <div class="bolha bolha3"></div>
-        <div class="bolha bolha4"></div>
+      <div class="bolha bolha1"></div>
+      <div class="bolha bolha2"></div>
+      <div class="bolha bolha3"></div>
+      <div class="bolha bolha4"></div>
     </div>
 
-    <a href="nivel1.php" class="btn-voltar" title="Voltar">
-        ←
-    </a>
-
+    <a href="nivel1.php" class="btn-voltar" title="Voltar"> ← </a>
 
     <main class="pagina">
+      <section class="prova">
+        <header class="cabecalho">
+          <h1 class="titulo">🏆 Desafio do Alfabeto</h1>
 
-        <section class="prova">
+          <p class="subtitulo">Você aprendeu todas as letras! Vamos ver o que você lembra? 🌟</p>
+        </header>
 
-            <header class="cabecalho">
+        <div class="progresso-area">
+          <div class="progresso-info">
+            <span id="numeroQuestao"> Questão 1 de 20 </span>
 
-                <h1 class="titulo">
-                    🏆 Desafio do Alfabeto
-                </h1>
+            <span id="pontuacao"> ⭐ 0 </span>
+          </div>
 
-                <p class="subtitulo">
-                    Você aprendeu todas as letras! Vamos ver o que você lembra? 🌟
-                </p>
+          <div class="barra">
+            <div class="barra-progresso" id="barraProgresso"></div>
+          </div>
+        </div>
 
-            </header>
+        <section class="card-questao" id="cardQuestao">
+          <div class="numero-questao" id="tipoQuestao"></div>
 
+          <div class="instrucao" id="instrucao"></div>
 
-            <div class="progresso-area">
+          <div id="areaQuestao"></div>
 
-                <div class="progresso-info">
+          <div class="feedback" id="feedback"></div>
 
-                    <span id="numeroQuestao">
-                        Questão 1 de 20
-                    </span>
-
-                    <span id="pontuacao">
-                        ⭐ 0
-                    </span>
-
-                </div>
-
-                <div class="barra">
-
-                    <div class="barra-progresso" id="barraProgresso">
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <section class="card-questao" id="cardQuestao">
-
-                <div class="numero-questao" id="tipoQuestao">
-                </div>
-
-                <div class="instrucao" id="instrucao">
-                </div>
-
-                <div id="areaQuestao"></div>
-
-                <div class="feedback" id="feedback">
-                </div>
-
-                <button type="button" class="btn-proxima" id="btnProxima" disabled>
-
-                    Próxima ➜
-
-                </button>
-
-            </section>
-
+          <button type="button" class="btn-proxima" id="btnProxima" disabled>Próxima ➜</button>
         </section>
-
+      </section>
     </main>
-
-
-    <!-- =============================================================
-     ÁUDIOS
-============================================================= -->
 
     <?php
 
@@ -869,1147 +708,989 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['salvar_prova'])) {
 
         ?>
 
-        <audio id="somLetra<?= $letra ?>" src="../audios/Letra <?= $letra ?>.m4a" preload="auto">
-        </audio>
+    <audio id="somLetra<?= $letra ?>" src="../audios/Letra <?= $letra ?>.m4a" preload="auto"></audio>
 
     <?php endforeach; ?>
 
-    <audio id="somParabens" src="../audios/parabens.mp3" preload="auto">
-    </audio>
-
-
-    <!-- =============================================================
-     RESULTADO
-============================================================= -->
+    <audio id="somParabens" src="../audios/parabens.mp3" preload="auto"></audio>
 
     <div id="resultado">
+      <div id="containerConfetes"></div>
 
-        <div id="containerConfetes">
-        </div>
+      <div class="resultado-conteudo">
+        <h2 class="resultado-titulo" id="resultadoTitulo">PARABÉNS!</h2>
 
-        <div class="resultado-conteudo">
+        <img src="../img/Luminho.png" alt="Lumi comemorando" class="mascote" onerror="this.src='../img/Luminho.png'" />
 
-            <h2 class="resultado-titulo" id="resultadoTitulo">
-                PARABÉNS!
-            </h2>
+        <div class="estrelas" id="resultadoEstrelas">⭐⭐⭐⭐⭐</div>
 
-            <img src="../img/Luminho.png" alt="Lumi comemorando" class="mascote"
-                onerror="this.src='../img/Luminho.png'">
+        <div class="resultado-nota" id="resultadoNota">Você acertou 20 de 20!</div>
 
-            <div class="estrelas" id="resultadoEstrelas">
-                ⭐⭐⭐⭐⭐
-            </div>
+        <p class="resultado-mensagem" id="resultadoMensagem"></p>
 
-            <div class="resultado-nota" id="resultadoNota">
-                Você acertou 20 de 20!
-            </div>
-
-            <p class="resultado-mensagem" id="resultadoMensagem">
-            </p>
-
-            <a href="nivel1.php" class="btn-final">
-                Voltar para a Trilha 🏠
-            </a>
-
-        </div>
-
+        <a href="nivel1.php" class="btn-final"> Voltar para a Trilha 🏠 </a>
+      </div>
     </div>
 
-
     <script>
+          const TOTAL_QUESTOES = 20;
 
-        /* ================================================================
-           CONFIGURAÇÃO
-        ================================================================ */
+          let questaoAtual = 0;
+          let pontuacao = 0;
+          let respondeu = false;
 
-        const TOTAL_QUESTOES = 20;
+          const numeroQuestao =
+              document.getElementById('numeroQuestao');
 
-        let questaoAtual = 0;
-        let pontuacao = 0;
-        let respondeu = false;
+          const pontuacaoElemento =
+              document.getElementById('pontuacao');
 
+          const barraProgresso =
+              document.getElementById('barraProgresso');
 
-        /* ================================================================
-           ELEMENTOS
-        ================================================================ */
+          const tipoQuestao =
+              document.getElementById('tipoQuestao');
 
-        const numeroQuestao =
-            document.getElementById('numeroQuestao');
+          const instrucao =
+              document.getElementById('instrucao');
 
-        const pontuacaoElemento =
-            document.getElementById('pontuacao');
+          const areaQuestao =
+              document.getElementById('areaQuestao');
 
-        const barraProgresso =
-            document.getElementById('barraProgresso');
+          const feedback =
+              document.getElementById('feedback');
 
-        const tipoQuestao =
-            document.getElementById('tipoQuestao');
+          const btnProxima =
+              document.getElementById('btnProxima');
 
-        const instrucao =
-            document.getElementById('instrucao');
+          const resultado =
+              document.getElementById('resultado');
 
-        const areaQuestao =
-            document.getElementById('areaQuestao');
+          const bancoQuestoes = [
+              {
+                  tipo: 'audio',
 
-        const feedback =
-            document.getElementById('feedback');
+                  titulo: '👂 Ouça com atenção!',
 
-        const btnProxima =
-            document.getElementById('btnProxima');
+                  instrucao:
+                      'Qual é a letra que você ouviu?',
 
-        const resultado =
-            document.getElementById('resultado');
+                  letra: 'A',
 
+                  alternativas: ['A', 'B', 'D', 'P']
+              },
 
-        /* ================================================================
-           BANCO DE QUESTÕES
-        ================================================================ */
+              {
+                  tipo: 'audio',
 
-        const bancoQuestoes = [
+                  titulo: '👂 Ouça com atenção!',
 
-            /* ------------------------------------------------------------
-               TIPO 1 — OUVIR A LETRA
-            ------------------------------------------------------------ */
+                  instrucao:
+                      'Qual é a letra que você ouviu?',
 
-            {
-                tipo: 'audio',
+                  letra: 'M',
 
-                titulo: '👂 Ouça com atenção!',
+                  alternativas: ['N', 'M', 'W', 'A']
+              },
 
-                instrucao:
-                    'Qual é a letra que você ouviu?',
+              {
+                  tipo: 'audio',
 
-                letra: 'A',
+                  titulo: '👂 Ouça com atenção!',
 
-                alternativas: ['A', 'B', 'D', 'P']
-            },
+                  instrucao:
+                      'Qual é a letra que você ouviu?',
 
-            {
-                tipo: 'audio',
+                  letra: 'S',
 
-                titulo: '👂 Ouça com atenção!',
+                  alternativas: ['C', 'S', 'Z', 'F']
+              },
 
-                instrucao:
-                    'Qual é a letra que você ouviu?',
+              {
+                  tipo: 'audio',
 
-                letra: 'M',
+                  titulo: '👂 Ouça com atenção!',
 
-                alternativas: ['N', 'M', 'W', 'A']
-            },
+                  instrucao:
+                      'Qual é a letra que você ouviu?',
 
-            {
-                tipo: 'audio',
+                  letra: 'R',
 
-                titulo: '👂 Ouça com atenção!',
+                  alternativas: ['P', 'R', 'B', 'D']
+              },
 
-                instrucao:
-                    'Qual é a letra que você ouviu?',
+              {
+                  tipo: 'audio',
 
-                letra: 'S',
+                  titulo: '👂 Ouça com atenção!',
 
-                alternativas: ['C', 'S', 'Z', 'F']
-            },
+                  instrucao:
+                      'Qual é a letra que você ouviu?',
 
-            {
-                tipo: 'audio',
+                  letra: 'T',
 
-                titulo: '👂 Ouça com atenção!',
+                  alternativas: ['D', 'P', 'T', 'F']
+              },
 
-                instrucao:
-                    'Qual é a letra que você ouviu?',
+              {
+                  tipo: 'imagem',
 
-                letra: 'R',
+                  titulo: '🖼️ Olhe a figura!',
 
-                alternativas: ['P', 'R', 'B', 'D']
-            },
+                  instrucao:
+                      'Qual é a primeira letra desta palavra?',
 
-            {
-                tipo: 'audio',
+                  palavra: 'ABELHA',
 
-                titulo: '👂 Ouça com atenção!',
+                  imagem: '../img/abelha.png',
 
-                instrucao:
-                    'Qual é a letra que você ouviu?',
+                  letra: 'A',
 
-                letra: 'T',
+                  alternativas: ['A', 'E', 'B', 'M']
+              },
 
-                alternativas: ['D', 'P', 'T', 'F']
-            },
+              {
+                  tipo: 'imagem',
 
+                  titulo: '🖼️ Olhe a figura!',
 
-            /* ------------------------------------------------------------
-               TIPO 2 — IMAGEM
-            ------------------------------------------------------------ */
+                  instrucao:
+                      'Qual é a primeira letra desta palavra?',
 
-            {
-                tipo: 'imagem',
+                  palavra: 'BOLA',
 
-                titulo: '🖼️ Olhe a figura!',
+                  imagem: '../img/bola.png',
 
-                instrucao:
-                    'Qual é a primeira letra desta palavra?',
+                  letra: 'B',
 
-                palavra: 'ABELHA',
+                  alternativas: ['D', 'P', 'B', 'A']
+              },
 
-                imagem: '../img/abelha.png',
+              {
+                  tipo: 'imagem',
 
-                letra: 'A',
+                  titulo: '🖼️ Olhe a figura!',
 
-                alternativas: ['A', 'E', 'B', 'M']
-            },
+                  instrucao:
+                      'Qual é a primeira letra desta palavra?',
 
-            {
-                tipo: 'imagem',
+                  palavra: 'COELHO',
 
-                titulo: '🖼️ Olhe a figura!',
+                  imagem: '../img/coelho.png',
 
-                instrucao:
-                    'Qual é a primeira letra desta palavra?',
+                  letra: 'C',
 
-                palavra: 'BOLA',
+                  alternativas: ['G', 'C', 'Q', 'S']
+              },
 
-                imagem: '../img/bola.png',
+              {
+                  tipo: 'imagem',
 
-                letra: 'B',
+                  titulo: '🖼️ Olhe a figura!',
 
-                alternativas: ['D', 'P', 'B', 'A']
-            },
+                  instrucao:
+                      'Qual é a primeira letra desta palavra?',
 
-            {
-                tipo: 'imagem',
+                  palavra: 'MACACO',
 
-                titulo: '🖼️ Olhe a figura!',
+                  imagem: '../img/Macaco.png',
 
-                instrucao:
-                    'Qual é a primeira letra desta palavra?',
+                  letra: 'M',
 
-                palavra: 'COELHO',
+                  alternativas: ['N', 'M', 'W', 'B']
+              },
 
-                imagem: '../img/coelho.png',
+              {
+                  tipo: 'imagem',
 
-                letra: 'C',
+                  titulo: '🖼️ Olhe a figura!',
 
-                alternativas: ['G', 'C', 'Q', 'S']
-            },
+                  instrucao:
+                      'Qual é a primeira letra desta palavra?',
 
-            {
-                tipo: 'imagem',
+                  palavra: 'OVELHA',
 
-                titulo: '🖼️ Olhe a figura!',
+                  imagem: '../img/Ovelha.png',
 
-                instrucao:
-                    'Qual é a primeira letra desta palavra?',
+                  letra: 'S',
 
-                palavra: 'MACACO',
+                  alternativas: ['C', 'S', 'Z', 'P']
+              },
 
-                imagem: '../img/Macaco.png',
+              {
+                  tipo: 'completar',
 
-                letra: 'M',
+                  titulo: '🧩 Complete a palavra!',
 
-                alternativas: ['N', 'M', 'W', 'B']
-            },
+                  instrucao:
+                      'Qual letra está faltando?',
 
-            {
-                tipo: 'imagem',
+                  palavra: '_ANANA',
 
-                titulo: '🖼️ Olhe a figura!',
+                  resto: 'ANANA',
 
-                instrucao:
-                    'Qual é a primeira letra desta palavra?',
+                  letra: 'B',
 
-                palavra: 'OVELHA',
+                  alternativas: ['A', 'B', 'M', 'P'],
 
-                imagem: '../img/Ovelha.png',
+                  imagem: '../img/banana.png'
+              },
 
-                letra: 'S',
+              {
+                  tipo: 'completar',
 
-                alternativas: ['C', 'S', 'Z', 'P']
-            },
+                  titulo: '🧩 Complete a palavra!',
 
+                  instrucao:
+                      'Qual letra está faltando?',
 
-            /* ------------------------------------------------------------
-               TIPO 3 — COMPLETE A PALAVRA
-            ------------------------------------------------------------ */
+                  palavra: '_BACATE',
 
-            {
-                tipo: 'completar',
+                  resto: 'BACATE',
 
-                titulo: '🧩 Complete a palavra!',
+                  letra: 'A',
 
-                instrucao:
-                    'Qual letra está faltando?',
+                  alternativas: ['A', 'B', 'M', 'P'],
 
-                palavra: '_ANANA',
+                  imagem: '../img/abacate.png'
+              },
 
-                resto: 'ANANA',
+              {
+                  tipo: 'completar',
 
-                letra: 'B',
+                  titulo: '🧩 Complete a palavra!',
 
-                alternativas: ['A', 'B', 'M', 'P'],
+                  instrucao:
+                      'Qual letra está faltando?',
 
-                imagem: '../img/banana.png'
-            },
+                  palavra: '_ALEIA',
 
-            {
-                tipo: 'completar',
+                  resto: 'ALEIA',
 
-                titulo: '🧩 Complete a palavra!',
+                  letra: 'B',
 
-                instrucao:
-                    'Qual letra está faltando?',
+                  alternativas: ['B', 'D', 'P', 'V'],
 
-                palavra: '_BACATE',
+                  imagem: '../img/baleia.png'
+              },
 
-                resto: 'BACATE',
+              {
+                  tipo: 'completar',
 
-                letra: 'A',
+                  titulo: '🧩 Complete a palavra!',
 
-                alternativas: ['A', 'B', 'M', 'P'],
+                  instrucao:
+                      'Qual letra está faltando?',
 
-                imagem: '../img/abacate.png'
-            },
+                  palavra: '_OLA',
 
-            {
-                tipo: 'completar',
+                  resto: 'OLA',
 
-                titulo: '🧩 Complete a palavra!',
+                  letra: 'B',
 
-                instrucao:
-                    'Qual letra está faltando?',
+                  alternativas: ['A', 'B', 'D', 'P'],
 
-                palavra: '_ALEIA',
+                  imagem: '../img/bola.png'
+              },
 
-                resto: 'ALEIA',
+              {
+                  tipo: 'completar',
 
-                letra: 'B',
+                  titulo: '🧩 Complete a palavra!',
 
-                alternativas: ['B', 'D', 'P', 'V'],
+                  instrucao:
+                      'Qual letra está faltando?',
 
-                imagem: '../img/baleia.png'
-            },
+                  palavra: '_ATO',
 
-            {
-                tipo: 'completar',
+                  resto: 'ATO',
 
-                titulo: '🧩 Complete a palavra!',
+                  letra: 'G',
 
-                instrucao:
-                    'Qual letra está faltando?',
+                  alternativas: ['C', 'G', 'P', 'R'],
 
-                palavra: '_OLA',
+                  imagem: '../img/Gato.png'
+              },
 
-                resto: 'OLA',
+              {
+                  tipo: 'ordem',
 
-                letra: 'B',
+                  titulo: '🔤 Pense no alfabeto!',
 
-                alternativas: ['A', 'B', 'D', 'P'],
+                  instrucao:
+                      'Qual letra vem depois do A?',
 
-                imagem: '../img/bola.png'
-            },
+                  letra: 'B',
 
-            {
-                tipo: 'completar',
+                  alternativas: ['B', 'C', 'D', 'E']
+              },
 
-                titulo: '🧩 Complete a palavra!',
+              {
+                  tipo: 'ordem',
 
-                instrucao:
-                    'Qual letra está faltando?',
+                  titulo: '🔤 Pense no alfabeto!',
 
-                palavra: '_ATO',
+                  instrucao:
+                      'Qual letra vem depois do F?',
 
-                resto: 'ATO',
+                  letra: 'G',
 
-                letra: 'G',
+                  alternativas: ['E', 'F', 'G', 'H']
+              },
 
-                alternativas: ['C', 'G', 'P', 'R'],
+              {
+                  tipo: 'ordem',
 
-                imagem: '../img/Gato.png'
-            },
+                  titulo: '🔤 Pense no alfabeto!',
 
+                  instrucao:
+                      'Qual letra vem antes do M?',
 
-            /* ------------------------------------------------------------
-               TIPO 4 — ORDEM ALFABÉTICA
-            ------------------------------------------------------------ */
+                  letra: 'L',
 
-            {
-                tipo: 'ordem',
+                  alternativas: ['J', 'K', 'L', 'N']
+              },
 
-                titulo: '🔤 Pense no alfabeto!',
+              {
+                  tipo: 'ordem',
 
-                instrucao:
-                    'Qual letra vem depois do A?',
+                  titulo: '🔤 Pense no alfabeto!',
 
-                letra: 'B',
+                  instrucao:
+                      'Qual letra vem depois do R?',
 
-                alternativas: ['B', 'C', 'D', 'E']
-            },
+                  letra: 'S',
 
-            {
-                tipo: 'ordem',
+                  alternativas: ['P', 'Q', 'S', 'T']
+              },
 
-                titulo: '🔤 Pense no alfabeto!',
+              {
+                  tipo: 'ordem',
 
-                instrucao:
-                    'Qual letra vem depois do F?',
+                  titulo: '🔤 Pense no alfabeto!',
 
-                letra: 'G',
+                  instrucao:
+                      'Qual letra vem antes do Z?',
 
-                alternativas: ['E', 'F', 'G', 'H']
-            },
+                  letra: 'Y',
 
-            {
-                tipo: 'ordem',
+                  alternativas: ['W', 'X', 'Y', 'Z']
+              }
 
-                titulo: '🔤 Pense no alfabeto!',
+          ];
 
-                instrucao:
-                    'Qual letra vem antes do M?',
+          function embaralhar(array) {
 
-                letra: 'L',
+              const copia = [...array];
 
-                alternativas: ['J', 'K', 'L', 'N']
-            },
+              for (let i = copia.length - 1; i > 0; i--) {
 
-            {
-                tipo: 'ordem',
+                  const j =
+                      Math.floor(Math.random() * (i + 1));
 
-                titulo: '🔤 Pense no alfabeto!',
+                  [copia[i], copia[j]] =
+                      [copia[j], copia[i]];
+              }
 
-                instrucao:
-                    'Qual letra vem depois do R?',
+              return copia;
+          }
 
-                letra: 'S',
+          let prova = embaralhar(bancoQuestoes)
+              .slice(0, TOTAL_QUESTOES)
+              .map(questao => {
 
-                alternativas: ['P', 'Q', 'S', 'T']
-            },
+                  return {
+                      ...questao,
+                      alternativas:
+                          embaralhar(questao.alternativas)
+                  };
 
-            {
-                tipo: 'ordem',
+              });
 
-                titulo: '🔤 Pense no alfabeto!',
+          function mostrarQuestao() {
 
-                instrucao:
-                    'Qual letra vem antes do Z?',
+              respondeu = false;
 
-                letra: 'Y',
+              feedback.textContent = '';
+              feedback.className = 'feedback';
 
-                alternativas: ['W', 'X', 'Y', 'Z']
-            }
+              btnProxima.disabled = true;
 
-        ];
+              const q = prova[questaoAtual];
 
+              numeroQuestao.textContent =
+                  `Questão ${questaoAtual + 1} de ${TOTAL_QUESTOES}`;
 
-        /* ================================================================
-           EMBARALHAR
-        ================================================================ */
+              pontuacaoElemento.textContent =
+                  `⭐ ${pontuacao}`;
 
-        function embaralhar(array) {
+              const percentual =
+                  ((questaoAtual) / TOTAL_QUESTOES) * 100;
 
-            const copia = [...array];
+              barraProgresso.style.width =
+                  percentual + '%';
 
-            for (let i = copia.length - 1; i > 0; i--) {
+              tipoQuestao.textContent =
+                  q.titulo;
 
-                const j =
-                    Math.floor(Math.random() * (i + 1));
+              instrucao.textContent =
+                  q.instrucao;
 
-                [copia[i], copia[j]] =
-                    [copia[j], copia[i]];
-            }
+              areaQuestao.innerHTML = '';
 
-            return copia;
-        }
+              if (q.tipo === 'audio') {
 
+                  criarQuestaoAudio(q);
 
-        /*
-         * Selecionamos as questões e embaralhamos
-         * as alternativas.
-         */
+              }
 
-        let prova = embaralhar(bancoQuestoes)
-            .slice(0, TOTAL_QUESTOES)
-            .map(questao => {
+              else if (q.tipo === 'imagem') {
 
-                return {
-                    ...questao,
-                    alternativas:
-                        embaralhar(questao.alternativas)
-                };
+                  criarQuestaoImagem(q);
 
-            });
+              }
 
+              else if (q.tipo === 'completar') {
 
-        /* ================================================================
-           MOSTRAR QUESTÃO
-        ================================================================ */
+                  criarQuestaoCompletar(q);
 
-        function mostrarQuestao() {
+              }
 
-            respondeu = false;
+              else if (q.tipo === 'ordem') {
 
-            feedback.textContent = '';
-            feedback.className = 'feedback';
+                  criarQuestaoOrdem(q);
 
-            btnProxima.disabled = true;
+              }
+          }
 
-            const q = prova[questaoAtual];
+          function criarQuestaoAudio(q) {
 
-            numeroQuestao.textContent =
-                `Questão ${questaoAtual + 1} de ${TOTAL_QUESTOES}`;
+              const botaoAudio =
+                  document.createElement('button');
 
-            pontuacaoElemento.textContent =
-                `⭐ ${pontuacao}`;
+              botaoAudio.type = 'button';
 
-            const percentual =
-                ((questaoAtual) / TOTAL_QUESTOES) * 100;
+              botaoAudio.className = 'btn-audio';
 
-            barraProgresso.style.width =
-                percentual + '%';
+              botaoAudio.title =
+                  'Ouvir novamente';
 
-            tipoQuestao.textContent =
-                q.titulo;
+              botaoAudio.innerHTML = `
+          <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#1a1a1a"
+              stroke-width="2">
 
-            instrucao.textContent =
-                q.instrucao;
+              <polygon
+                  points="11 5 6 9 2 9 2 15 6 15 11 19 11 5">
+              </polygon>
 
-            areaQuestao.innerHTML = '';
+              <path
+                  d="M19.07 4.93a10 10 0 0 1 0 14.14">
+              </path>
 
-            if (q.tipo === 'audio') {
+              <path
+                  d="M15.54 8.46a5 5 0 0 1 0 7.07">
+              </path>
 
-                criarQuestaoAudio(q);
+          </svg>
+      `;
 
-            }
+              botaoAudio.addEventListener(
+                  'click',
+                  () => tocarLetra(q.letra)
+              );
 
-            else if (q.tipo === 'imagem') {
+              areaQuestao.appendChild(botaoAudio);
 
-                criarQuestaoImagem(q);
+              const texto =
+                  document.createElement('div');
 
-            }
+              texto.style.fontSize = '20px';
+              texto.style.fontWeight = 'bold';
+              texto.style.marginBottom = '15px';
 
-            else if (q.tipo === 'completar') {
+              texto.textContent =
+                  'Clique no alto-falante para ouvir novamente';
 
-                criarQuestaoCompletar(q);
+              areaQuestao.appendChild(texto);
 
-            }
+              criarAlternativas(q);
+          }
 
-            else if (q.tipo === 'ordem') {
+          function criarQuestaoImagem(q) {
 
-                criarQuestaoOrdem(q);
+              const img =
+                  document.createElement('img');
 
-            }
-        }
+              img.className =
+                  'imagem-questao';
 
+              img.src =
+                  q.imagem;
 
-        /* ================================================================
-           QUESTÃO DE ÁUDIO
-        ================================================================ */
+              img.alt =
+                  q.palavra;
 
-        function criarQuestaoAudio(q) {
+              areaQuestao.appendChild(img);
 
-            const botaoAudio =
-                document.createElement('button');
+              const palavra =
+                  document.createElement('div');
 
-            botaoAudio.type = 'button';
+              palavra.className =
+                  'palavra-grande';
 
-            botaoAudio.className = 'btn-audio';
+              palavra.textContent =
+                  q.palavra;
 
-            botaoAudio.title =
-                'Ouvir novamente';
+              areaQuestao.appendChild(palavra);
 
-            botaoAudio.innerHTML = `
-        <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#1a1a1a"
-            stroke-width="2">
+              criarAlternativas(q);
+          }
 
-            <polygon
-                points="11 5 6 9 2 9 2 15 6 15 11 19 11 5">
-            </polygon>
+          function criarQuestaoCompletar(q) {
 
-            <path
-                d="M19.07 4.93a10 10 0 0 1 0 14.14">
-            </path>
+              const img =
+                  document.createElement('img');
 
-            <path
-                d="M15.54 8.46a5 5 0 0 1 0 7.07">
-            </path>
+              img.className =
+                  'imagem-questao';
 
-        </svg>
-    `;
+              img.src =
+                  q.imagem;
 
-            botaoAudio.addEventListener(
-                'click',
-                () => tocarLetra(q.letra)
-            );
+              img.alt =
+                  'Imagem da palavra';
 
-            areaQuestao.appendChild(botaoAudio);
+              areaQuestao.appendChild(img);
 
-            const texto =
-                document.createElement('div');
 
-            texto.style.fontSize = '20px';
-            texto.style.fontWeight = 'bold';
-            texto.style.marginBottom = '15px';
+              const palavra =
+                  document.createElement('div');
 
-            texto.textContent =
-                'Clique no alto-falante para ouvir novamente';
+              palavra.className =
+                  'palavra-grande';
 
-            areaQuestao.appendChild(texto);
+              const primeiraParte =
+                  document.createElement('span');
 
-            criarAlternativas(q);
-        }
+              primeiraParte.className =
+                  'lacuna';
 
+              primeiraParte.textContent =
+                  '_';
 
-        /* ================================================================
-           QUESTÃO DE IMAGEM
-        ================================================================ */
+              palavra.appendChild(primeiraParte);
 
-        function criarQuestaoImagem(q) {
+              palavra.appendChild(
+                  document.createTextNode(q.resto)
+              );
 
-            const img =
-                document.createElement('img');
+              areaQuestao.appendChild(palavra);
 
-            img.className =
-                'imagem-questao';
+              criarAlternativas(q);
+          }
 
-            img.src =
-                q.imagem;
+          function criarQuestaoOrdem(q) {
 
-            img.alt =
-                q.palavra;
+              const simbolo =
+                  document.createElement('div');
 
-            areaQuestao.appendChild(img);
+              simbolo.className =
+                  'letra-grande';
 
-            const palavra =
-                document.createElement('div');
+              simbolo.textContent =
+                  '?';
 
-            palavra.className =
-                'palavra-grande';
+              areaQuestao.appendChild(simbolo);
 
-            palavra.textContent =
-                q.palavra;
+              criarAlternativas(q);
+          }
 
-            areaQuestao.appendChild(palavra);
+          function criarAlternativas(q) {
 
-            criarAlternativas(q);
-        }
+              const container =
+                  document.createElement('div');
 
+              container.className =
+                  'alternativas';
 
-        /* ================================================================
-           QUESTÃO COMPLETAR
-        ================================================================ */
+              q.alternativas.forEach(alternativa => {
 
-        function criarQuestaoCompletar(q) {
+                  const botao =
+                      document.createElement('button');
 
-            const img =
-                document.createElement('img');
+                  botao.type = 'button';
 
-            img.className =
-                'imagem-questao';
+                  botao.className =
+                      'alternativa';
 
-            img.src =
-                q.imagem;
+                  botao.textContent =
+                      alternativa;
 
-            img.alt =
-                'Imagem da palavra';
+                  botao.addEventListener(
+                      'click',
+                      () => responder(alternativa, q, botao)
+                  );
 
-            areaQuestao.appendChild(img);
+                  container.appendChild(botao);
+              });
 
+              areaQuestao.appendChild(container);
+          }
 
-            const palavra =
-                document.createElement('div');
+          function responder(resposta, q, botaoClicado) {
 
-            palavra.className =
-                'palavra-grande';
+              if (respondeu) {
+                  return;
+              }
 
-            const primeiraParte =
-                document.createElement('span');
+              respondeu = true;
 
-            primeiraParte.className =
-                'lacuna';
+              const botoes =
+                  areaQuestao.querySelectorAll('.alternativa');
 
-            primeiraParte.textContent =
-                '_';
+              botoes.forEach(botao => {
+                  botao.disabled = true;
+              });
 
-            palavra.appendChild(primeiraParte);
 
-            palavra.appendChild(
-                document.createTextNode(q.resto)
-            );
+              const correta =
+                  resposta === q.letra;
 
-            areaQuestao.appendChild(palavra);
 
-            criarAlternativas(q);
-        }
+              if (correta) {
 
+                  pontuacao++;
 
-        /* ================================================================
-           QUESTÃO DE ORDEM
-        ================================================================ */
+                  botaoClicado.classList.add('correta');
 
-        function criarQuestaoOrdem(q) {
+                  feedback.textContent =
+                      escolherMensagemAcerto();
 
-            const simbolo =
-                document.createElement('div');
+                  feedback.classList.add('acerto');
 
-            simbolo.className =
-                'letra-grande';
+                  tocarSom('somAcerto');
 
-            simbolo.textContent =
-                '?';
+              }
 
-            areaQuestao.appendChild(simbolo);
+              else {
 
-            criarAlternativas(q);
-        }
+                  botaoClicado.classList.add('errada');
 
+                  botoes.forEach(botao => {
 
-        /* ================================================================
-           ALTERNATIVAS
-        ================================================================ */
+                      if (botao.textContent === q.letra) {
+                          botao.classList.add('correta');
+                      }
 
-        function criarAlternativas(q) {
+                  });
 
-            const container =
-                document.createElement('div');
+                  feedback.textContent =
+                      escolherMensagemErro();
 
-            container.className =
-                'alternativas';
+                  feedback.classList.add('erro');
 
-            q.alternativas.forEach(alternativa => {
+                  tocarSom('somErro');
+              }
 
-                const botao =
-                    document.createElement('button');
 
-                botao.type = 'button';
+              pontuacaoElemento.textContent =
+                  `⭐ ${pontuacao}`;
 
-                botao.className =
-                    'alternativa';
+              btnProxima.disabled = false;
 
-                botao.textContent =
-                    alternativa;
+          }
 
-                botao.addEventListener(
-                    'click',
-                    () => responder(alternativa, q, botao)
-                );
+          function escolherMensagemAcerto() {
 
-                container.appendChild(botao);
-            });
+              const mensagens = [
 
-            areaQuestao.appendChild(container);
-        }
+                  '🎉 Muito bem!',
 
+                  '⭐ Isso! Você acertou!',
 
-        /* ================================================================
-           RESPONDER
-        ================================================================ */
+                  '👏 Parabéns!',
 
-        function responder(resposta, q, botaoClicado) {
+                  '🌟 Muito bom!',
 
-            if (respondeu) {
-                return;
-            }
+                  '🥳 Acertou!'
 
-            respondeu = true;
+              ];
 
-            const botoes =
-                areaQuestao.querySelectorAll('.alternativa');
+              return mensagens[
+                  Math.floor(
+                      Math.random() * mensagens.length
+                  )
+              ];
+          }
 
-            botoes.forEach(botao => {
-                botao.disabled = true;
-            });
 
+          function escolherMensagemErro() {
 
-            const correta =
-                resposta === q.letra;
+              const mensagens = [
 
+                  '💛 Tudo bem! Vamos continuar!',
 
-            if (correta) {
+                  '🌱 Vamos para a próxima!',
 
-                pontuacao++;
+                  '😊 Não tem problema!',
 
-                botaoClicado.classList.add('correta');
+                  '💪 Continue tentando!'
 
-                feedback.textContent =
-                    escolherMensagemAcerto();
+              ];
 
-                feedback.classList.add('acerto');
+              return mensagens[
+                  Math.floor(
+                      Math.random() * mensagens.length
+                  )
+              ];
+          }
 
-                tocarSom('somAcerto');
+          btnProxima.addEventListener(
+              'click',
+              () => {
 
-            }
+                  if (!respondeu) {
+                      return;
+                  }
 
-            else {
+                  questaoAtual++;
 
-                botaoClicado.classList.add('errada');
+                  if (questaoAtual >= TOTAL_QUESTOES) {
 
-                botoes.forEach(botao => {
+                      finalizarProva();
 
-                    if (botao.textContent === q.letra) {
-                        botao.classList.add('correta');
-                    }
+                  }
 
-                });
+                  else {
 
-                feedback.textContent =
-                    escolherMensagemErro();
+                      mostrarQuestao();
 
-                feedback.classList.add('erro');
+                  }
 
-                tocarSom('somErro');
-            }
+              }
+          );
 
+          function tocarSom(idAudio) {
 
-            pontuacaoElemento.textContent =
-                `⭐ ${pontuacao}`;
+              const audio =
+                  document.getElementById(idAudio);
 
-            btnProxima.disabled = false;
+              if (!audio) {
+                  return;
+              }
 
-        }
+              audio.currentTime = 0;
 
+              audio.play().catch(() => { });
+          }
 
-        /* ================================================================
-           MENSAGENS
-        ================================================================ */
 
-        function escolherMensagemAcerto() {
+          function tocarLetra(letra) {
 
-            const mensagens = [
+              tocarSom(
+                  'somLetra' + letra.toUpperCase()
+              );
+          }
 
-                '🎉 Muito bem!',
+          function finalizarProva() {
 
-                '⭐ Isso! Você acertou!',
+              barraProgresso.style.width = '100%';
 
-                '👏 Parabéns!',
+              salvarResultado();
 
-                '🌟 Muito bom!',
+              setTimeout(() => {
 
-                '🥳 Acertou!'
+                  mostrarResultado();
 
-            ];
+              }, 500);
+          }
 
-            return mensagens[
-                Math.floor(
-                    Math.random() * mensagens.length
-                )
-            ];
-        }
+          function salvarResultado() {
 
+              const dados =
+                  new URLSearchParams();
 
-        function escolherMensagemErro() {
+              dados.append(
+                  'salvar_prova',
+                  '1'
+              );
 
-            const mensagens = [
+              dados.append(
+                  'nota',
+                  pontuacao
+              );
 
-                '💛 Tudo bem! Vamos continuar!',
+              dados.append(
+                  'total',
+                  TOTAL_QUESTOES
+              );
 
-                '🌱 Vamos para a próxima!',
 
-                '😊 Não tem problema!',
+              fetch('prova.php', {
 
-                '💪 Continue tentando!'
+                  method: 'POST',
 
-            ];
+                  headers: {
+                      'Content-Type':
+                          'application/x-www-form-urlencoded'
+                  },
 
-            return mensagens[
-                Math.floor(
-                    Math.random() * mensagens.length
-                )
-            ];
-        }
+                  body: dados.toString()
 
+              })
+                  .catch(() => {
+                  });
+          }
 
-        /* ================================================================
-           PRÓXIMA QUESTÃO
-        ================================================================ */
+          function mostrarResultado() {
 
-        btnProxima.addEventListener(
-            'click',
-            () => {
+              resultado.classList.add('mostrar');
 
-                if (!respondeu) {
-                    return;
-                }
+              const estrelas =
+                  calcularEstrelas(pontuacao);
 
-                questaoAtual++;
+              const resultadoEstrelas =
+                  document.getElementById(
+                      'resultadoEstrelas'
+                  );
 
-                if (questaoAtual >= TOTAL_QUESTOES) {
+              resultadoEstrelas.textContent =
+                  estrelas;
 
-                    finalizarProva();
 
-                }
+              document.getElementById(
+                  'resultadoNota'
+              ).textContent =
+                  `Você acertou ${pontuacao} de ${TOTAL_QUESTOES}!`;
 
-                else {
 
-                    mostrarQuestao();
+              const resultadoTitulo =
+                  document.getElementById(
+                      'resultadoTitulo'
+                  );
 
-                }
+              const resultadoMensagem =
+                  document.getElementById(
+                      'resultadoMensagem'
+                  );
 
-            }
-        );
 
+              if (pontuacao >= 18) {
 
-        /* ================================================================
-           ÁUDIO
-        ================================================================ */
+                  resultadoTitulo.textContent =
+                      '🏆 MESTRE DO ALFABETO!';
 
-        function tocarSom(idAudio) {
+                  resultadoMensagem.textContent =
+                      'Você conhece muito bem as letras! O Lumi está muito orgulhoso de você! 🌟';
 
-            const audio =
-                document.getElementById(idAudio);
+                  tocarSom('somParabens');
 
-            if (!audio) {
-                return;
-            }
+              }
 
-            audio.currentTime = 0;
+              else if (pontuacao >= 14) {
 
-            audio.play().catch(() => { });
-        }
+                  resultadoTitulo.textContent =
+                      '🌈 AVENTUREIRO DO ALFABETO!';
 
+                  resultadoMensagem.textContent =
+                      'Muito bem! Você já aprendeu muitas letras. Continue praticando e você ficará ainda melhor! ⭐';
 
-        function tocarLetra(letra) {
+                  tocarSom('somParabens');
 
-            tocarSom(
-                'somLetra' + letra.toUpperCase()
-            );
-        }
+              }
 
+              else {
 
-        /* ================================================================
-           FINALIZAR
-        ================================================================ */
+                  resultadoTitulo.textContent =
+                      '🌱 PEQUENO EXPLORADOR!';
 
-        function finalizarProva() {
+                  resultadoMensagem.textContent =
+                      'Você está aprendendo! Continue praticando com o Lumi. Cada tentativa ajuda você a aprender mais! 💛';
 
-            barraProgresso.style.width = '100%';
+              }
 
-            salvarResultado();
 
-            setTimeout(() => {
+              gerarConfetes();
+          }
 
-                mostrarResultado();
+          function calcularEstrelas(nota) {
 
-            }, 500);
-        }
+              if (nota >= 18) {
+                  return '⭐⭐⭐⭐⭐';
+              }
 
+              if (nota >= 14) {
+                  return '⭐⭐⭐⭐';
+              }
 
-        /* ================================================================
-           SALVAR NO BANCO
-        ================================================================ */
+              if (nota >= 10) {
+                  return '⭐⭐⭐';
+              }
 
-        function salvarResultado() {
+              if (nota >= 5) {
+                  return '⭐⭐';
+              }
 
-            const dados =
-                new URLSearchParams();
+              return '⭐';
+          }
 
-            dados.append(
-                'salvar_prova',
-                '1'
-            );
+          function gerarConfetes() {
 
-            dados.append(
-                'nota',
-                pontuacao
-            );
+              const container =
+                  document.getElementById(
+                      'containerConfetes'
+                  );
 
-            dados.append(
-                'total',
-                TOTAL_QUESTOES
-            );
+              if (!container) {
+                  return;
+              }
 
+              const cores = [
 
-            fetch('prova.php', {
+                  '#ff5252',
+                  '#ff7043',
+                  '#fbc02d',
+                  '#9ccc65',
+                  '#26a69a',
+                  '#42a5f5',
+                  '#7e57c2',
+                  '#ec407a'
 
-                method: 'POST',
+              ];
 
-                headers: {
-                    'Content-Type':
-                        'application/x-www-form-urlencoded'
-                },
 
-                body: dados.toString()
+              for (let i = 0; i < 80; i++) {
 
-            })
-                .catch(() => {
+                  const confete =
+                      document.createElement('div');
 
-                    /*
-                     * Mesmo se houver erro no banco,
-                     * a criança continua vendo o resultado.
-                     */
+                  confete.className =
+                      'confete';
 
-                });
-        }
+                  confete.style.backgroundColor =
+                      cores[
+                      Math.floor(
+                          Math.random() * cores.length
+                      )
+                      ];
 
+                  confete.style.left =
+                      Math.random() * 100 + '%';
 
-        /* ================================================================
-           RESULTADO
-        ================================================================ */
+                  confete.style.animationDuration =
+                      (2.5 + Math.random() * 3) + 's';
 
-        function mostrarResultado() {
+                  confete.style.animationDelay =
+                      Math.random() * 1.5 + 's';
 
-            resultado.classList.add('mostrar');
+                  container.appendChild(confete);
+              }
+          }
 
-            const estrelas =
-                calcularEstrelas(pontuacao);
-
-            const resultadoEstrelas =
-                document.getElementById(
-                    'resultadoEstrelas'
-                );
-
-            resultadoEstrelas.textContent =
-                estrelas;
-
-
-            document.getElementById(
-                'resultadoNota'
-            ).textContent =
-                `Você acertou ${pontuacao} de ${TOTAL_QUESTOES}!`;
-
-
-            const resultadoTitulo =
-                document.getElementById(
-                    'resultadoTitulo'
-                );
-
-            const resultadoMensagem =
-                document.getElementById(
-                    'resultadoMensagem'
-                );
-
-
-            if (pontuacao >= 18) {
-
-                resultadoTitulo.textContent =
-                    '🏆 MESTRE DO ALFABETO!';
-
-                resultadoMensagem.textContent =
-                    'Você conhece muito bem as letras! O Lumi está muito orgulhoso de você! 🌟';
-
-                tocarSom('somParabens');
-
-            }
-
-            else if (pontuacao >= 14) {
-
-                resultadoTitulo.textContent =
-                    '🌈 AVENTUREIRO DO ALFABETO!';
-
-                resultadoMensagem.textContent =
-                    'Muito bem! Você já aprendeu muitas letras. Continue praticando e você ficará ainda melhor! ⭐';
-
-                tocarSom('somParabens');
-
-            }
-
-            else {
-
-                resultadoTitulo.textContent =
-                    '🌱 PEQUENO EXPLORADOR!';
-
-                resultadoMensagem.textContent =
-                    'Você está aprendendo! Continue praticando com o Lumi. Cada tentativa ajuda você a aprender mais! 💛';
-
-            }
-
-
-            gerarConfetes();
-        }
-
-
-        /* ================================================================
-           ESTRELAS
-        ================================================================ */
-
-        function calcularEstrelas(nota) {
-
-            if (nota >= 18) {
-                return '⭐⭐⭐⭐⭐';
-            }
-
-            if (nota >= 14) {
-                return '⭐⭐⭐⭐';
-            }
-
-            if (nota >= 10) {
-                return '⭐⭐⭐';
-            }
-
-            if (nota >= 5) {
-                return '⭐⭐';
-            }
-
-            return '⭐';
-        }
-
-
-        /* ================================================================
-           CONFETES
-        ================================================================ */
-
-        function gerarConfetes() {
-
-            const container =
-                document.getElementById(
-                    'containerConfetes'
-                );
-
-            if (!container) {
-                return;
-            }
-
-            const cores = [
-
-                '#ff5252',
-                '#ff7043',
-                '#fbc02d',
-                '#9ccc65',
-                '#26a69a',
-                '#42a5f5',
-                '#7e57c2',
-                '#ec407a'
-
-            ];
-
-
-            for (let i = 0; i < 80; i++) {
-
-                const confete =
-                    document.createElement('div');
-
-                confete.className =
-                    'confete';
-
-                confete.style.backgroundColor =
-                    cores[
-                    Math.floor(
-                        Math.random() * cores.length
-                    )
-                    ];
-
-                confete.style.left =
-                    Math.random() * 100 + '%';
-
-                confete.style.animationDuration =
-                    (2.5 + Math.random() * 3) + 's';
-
-                confete.style.animationDelay =
-                    Math.random() * 1.5 + 's';
-
-                container.appendChild(confete);
-            }
-        }
-
-
-        /* ================================================================
-           INICIAR
-        ================================================================ */
-
-        mostrarQuestao();
-
+          mostrarQuestao();
     </script>
-
-</body>
-
+  </body>
 </html>

@@ -2,17 +2,14 @@
 session_start();
 require_once '../conexao.php';
 
-// Ativa exibição de erros
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-// Processa a conclusão enviada pelo JS
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
     header('Content-Type: application/json');
 
     $aluno_id = $_SESSION['aluno_id'] ?? 1;
 
     try {
-        // Registra/atualiza o progresso para o nível/atividade 3
         $stmt = $pdo->prepare("
             INSERT INTO progresso (aluno_id, estrutura_id, nivel_atual, licoes_concluidas) 
             VALUES (:aluno_id, 1, 3, 1) 
@@ -240,7 +237,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             100% { transform: translateY(105vh) rotate(720deg) translateX(50px); opacity: 0.8; }
         }
 
-        /* EFEITO DE ERRO NO ARRASTAR E SOLTAR (fica vermelho e balança) */
         @keyframes balancarErro {
             0%, 100% { transform: translateX(0); }
             15% { transform: translateX(-10px); }
@@ -258,7 +254,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
             box-shadow: 0 0 0 3px rgba(255, 82, 82, 0.5) !important;
         }
 
-        /* 2. CÍRCULOS DE FUNDO E BOTÃO VOLTAR */
         .btn-voltar {
             position: absolute;
             top: 20px;
@@ -285,7 +280,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
         .circulo-verde { width: 280px; height: 280px; background-color: #b1e0a8; top: 12%; right: 18%; }
         .circulo-amarelo { width: 320px; height: 320px; background-color: #fce892; bottom: -80px; right: -50px; }
 
-        /* ESTILOS DE APRESENTAÇÃO */
         .card-letra-wrapper {
             position: relative;
             display: flex;

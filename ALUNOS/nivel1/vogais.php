@@ -2,1394 +2,1228 @@
 session_start();
 require_once '../conexao.php';
 
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-/*
-|--------------------------------------------------------------------------
-| CONCLUSÃO DA ATIVIDADE
-|--------------------------------------------------------------------------
-*/
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
-    header('Content-Type: application/json');
-
-    $aluno_id = $_SESSION['aluno_id'] ?? 1;
-
-    try {
-        $stmt = $pdo->prepare("
-            INSERT INTO progresso (
-                aluno_id,
-                estrutura_id,
-                nivel_atual,
-                licoes_concluidas
-            )
-            VALUES (
-                :aluno_id,
-                1,
-                1,
-                1
-            )
-            ON DUPLICATE KEY UPDATE
-                licoes_concluidas = licoes_concluidas + 1
-        ");
-
-        $stmt->execute([
-            ':aluno_id' => $aluno_id
-        ]);
-
-        echo json_encode([
-            'status' => 'sucesso',
-            'aluno_id' => $aluno_id
-        ]);
-
-    } catch (PDOException $e) {
-
-        echo json_encode([
-            'status' => 'erro',
-            'mensagem' => $e->getMessage()
-        ]);
-    }
-
-    exit;
-}
-?>
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
+isset($_POST['concluir_fase'])) { header('Content-Type: application/json'); $aluno_id = $_SESSION['aluno_id'] ?? 1; try
+{ $stmt = $pdo->prepare(" INSERT INTO progresso ( aluno_id, estrutura_id, nivel_atual, licoes_concluidas ) VALUES (
+:aluno_id, 1, 1, 1 ) ON DUPLICATE KEY UPDATE licoes_concluidas = licoes_concluidas + 1 "); $stmt->execute([ ':aluno_id'
+=> $aluno_id ]); echo json_encode([ 'status' => 'sucesso', 'aluno_id' => $aluno_id ]); } catch (PDOException $e) { echo
+json_encode([ 'status' => 'erro', 'mensagem' => $e->getMessage() ]); } exit; } ?>
 
 <!DOCTYPE html>
 <html lang="pt-BR">
-
-<head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>LUMI - Atividade das Vogais</title>
 
-    <link rel="icon" type="image/png" href="../img/logo.png">
+    <link rel="icon" type="image/png" href="../img/logo.png" />
 
     <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch-polyfill@1.0.2/DragDropTouch.js"></script>
 
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+      * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+      }
 
-        body {
+      body {
 
-            background-color: #f7f3cb;
+          background-color: #f7f3cb;
 
-            font-family:
-                'Fredoka',
-                'Comic Sans MS',
-                sans-serif;
+          font-family:
+              'Fredoka',
+              'Comic Sans MS',
+              sans-serif;
 
-            min-height: 100vh;
+          min-height: 100vh;
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+          display: flex;
+          justify-content: center;
+          align-items: center;
 
-            overflow: hidden;
+          overflow: hidden;
 
-            position: relative;
-        }
+          position: relative;
+      }
 
+      #tela-transicao {
 
-        /* =========================================================
-   TRANSIÇÃO
-========================================================= */
+          position: fixed;
 
-        #tela-transicao {
+          top: 0;
+          left: 0;
 
-            position: fixed;
+          width: 100vw;
+          height: 100vh;
 
-            top: 0;
-            left: 0;
+          background:
+              url('../img/iniciando1.png') no-repeat center center / cover;
 
-            width: 100vw;
-            height: 100vh;
+          z-index: 9999;
 
-            background:
-                url('../img/iniciando1.png') no-repeat center center / cover;
+          transition:
+              opacity 1s ease-out,
+              visibility 1s ease-out;
+      }
 
-            z-index: 9999;
+      .nuvem-container {
 
-            transition:
-                opacity 1s ease-out,
-                visibility 1s ease-out;
-        }
+          position: absolute;
 
-        .nuvem-container {
+          top: 0;
+          left: 0;
 
-            position: absolute;
+          width: 100%;
+          height: 50%;
 
-            top: 0;
-            left: 0;
+          pointer-events: none;
 
-            width: 100%;
-            height: 50%;
+          overflow: hidden;
+      }
 
-            pointer-events: none;
+      .nuvem {
 
-            overflow: hidden;
-        }
+          position: absolute;
 
-        .nuvem {
+          background: rgba(255, 255, 255, .85);
 
-            position: absolute;
+          border-radius: 50px;
 
-            background: rgba(255, 255, 255, .85);
+          opacity: .8;
 
-            border-radius: 50px;
+          animation:
+              moverNuvem linear infinite;
+      }
 
-            opacity: .8;
+      .nuvem::before,
+      .nuvem::after {
 
-            animation:
-                moverNuvem linear infinite;
-        }
+          content: '';
 
-        .nuvem::before,
-        .nuvem::after {
+          position: absolute;
 
-            content: '';
+          background: rgba(255, 255, 255, .85);
 
-            position: absolute;
+          border-radius: 50%;
+      }
 
-            background: rgba(255, 255, 255, .85);
+      .nuvem1 {
 
-            border-radius: 50%;
-        }
+          width: 140px;
+          height: 45px;
 
-        .nuvem1 {
+          top: 15%;
+          left: -150px;
 
-            width: 140px;
-            height: 45px;
+          animation-duration: 8s;
+      }
 
-            top: 15%;
-            left: -150px;
+      .nuvem1::before {
 
-            animation-duration: 8s;
-        }
+          width: 50px;
+          height: 50px;
 
-        .nuvem1::before {
+          top: -20px;
+          left: 25px;
+      }
 
-            width: 50px;
-            height: 50px;
+      .nuvem1::after {
 
-            top: -20px;
-            left: 25px;
-        }
+          width: 40px;
+          height: 40px;
 
-        .nuvem1::after {
+          top: -15px;
+          left: 60px;
+      }
 
-            width: 40px;
-            height: 40px;
+      .nuvem2 {
 
-            top: -15px;
-            left: 60px;
-        }
+          width: 180px;
+          height: 55px;
 
-        .nuvem2 {
+          top: 35%;
+          left: -200px;
 
-            width: 180px;
-            height: 55px;
+          animation-duration: 11s;
+          animation-delay: 1s;
+      }
 
-            top: 35%;
-            left: -200px;
+      .nuvem2::before {
 
-            animation-duration: 11s;
-            animation-delay: 1s;
-        }
+          width: 65px;
+          height: 65px;
 
-        .nuvem2::before {
+          top: -25px;
+          left: 30px;
+      }
 
-            width: 65px;
-            height: 65px;
+      .nuvem2::after {
 
-            top: -25px;
-            left: 30px;
-        }
+          width: 50px;
+          height: 50px;
 
-        .nuvem2::after {
+          top: -20px;
+          left: 80px;
+      }
 
-            width: 50px;
-            height: 50px;
+      .nuvem3 {
 
-            top: -20px;
-            left: 80px;
-        }
+          width: 120px;
+          height: 40px;
 
-        .nuvem3 {
+          top: 8%;
+          left: -130px;
 
-            width: 120px;
-            height: 40px;
+          animation-duration: 9.5s;
+          animation-delay: 2.5s;
+      }
 
-            top: 8%;
-            left: -130px;
+      .nuvem3::before {
 
-            animation-duration: 9.5s;
-            animation-delay: 2.5s;
-        }
+          width: 45px;
+          height: 45px;
 
-        .nuvem3::before {
+          top: -15px;
+          left: 20px;
+      }
 
-            width: 45px;
-            height: 45px;
+      .nuvem3::after {
 
-            top: -15px;
-            left: 20px;
-        }
+          width: 35px;
+          height: 35px;
 
-        .nuvem3::after {
+          top: -10px;
+          left: 50px;
+      }
 
-            width: 35px;
-            height: 35px;
+      @keyframes moverNuvem {
 
-            top: -10px;
-            left: 50px;
-        }
+          0% {
+              transform: translateX(0);
+          }
 
-        @keyframes moverNuvem {
+          100% {
+              transform:
+                  translateX(calc(100vw + 250px));
+          }
+      }
 
-            0% {
-                transform: translateX(0);
-            }
+      .esconder {
 
-            100% {
-                transform:
-                    translateX(calc(100vw + 250px));
-            }
-        }
+          display: none !important;
+      }
 
+      .transicao-oculta {
 
-        /* =========================================================
-   CLASSES GERAIS
-========================================================= */
+          opacity: 0 !important;
 
-        .esconder {
+          visibility: hidden !important;
+      }
 
-            display: none !important;
-        }
+      #tela-parabens {
 
-        .transicao-oculta {
+          position: fixed;
 
-            opacity: 0 !important;
+          top: 0;
+          left: 0;
 
-            visibility: hidden !important;
-        }
+          width: 100vw;
+          height: 100vh;
 
+          background: #fbf5c8;
 
-        /* =========================================================
-   TELA DE PARABÉNS
-========================================================= */
+          z-index: 10000;
 
-        #tela-parabens {
+          display: flex;
 
-            position: fixed;
+          flex-direction: column;
 
-            top: 0;
-            left: 0;
+          justify-content: space-between;
 
-            width: 100vw;
-            height: 100vh;
+          align-items: center;
 
-            background: #fbf5c8;
+          overflow: hidden;
+      }
 
-            z-index: 10000;
+      .gramado-parabens {
 
-            display: flex;
+          position: absolute;
 
-            flex-direction: column;
+          bottom: -50px;
+          left: -5%;
 
-            justify-content: space-between;
+          width: 110%;
+          height: 180px;
 
-            align-items: center;
+          background-color: #4cd964;
 
-            overflow: hidden;
-        }
+          border-radius:
+              50% 50% 0 0;
 
-        .gramado-parabens {
+          z-index: 2;
+      }
 
-            position: absolute;
+      .conteudo-parabens-centro {
 
-            bottom: -50px;
-            left: -5%;
+          position: absolute;
 
-            width: 110%;
-            height: 180px;
+          top: 45%;
+          left: 50%;
 
-            background-color: #4cd964;
+          transform:
+              translate(-50%, -50%);
 
-            border-radius:
-                50% 50% 0 0;
+          display: flex;
 
-            z-index: 2;
-        }
+          flex-direction: column;
 
-        .conteudo-parabens-centro {
+          align-items: center;
 
-            position: absolute;
+          z-index: 5;
 
-            top: 45%;
-            left: 50%;
+          width: 100%;
+      }
 
-            transform:
-                translate(-50%, -50%);
+      .texto-parabens-colorido {
 
-            display: flex;
+          display: flex;
 
-            flex-direction: column;
+          justify-content: center;
 
-            align-items: center;
+          gap: 6px;
 
-            z-index: 5;
+          margin-bottom: 20px;
 
-            width: 100%;
-        }
+          animation:
+              pulsarLetras 1.5s infinite alternate ease-in-out;
+      }
 
-        .texto-parabens-colorido {
+      .texto-parabens-colorido span {
 
-            display: flex;
+          font-size: 68px;
 
-            justify-content: center;
+          font-weight: 900;
 
-            gap: 6px;
+          text-shadow:
+              2px 2px 0 #fff,
+              -2px -2px 0 #fff,
+              2px -2px 0 #fff,
+              -2px 2px 0 #fff,
+              0 4px 6px rgba(0, 0, 0, .15);
+      }
 
-            margin-bottom: 20px;
+      .char1 {
+          color: #ff5252;
+      }
 
-            animation:
-                pulsarLetras 1.5s infinite alternate ease-in-out;
-        }
+      .char2 {
+          color: #ff7043;
+      }
 
-        .texto-parabens-colorido span {
+      .char3 {
+          color: #7e57c2;
+      }
 
-            font-size: 68px;
+      .char4 {
+          color: #26a69a;
+      }
 
-            font-weight: 900;
+      .char5 {
+          color: #fbc02d;
+      }
 
-            text-shadow:
-                2px 2px 0 #fff,
-                -2px -2px 0 #fff,
-                2px -2px 0 #fff,
-                -2px 2px 0 #fff,
-                0 4px 6px rgba(0, 0, 0, .15);
-        }
+      .char6 {
+          color: #ec407a;
+      }
 
-        .char1 {
-            color: #ff5252;
-        }
+      .char7 {
+          color: #42a5f5;
+      }
 
-        .char2 {
-            color: #ff7043;
-        }
+      .char8 {
+          color: #00bcd4;
+      }
 
-        .char3 {
-            color: #7e57c2;
-        }
+      @keyframes pulsarLetras {
 
-        .char4 {
-            color: #26a69a;
-        }
+          0% {
+              transform: scale(.95);
+          }
 
-        .char5 {
-            color: #fbc02d;
-        }
+          100% {
+              transform: scale(1.05);
+          }
+      }
 
-        .char6 {
-            color: #ec407a;
-        }
+      .mascote-parabens {
 
-        .char7 {
-            color: #42a5f5;
-        }
+          width: 210px;
 
-        .char8 {
-            color: #00bcd4;
-        }
+          height: auto;
 
-        @keyframes pulsarLetras {
+          animation:
+              flutuarMascote 2s infinite alternate ease-in-out;
+      }
 
-            0% {
-                transform: scale(.95);
-            }
+      @keyframes flutuarMascote {
 
-            100% {
-                transform: scale(1.05);
-            }
-        }
+          0% {
+              transform: translateY(0);
+          }
 
-        .mascote-parabens {
+          100% {
+              transform: translateY(-10px);
+          }
+      }
 
-            width: 210px;
+      .nuvem-parabens-esq {
 
-            height: auto;
+          position: absolute;
 
-            animation:
-                flutuarMascote 2s infinite alternate ease-in-out;
-        }
+          top: 22%;
+          left: 8%;
 
-        @keyframes flutuarMascote {
+          width: 240px;
 
-            0% {
-                transform: translateY(0);
-            }
+          opacity: .9;
 
-            100% {
-                transform: translateY(-10px);
-            }
-        }
+          z-index: 3;
+      }
 
-        .nuvem-parabens-esq {
+      .nuvem-parabens-dir {
 
-            position: absolute;
+          position: absolute;
 
-            top: 22%;
-            left: 8%;
+          top: 12%;
+          right: 8%;
 
-            width: 240px;
+          width: 260px;
 
-            opacity: .9;
+          opacity: .9;
 
-            z-index: 3;
-        }
+          z-index: 3;
+      }
 
-        .nuvem-parabens-dir {
+      .container-confetes {
 
-            position: absolute;
+          position: absolute;
 
-            top: 12%;
-            right: 8%;
+          top: 0;
+          left: 0;
 
-            width: 260px;
+          width: 100%;
+          height: 100%;
 
-            opacity: .9;
+          pointer-events: none;
 
-            z-index: 3;
-        }
+          z-index: 4;
 
+          overflow: hidden;
+      }
 
-        /* =========================================================
-   CONFETES
-========================================================= */
+      .confete {
 
-        .container-confetes {
+          position: absolute;
 
-            position: absolute;
+          top: -20px;
 
-            top: 0;
-            left: 0;
+          animation:
+              cairConfete linear infinite;
+      }
 
-            width: 100%;
-            height: 100%;
+      .confete.retangulo {
 
-            pointer-events: none;
+          width: 12px;
+          height: 20px;
 
-            z-index: 4;
+          border-radius: 2px;
+      }
 
-            overflow: hidden;
-        }
+      .confete.circulo {
 
-        .confete {
+          width: 12px;
+          height: 12px;
 
-            position: absolute;
+          border-radius: 50%;
+      }
 
-            top: -20px;
+      .confete.serpentina {
 
-            animation:
-                cairConfete linear infinite;
-        }
+          width: 6px;
+          height: 28px;
 
-        .confete.retangulo {
+          border-radius: 10px;
+      }
 
-            width: 12px;
-            height: 20px;
+      @keyframes cairConfete {
 
-            border-radius: 2px;
-        }
+          0% {
 
-        .confete.circulo {
+              transform:
+                  translateY(0) rotate(0deg) translateX(0);
 
-            width: 12px;
-            height: 12px;
+              opacity: 1;
+          }
 
-            border-radius: 50%;
-        }
+          100% {
 
-        .confete.serpentina {
+              transform:
+                  translateY(105vh) rotate(720deg) translateX(50px);
 
-            width: 6px;
-            height: 28px;
+              opacity: .8;
+          }
+      }
 
-            border-radius: 10px;
-        }
+      @keyframes balancarErro {
 
-        @keyframes cairConfete {
+          0%,
+          100% {
+              transform: translateX(0);
+          }
 
-            0% {
+          15% {
+              transform: translateX(-10px);
+          }
 
-                transform:
-                    translateY(0) rotate(0deg) translateX(0);
+          30% {
+              transform: translateX(9px);
+          }
 
-                opacity: 1;
-            }
+          45% {
+              transform: translateX(-7px);
+          }
 
-            100% {
+          60% {
+              transform: translateX(6px);
+          }
 
-                transform:
-                    translateY(105vh) rotate(720deg) translateX(50px);
+          75% {
+              transform: translateX(-4px);
+          }
 
-                opacity: .8;
-            }
-        }
+          90% {
+              transform: translateX(3px);
+          }
+      }
 
+      .erro-arraste {
 
-        /* =========================================================
-   ERRO
-========================================================= */
+          animation:
+              balancarErro .6s ease-in-out;
 
-        @keyframes balancarErro {
+          background-color:
+              rgba(255, 82, 82, .35) !important;
 
-            0%,
-            100% {
-                transform: translateX(0);
-            }
+          border-color:
+              #ff5252 !important;
 
-            15% {
-                transform: translateX(-10px);
-            }
+          box-shadow:
+              0 0 0 3px rgba(255, 82, 82, .5) !important;
+      }
 
-            30% {
-                transform: translateX(9px);
-            }
+      .btn-voltar {
 
-            45% {
-                transform: translateX(-7px);
-            }
+          position: absolute;
 
-            60% {
-                transform: translateX(6px);
-            }
+          top: 20px;
+          left: 20px;
 
-            75% {
-                transform: translateX(-4px);
-            }
+          width: 45px;
+          height: 45px;
 
-            90% {
-                transform: translateX(3px);
-            }
-        }
+          background: #fff;
 
-        .erro-arraste {
+          border:
+              2px solid #1a1a1a;
 
-            animation:
-                balancarErro .6s ease-in-out;
+          border-radius: 50%;
 
-            background-color:
-                rgba(255, 82, 82, .35) !important;
+          display: flex;
 
-            border-color:
-                #ff5252 !important;
+          justify-content: center;
+          align-items: center;
 
-            box-shadow:
-                0 0 0 3px rgba(255, 82, 82, .5) !important;
-        }
+          text-decoration: none;
 
+          color: #1a1a1a;
 
-        /* =========================================================
-   BOTÃO VOLTAR
-========================================================= */
+          font-size: 20px;
 
-        .btn-voltar {
+          font-weight: bold;
 
-            position: absolute;
+          z-index: 20;
 
-            top: 20px;
-            left: 20px;
+          box-shadow:
+              0 4px 0 #1a1a1a;
+      }
 
-            width: 45px;
-            height: 45px;
+      .circulo {
 
-            background: #fff;
+          position: absolute;
 
-            border:
-                2px solid #1a1a1a;
+          border-radius: 50%;
 
-            border-radius: 50%;
+          z-index: 1;
+      }
 
-            display: flex;
+      .circulo-azul {
 
-            justify-content: center;
-            align-items: center;
+          width: 260px;
+          height: 260px;
 
-            text-decoration: none;
+          background-color: #a8c3d1;
 
-            color: #1a1a1a;
+          top: -50px;
+          left: -50px;
+      }
 
-            font-size: 20px;
+      .circulo-rosa {
 
-            font-weight: bold;
+          width: 300px;
+          height: 300px;
 
-            z-index: 20;
+          background-color: #f7d3ca;
 
-            box-shadow:
-                0 4px 0 #1a1a1a;
-        }
+          left: 22%;
+          bottom: 18%;
+      }
 
+      .circulo-verde {
 
-        /* =========================================================
-   DECORAÇÃO
-========================================================= */
+          width: 280px;
+          height: 280px;
 
-        .circulo {
+          background-color: #b1e0a8;
 
-            position: absolute;
+          top: 12%;
+          right: 18%;
+      }
 
-            border-radius: 50%;
+      .circulo-amarelo {
 
-            z-index: 1;
-        }
+          width: 320px;
+          height: 320px;
 
-        .circulo-azul {
+          background-color: #fce892;
 
-            width: 260px;
-            height: 260px;
+          bottom: -80px;
+          right: -50px;
+      }
 
-            background-color: #a8c3d1;
+      .etapa-container {
 
-            top: -50px;
-            left: -50px;
-        }
+          position: relative;
 
-        .circulo-rosa {
+          z-index: 10;
 
-            width: 300px;
-            height: 300px;
+          width: 100%;
 
-            background-color: #f7d3ca;
+          max-width: 900px;
 
-            left: 22%;
-            bottom: 18%;
-        }
+          display: flex;
 
-        .circulo-verde {
+          flex-direction: column;
 
-            width: 280px;
-            height: 280px;
+          align-items: center;
+      }
 
-            background-color: #b1e0a8;
+      .etapa-simples {
 
-            top: 12%;
-            right: 18%;
-        }
+          max-width: 500px;
+      }
 
-        .circulo-amarelo {
+      .card-letra-wrapper {
 
-            width: 320px;
-            height: 320px;
+          position: relative;
 
-            background-color: #fce892;
+          display: flex;
 
-            bottom: -80px;
-            right: -50px;
-        }
+          flex-direction: column;
 
+          align-items: center;
+      }
 
-        /* =========================================================
-   CONTAINERS
-========================================================= */
+      .card-letra {
 
-        .etapa-container {
+          background-color: #fde05f;
 
-            position: relative;
+          border:
+              3px solid #1a1a1a;
 
-            z-index: 10;
+          border-radius: 35px;
 
-            width: 100%;
+          width: 210px;
+          height: 210px;
 
-            max-width: 900px;
+          display: flex;
 
-            display: flex;
+          justify-content: center;
+          align-items: center;
 
-            flex-direction: column;
+          box-shadow:
+              0 8px 0 #1a1a1a;
+      }
 
-            align-items: center;
-        }
+      .card-letra span {
 
-        .etapa-simples {
+          font-size: 85px;
 
-            max-width: 500px;
-        }
+          font-weight: 900;
 
+          color: #000;
+      }
 
-        /* =========================================================
-   CARD DA VOGAL
-========================================================= */
+      .explicacao {
 
-        .card-letra-wrapper {
+          margin-top: 20px;
 
-            position: relative;
+          text-align: center;
 
-            display: flex;
+          max-width: 600px;
 
-            flex-direction: column;
+          background: rgba(255, 255, 255, .85);
 
-            align-items: center;
-        }
+          border:
+              3px solid #1a1a1a;
 
-        .card-letra {
+          border-radius: 25px;
 
-            background-color: #fde05f;
+          padding: 15px 25px;
 
-            border:
-                3px solid #1a1a1a;
+          font-size: 24px;
 
-            border-radius: 35px;
+          font-weight: bold;
 
-            width: 210px;
-            height: 210px;
+          line-height: 1.3;
 
-            display: flex;
+          box-shadow:
+              0 5px 0 #1a1a1a;
+      }
 
-            justify-content: center;
-            align-items: center;
+      .explicacao .destaque {
 
-            box-shadow:
-                0 8px 0 #1a1a1a;
-        }
+          color: #7e57c2;
 
-        .card-letra span {
+          font-size: 28px;
+      }
 
-            font-size: 85px;
+      .btn-som {
 
-            font-weight: 900;
+          background: transparent;
 
-            color: #000;
-        }
+          border:
+              2px solid #1a1a1a;
 
+          border-radius: 50%;
 
-        /* =========================================================
-   TEXTO EXPLICATIVO
-========================================================= */
+          width: 55px;
+          height: 55px;
 
-        .explicacao {
+          display: flex;
 
-            margin-top: 20px;
+          justify-content: center;
+          align-items: center;
 
-            text-align: center;
+          cursor: pointer;
 
-            max-width: 600px;
+          margin-top: 15px;
 
-            background: rgba(255, 255, 255, .85);
+          transition:
+              transform .2s;
+      }
 
-            border:
-                3px solid #1a1a1a;
+      .btn-som:hover {
 
-            border-radius: 25px;
+          transform: scale(1.1);
+      }
 
-            padding: 15px 25px;
+      .conteudo-etapa {
 
-            font-size: 24px;
+          display: flex;
 
-            font-weight: bold;
+          align-items: center;
 
-            line-height: 1.3;
+          justify-content: space-around;
 
-            box-shadow:
-                0 5px 0 #1a1a1a;
-        }
+          width: 100%;
 
-        .explicacao .destaque {
+          margin-bottom: 25px;
 
-            color: #7e57c2;
+          gap: 40px;
+      }
 
-            font-size: 28px;
-        }
+      .lista-palavras {
 
+          display: flex;
 
-        /* =========================================================
-   BOTÃO SOM
-========================================================= */
+          flex-direction: column;
 
-        .btn-som {
+          gap: 15px;
 
-            background: transparent;
+          width: 330px;
+      }
 
-            border:
-                2px solid #1a1a1a;
+      .btn-palavra {
 
-            border-radius: 50%;
+          background-color: #fde05f;
 
-            width: 55px;
-            height: 55px;
+          border:
+              3px solid #1a1a1a;
 
-            display: flex;
+          border-radius: 20px;
 
-            justify-content: center;
-            align-items: center;
+          padding: 10px 20px;
 
-            cursor: pointer;
+          display: flex;
 
-            margin-top: 15px;
+          justify-content: space-between;
 
-            transition:
-                transform .2s;
-        }
+          align-items: center;
 
-        .btn-som:hover {
+          box-shadow:
+              0 6px 0 #1a1a1a;
 
-            transform: scale(1.1);
-        }
+          cursor: pointer;
 
+          font-size: 26px;
 
-        /* =========================================================
-   PALAVRAS
-========================================================= */
+          font-weight: bold;
 
-        .conteudo-etapa {
+          color: #000;
 
-            display: flex;
+          transition:
+              transform .1s;
+      }
 
-            align-items: center;
+      .btn-palavra:active {
 
-            justify-content: space-around;
+          transform: scale(.98);
+      }
 
-            width: 100%;
+      .btn-palavra img {
 
-            margin-bottom: 25px;
+          width: 42px;
+          height: 42px;
 
-            gap: 40px;
-        }
+          object-fit: contain;
+      }
 
-        .lista-palavras {
+      .btn-avancar {
 
-            display: flex;
+          width: 100%;
 
-            flex-direction: column;
+          max-width: 450px;
 
-            gap: 15px;
+          height: 50px;
 
-            width: 330px;
-        }
+          border:
+              2px solid #1a1a1a;
 
-        .btn-palavra {
+          border-radius: 30px;
 
-            background-color: #fde05f;
+          background: transparent;
 
-            border:
-                3px solid #1a1a1a;
+          display: flex;
 
-            border-radius: 20px;
+          justify-content: center;
+          align-items: center;
 
-            padding: 10px 20px;
+          cursor: pointer;
 
-            display: flex;
+          font-size: 26px;
 
-            justify-content: space-between;
+          font-weight: bold;
 
-            align-items: center;
+          color: #1a1a1a;
 
-            box-shadow:
-                0 6px 0 #1a1a1a;
+          margin-top: 20px;
 
-            cursor: pointer;
+          transition:
+              all .2s;
+      }
 
-            font-size: 26px;
+      .btn-avancar:hover:not(:disabled) {
 
-            font-weight: bold;
+          background-color: #1a1a1a;
 
-            color: #000;
+          color: #fff;
+      }
 
-            transition:
-                transform .1s;
-        }
+      .btn-avancar:disabled {
 
-        .btn-palavra:active {
+          opacity: .4;
 
-            transform: scale(.98);
-        }
+          cursor: not-allowed;
 
-        .btn-palavra img {
+          border-color: #888;
 
-            width: 42px;
-            height: 42px;
+          color: #888;
+      }
 
-            object-fit: contain;
-        }
+      #etapa5 {
 
+          position: relative;
 
-        /* =========================================================
-   BOTÃO AVANÇAR
-========================================================= */
+          z-index: 10;
 
-        .btn-avancar {
+          display: flex;
 
-            width: 100%;
+          flex-direction: column;
 
-            max-width: 450px;
+          align-items: center;
 
-            height: 50px;
+          width: 100%;
 
-            border:
-                2px solid #1a1a1a;
+          max-width: 1050px;
+      }
 
-            border-radius: 30px;
+      .jogo-wrapper-etapa5 {
 
-            background: transparent;
+          display: flex;
 
-            display: flex;
+          justify-content: center;
 
-            justify-content: center;
-            align-items: center;
+          align-items: center;
 
-            cursor: pointer;
+          gap: 60px;
 
-            font-size: 26px;
+          width: 100%;
+      }
 
-            font-weight: bold;
+      .painel-dropzones {
 
-            color: #1a1a1a;
+          display: flex;
 
-            margin-top: 20px;
+          flex-direction: column;
 
-            transition:
-                all .2s;
-        }
+          align-items: center;
 
-        .btn-avancar:hover:not(:disabled) {
+          gap: 20px;
+      }
 
-            background-color: #1a1a1a;
+      .card-drop {
 
-            color: #fff;
-        }
+          background-color: #fde05f;
 
-        .btn-avancar:disabled {
+          border:
+              3px solid #1a1a1a;
 
-            opacity: .4;
+          border-radius: 30px;
 
-            cursor: not-allowed;
+          width: 150px;
+          height: 150px;
 
-            border-color: #888;
+          display: flex;
 
-            color: #888;
-        }
+          justify-content: center;
+          align-items: center;
 
+          box-shadow:
+              0 8px 0 #1a1a1a;
 
-        /* =========================================================
-   ETAPA 5 - FIGURAS
-========================================================= */
+          font-size: 55px;
 
-        #etapa5 {
+          font-weight: 900;
 
-            position: relative;
+          color: #000;
 
-            z-index: 10;
+          transition:
+              transform .2s,
+              background-color .2s;
+      }
 
-            display: flex;
+      .card-drop.soltar-hoover {
 
-            flex-direction: column;
+          transform: scale(1.05);
 
-            align-items: center;
+          background-color: #fff29c;
+      }
 
-            width: 100%;
+      .grid-figuras {
 
-            max-width: 1050px;
-        }
+          display: grid;
 
-        .jogo-wrapper-etapa5 {
+          grid-template-columns:
+              repeat(3, 1fr);
 
-            display: flex;
+          gap: 15px 20px;
+      }
 
-            justify-content: center;
+      .item-figura {
 
-            align-items: center;
+          background-color: #fde05f;
 
-            gap: 60px;
+          border:
+              3px solid #1a1a1a;
 
-            width: 100%;
-        }
+          border-radius: 20px;
 
-        .painel-dropzones {
+          width: 85px;
+          height: 85px;
 
-            display: flex;
+          display: flex;
 
-            flex-direction: column;
+          justify-content: center;
+          align-items: center;
 
-            align-items: center;
+          box-shadow:
+              0 5px 0 #1a1a1a;
 
-            gap: 20px;
-        }
+          cursor: grab;
 
-        .card-drop {
+          transition:
+              transform .1s,
+              opacity .3s;
+      }
 
-            background-color: #fde05f;
+      .item-figura:active {
 
-            border:
-                3px solid #1a1a1a;
+          cursor: grabbing;
 
-            border-radius: 30px;
+          transform: scale(1.08);
+      }
 
-            width: 150px;
-            height: 150px;
+      .item-figura img {
 
-            display: flex;
+          width: 60px;
+          height: 60px;
 
-            justify-content: center;
-            align-items: center;
+          object-fit: contain;
 
-            box-shadow:
-                0 8px 0 #1a1a1a;
+          pointer-events: none;
+      }
 
-            font-size: 55px;
+      .item-figura.concluido {
 
-            font-weight: 900;
+          opacity: .2;
 
-            color: #000;
+          pointer-events: none;
 
-            transition:
-                transform .2s,
-                background-color .2s;
-        }
+          box-shadow: none;
+      }
 
-        .card-drop.soltar-hoover {
+      #etapa6 {
 
-            transform: scale(1.05);
+          position: relative;
 
-            background-color: #fff29c;
-        }
+          z-index: 10;
 
-        .grid-figuras {
+          display: flex;
 
-            display: grid;
+          justify-content: center;
 
-            grid-template-columns:
-                repeat(3, 1fr);
+          align-items: center;
 
-            gap: 15px 20px;
-        }
+          gap: 45px;
 
-        .item-figura {
+          width: 100%;
 
-            background-color: #fde05f;
+          max-width: 1100px;
 
-            border:
-                3px solid #1a1a1a;
+          padding: 20px;
+      }
 
-            border-radius: 20px;
+      .painel-letras {
 
-            width: 85px;
-            height: 85px;
+          display: flex;
 
-            display: flex;
+          flex-direction: column;
 
-            justify-content: center;
-            align-items: center;
+          align-items: center;
 
-            box-shadow:
-                0 5px 0 #1a1a1a;
+          gap: 20px;
+      }
 
-            cursor: grab;
+      .card-letra-arrastavel {
 
-            transition:
-                transform .1s,
-                opacity .3s;
-        }
+          background-color: #fde05f;
 
-        .item-figura:active {
+          border:
+              3px solid #1a1a1a;
 
-            cursor: grabbing;
+          border-radius: 30px;
 
-            transform: scale(1.08);
-        }
+          width: 120px;
+          height: 120px;
 
-        .item-figura img {
+          display: flex;
 
-            width: 60px;
-            height: 60px;
+          justify-content: center;
+          align-items: center;
 
-            object-fit: contain;
+          box-shadow:
+              0 7px 0 #1a1a1a;
 
-            pointer-events: none;
-        }
+          font-size: 50px;
 
-        .item-figura.concluido {
+          font-weight: 900;
 
-            opacity: .2;
+          color: #000;
 
-            pointer-events: none;
+          cursor: grab;
 
-            box-shadow: none;
-        }
+          user-select: none;
 
+          transition:
+              transform .2s;
+      }
 
-        /* =========================================================
-   ETAPA 6
-========================================================= */
+      .card-letra-arrastavel:active {
 
-        #etapa6 {
+          cursor: grabbing;
 
-            position: relative;
+          transform: scale(1.05);
+      }
 
-            z-index: 10;
+      .grid-palavras-jogo {
 
-            display: flex;
+          display: grid;
 
-            justify-content: center;
+          grid-template-columns:
+              repeat(2, 1fr);
 
-            align-items: center;
+          gap: 20px;
+      }
 
-            gap: 45px;
+      .card-palavra-drop {
 
-            width: 100%;
+          background-color: #fde05f;
 
-            max-width: 1100px;
+          border:
+              3px solid #1a1a1a;
 
-            padding: 20px;
-        }
+          border-radius: 25px;
 
-        .painel-letras {
+          width: 300px;
+          height: 70px;
 
-            display: flex;
+          display: flex;
 
-            flex-direction: column;
+          justify-content: space-between;
+          align-items: center;
 
-            align-items: center;
+          padding: 0 15px;
 
-            gap: 20px;
-        }
+          box-shadow:
+              0 6px 0 #1a1a1a;
 
-        .card-letra-arrastavel {
+          transition:
+              transform .2s,
+              background-color .2s;
+      }
 
-            background-color: #fde05f;
+      .card-palavra-drop.hover-drop {
 
-            border:
-                3px solid #1a1a1a;
+          transform: scale(1.03);
 
-            border-radius: 30px;
+          background-color: #fff4a3;
+      }
 
-            width: 120px;
-            height: 120px;
+      .card-palavra-drop.concluido {
 
-            display: flex;
+          background-color: #b1e0a8;
+      }
 
-            justify-content: center;
-            align-items: center;
+      .texto-palavra {
 
-            box-shadow:
-                0 7px 0 #1a1a1a;
+          font-size: 26px;
 
-            font-size: 50px;
+          font-weight: 900;
 
-            font-weight: 900;
+          color: #000;
 
-            color: #000;
+          letter-spacing: 1px;
+      }
 
-            cursor: grab;
+      .imagem-palavra {
 
-            user-select: none;
+          width: 48px;
+          height: 48px;
 
-            transition:
-                transform .2s;
-        }
+          object-fit: contain;
+      }
 
-        .card-letra-arrastavel:active {
+      @media (max-width: 850px) {
 
-            cursor: grabbing;
+          body {
+              overflow-y: auto;
+          }
 
-            transform: scale(1.05);
-        }
+          .conteudo-etapa {
 
-        .grid-palavras-jogo {
+              flex-direction: column;
 
-            display: grid;
+              gap: 20px;
+          }
 
-            grid-template-columns:
-                repeat(2, 1fr);
+          .jogo-wrapper-etapa5 {
 
-            gap: 20px;
-        }
+              flex-direction: column;
 
-        .card-palavra-drop {
+              gap: 30px;
+          }
 
-            background-color: #fde05f;
+          #etapa6 {
 
-            border:
-                3px solid #1a1a1a;
+              flex-direction: column;
+          }
 
-            border-radius: 25px;
+          .grid-palavras-jogo {
 
-            width: 300px;
-            height: 70px;
+              grid-template-columns: 1fr;
+          }
 
-            display: flex;
+          .circulo {
+              opacity: .5;
+          }
 
-            justify-content: space-between;
-            align-items: center;
+          .texto-parabens-colorido span {
 
-            padding: 0 15px;
-
-            box-shadow:
-                0 6px 0 #1a1a1a;
-
-            transition:
-                transform .2s,
-                background-color .2s;
-        }
-
-        .card-palavra-drop.hover-drop {
-
-            transform: scale(1.03);
-
-            background-color: #fff4a3;
-        }
-
-        .card-palavra-drop.concluido {
-
-            background-color: #b1e0a8;
-        }
-
-        .texto-palavra {
-
-            font-size: 26px;
-
-            font-weight: 900;
-
-            color: #000;
-
-            letter-spacing: 1px;
-        }
-
-        .imagem-palavra {
-
-            width: 48px;
-            height: 48px;
-
-            object-fit: contain;
-        }
-
-
-        /* =========================================================
-   RESPONSIVIDADE
-========================================================= */
-
-        @media (max-width: 850px) {
-
-            body {
-                overflow-y: auto;
-            }
-
-            .conteudo-etapa {
-
-                flex-direction: column;
-
-                gap: 20px;
-            }
-
-            .jogo-wrapper-etapa5 {
-
-                flex-direction: column;
-
-                gap: 30px;
-            }
-
-            #etapa6 {
-
-                flex-direction: column;
-            }
-
-            .grid-palavras-jogo {
-
-                grid-template-columns: 1fr;
-            }
-
-            .circulo {
-                opacity: .5;
-            }
-
-            .texto-parabens-colorido span {
-
-                font-size: 45px;
-            }
-        }
+              font-size: 45px;
+          }
+      }
     </style>
+  </head>
 
-</head>
-
-<body>
-
-
-    <!-- =====================================================
-     TELA DE TRANSIÇÃO
-===================================================== -->
-
+  <body>
     <div id="tela-transicao">
+      <div class="nuvem-container">
+        <div class="nuvem nuvem1"></div>
 
-        <div class="nuvem-container">
+        <div class="nuvem nuvem2"></div>
 
-            <div class="nuvem nuvem1"></div>
-
-            <div class="nuvem nuvem2"></div>
-
-            <div class="nuvem nuvem3"></div>
-
-        </div>
-
+        <div class="nuvem nuvem3"></div>
+      </div>
     </div>
-
-
-    <!-- =====================================================
-     TELA DE PARABÉNS
-===================================================== -->
 
     <div id="tela-parabens" class="esconder">
+      <div class="container-confetes" id="containerConfetes"></div>
 
-        <div class="container-confetes" id="containerConfetes">
+      <img src="../img/nuvem_parabens.png" class="nuvem-parabens-esq" alt="Nuvem" onerror="this.style.display='none'" />
+
+      <img src="../img/nuvem_parabens.png" class="nuvem-parabens-dir" alt="Nuvem" onerror="this.style.display='none'" />
+
+      <div class="conteudo-parabens-centro">
+        <div class="texto-parabens-colorido">
+          <span class="char1">P</span>
+          <span class="char2">A</span>
+          <span class="char3">R</span>
+          <span class="char4">A</span>
+          <span class="char5">B</span>
+          <span class="char6">É</span>
+          <span class="char7">N</span>
+          <span class="char8">S</span>
         </div>
 
+        <img src="../img/lumiminho.png" alt="Lumi" class="mascote-parabens" onerror="this.src='../img/luminho.png'" />
+      </div>
 
-        <img src="../img/nuvem_parabens.png" class="nuvem-parabens-esq" alt="Nuvem" onerror="this.style.display='none'">
-
-
-        <img src="../img/nuvem_parabens.png" class="nuvem-parabens-dir" alt="Nuvem" onerror="this.style.display='none'">
-
-
-        <div class="conteudo-parabens-centro">
-
-            <div class="texto-parabens-colorido">
-
-                <span class="char1">P</span>
-                <span class="char2">A</span>
-                <span class="char3">R</span>
-                <span class="char4">A</span>
-                <span class="char5">B</span>
-                <span class="char6">É</span>
-                <span class="char7">N</span>
-                <span class="char8">S</span>
-
-            </div>
-
-
-            <img src="../img/lumiminho.png" alt="Lumi" class="mascote-parabens" onerror="this.src='../img/luminho.png'">
-
-        </div>
-
-
-        <div class="gramado-parabens"></div>
-
+      <div class="gramado-parabens"></div>
     </div>
 
-
-    <!-- =====================================================
-     BOTÃO VOLTAR
-===================================================== -->
-
-    <a href="nivel1.php" class="btn-voltar" title="Voltar para a Trilha">
-        ←
-    </a>
-
-
-    <!-- =====================================================
-     DECORAÇÕES
-===================================================== -->
+    <a href="nivel1.php" class="btn-voltar" title="Voltar para a Trilha"> ← </a>
 
     <div class="circulo circulo-azul"></div>
 
@@ -1399,631 +1233,455 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
 
     <div class="circulo circulo-amarelo"></div>
 
-
-    <!-- =====================================================
-     ETAPA 1
-     CONHECENDO AS VOGAIS
-===================================================== -->
-
     <div id="etapa1" class="etapa-container etapa-simples">
+      <div class="explicacao">
+        As vogais são letras muito importantes para formar as palavras.
 
-        <div class="explicacao">
+        <br /><br />
 
-            As vogais são letras muito importantes
-            para formar as palavras.
+        Vamos aprender:
 
-            <br><br>
+        <strong>A, E, I, O, U!</strong>
+      </div>
 
-            Vamos aprender:
-
-            <strong>A, E, I, O, U!</strong>
-
-        </div>
-
-
-        <button class="btn-avancar" onclick="mudarEtapa('etapa1','etapa2')">
-            ➔
-        </button>
-
+      <button class="btn-avancar" onclick="mudarEtapa('etapa1','etapa2')">➔</button>
     </div>
-
-
-    <!-- =====================================================
-     ETAPA 2
-     A
-===================================================== -->
 
     <div id="etapa2" class="etapa-container esconder">
-
-        <div class="conteudo-etapa">
-
-
-            <div class="card-letra-wrapper">
-
-                <div class="card-letra">
-                    <span>Aa</span>
-                </div>
-
-            </div>
-
-
-            <button class="btn-som" onclick="tocarSom('somLetraA')">
-                🔊
-            </button>
-
-
-            <div class="lista-palavras">
-
-
-                <button class="btn-palavra" onclick="tocarSom('somAbelha')">
-
-                    <span>ABELHA</span>
-
-                    <img src="../img/abelha.png" alt="Abelha">
-
-                </button>
-
-
-                <button class="btn-palavra" onclick="tocarSom('somAviao')">
-
-                    <span>AVIÃO</span>
-
-                    <img src="../img/aviao.png" alt="Avião">
-
-                </button>
-
-
-                <button class="btn-palavra" onclick="tocarSom('somAbacaxi')">
-
-                    <span>ABACAXI</span>
-
-                    <img src="../img/abacaxi.png" alt="Abacaxi">
-
-                </button>
-
-            </div>
-
+      <div class="conteudo-etapa">
+        <div class="card-letra-wrapper">
+          <div class="card-letra">
+            <span>Aa</span>
+          </div>
         </div>
 
+        <button class="btn-som" onclick="tocarSom('somLetraA')">🔊</button>
 
-        <button class="btn-avancar" onclick="mudarEtapa('etapa2','etapa3')">
-            ➔
-        </button>
+        <div class="lista-palavras">
+          <button class="btn-palavra" onclick="tocarSom('somAbelha')">
+            <span>ABELHA</span>
 
+            <img src="../img/abelha.png" alt="Abelha" />
+          </button>
+
+          <button class="btn-palavra" onclick="tocarSom('somAviao')">
+            <span>AVIÃO</span>
+
+            <img src="../img/aviao.png" alt="Avião" />
+          </button>
+
+          <button class="btn-palavra" onclick="tocarSom('somAbacaxi')">
+            <span>ABACAXI</span>
+
+            <img src="../img/abacaxi.png" alt="Abacaxi" />
+          </button>
+        </div>
+      </div>
+
+      <button class="btn-avancar" onclick="mudarEtapa('etapa2','etapa3')">➔</button>
     </div>
 
-
-    <!-- =====================================================
-     ETAPA 3
-     E I O U
-===================================================== -->
-
     <div id="etapa3" class="etapa-container esconder">
+      <div class="explicacao">
+        Muito bem!
 
-        <div class="explicacao">
+        <br /><br />
 
-            Muito bem!
+        Agora vamos conhecer as outras vogais:
 
-            <br><br>
+        <br /><br />
 
-            Agora vamos conhecer as outras vogais:
+        <strong> E - I - O - U </strong>
 
-            <br><br>
+        <br /><br />
 
-            <strong>
-                E - I - O - U
-            </strong>
+        Elas aparecem em muitas palavras!
+      </div>
 
-            <br><br>
-
-            Elas aparecem em muitas palavras!
-
-        </div>
-
-
-        <div style="
+      <div
+        style="
             display:flex;
             gap:12px;
             margin-top:25px;
             flex-wrap:wrap;
             justify-content:center;
-        ">
-
-            <div class="card-letra">
-                <span>Ee</span>
-            </div>
-
-            <div class="card-letra">
-                <span>Ii</span>
-            </div>
-
-            <div class="card-letra">
-                <span>Oo</span>
-            </div>
-
-            <div class="card-letra">
-                <span>Uu</span>
-            </div>
-
+        "
+      >
+        <div class="card-letra">
+          <span>Ee</span>
         </div>
 
+        <div class="card-letra">
+          <span>Ii</span>
+        </div>
 
-        <button class="btn-avancar" onclick="mudarEtapa('etapa3','etapa4')">
-            ➔
-        </button>
+        <div class="card-letra">
+          <span>Oo</span>
+        </div>
 
+        <div class="card-letra">
+          <span>Uu</span>
+        </div>
+      </div>
+
+      <button class="btn-avancar" onclick="mudarEtapa('etapa3','etapa4')">➔</button>
     </div>
-
-
-    <!-- =====================================================
-     ETAPA 4
-     PALAVRAS COM AS VOGAIS
-===================================================== -->
 
     <div id="etapa4" class="etapa-container esconder">
-
-        <div class="conteudo-etapa">
-
-
-            <div class="card-letra-wrapper">
-
-                <div class="card-letra">
-
-                    <span>AEIOU</span>
-
-                </div>
-
-            </div>
-
-
-            <button class="btn-som" onclick="tocarSom('audioInstrucao')">
-                🔊
-            </button>
-
-
-            <div class="lista-palavras">
-
-
-                <button class="btn-palavra" onclick="tocarSom('somAbacate')">
-
-                    <span>ABACATE</span>
-
-                    <img src="../img/abacate.png" alt="Abacate">
-
-                </button>
-
-                <button class="btn-palavra" onclick="tocarSom('somElefante')">
-
-                    <span>ELEFANTE</span>
-
-                    <img src="../img/elefante.png" alt="Elefante">
-
-                </button>
-
-
-                <button class="btn-palavra" onclick="tocarSom('somIguana')">
-
-                    <span>IGUANA</span>
-
-                    <img src="../img/iguana.png" alt="Iguana">
-
-                </button>
-
-
-                <button class="btn-palavra" onclick="tocarSom('somOlho')">
-
-                    <span>OLHO</span>
-
-                    <img src="../img/olho.png" alt="Olho">
-
-                </button>
-
-
-                <button class="btn-palavra" onclick="tocarSom('somUva')">
-
-                    <span>UVA</span>
-
-                    <img src="../img/uva.png" alt="Uva">
-
-                </button>
-
-            </div>
-
+      <div class="conteudo-etapa">
+        <div class="card-letra-wrapper">
+          <div class="card-letra">
+            <span>AEIOU</span>
+          </div>
         </div>
 
+        <button class="btn-som" onclick="tocarSom('audioInstrucao')">🔊</button>
 
-        <button class="btn-avancar" onclick="mudarEtapa('etapa4','etapa5')">
-            ➔
-        </button>
+        <div class="lista-palavras">
+          <button class="btn-palavra" onclick="tocarSom('somAbacate')">
+            <span>ABACATE</span>
 
+            <img src="../img/abacate.png" alt="Abacate" />
+          </button>
+
+          <button class="btn-palavra" onclick="tocarSom('somElefante')">
+            <span>ELEFANTE</span>
+
+            <img src="../img/elefante.png" alt="Elefante" />
+          </button>
+
+          <button class="btn-palavra" onclick="tocarSom('somIguana')">
+            <span>IGUANA</span>
+
+            <img src="../img/iguana.png" alt="Iguana" />
+          </button>
+
+          <button class="btn-palavra" onclick="tocarSom('somOlho')">
+            <span>OLHO</span>
+
+            <img src="../img/olho.png" alt="Olho" />
+          </button>
+
+          <button class="btn-palavra" onclick="tocarSom('somUva')">
+            <span>UVA</span>
+
+            <img src="../img/uva.png" alt="Uva" />
+          </button>
+        </div>
+      </div>
+
+      <button class="btn-avancar" onclick="mudarEtapa('etapa4','etapa5')">➔</button>
     </div>
-
-
-    <!-- =====================================================
-     ETAPA 5
-     ARRASTE A FIGURA PARA A VOGAL
-===================================================== -->
 
     <div id="etapa5" class="esconder">
+      <div class="explicacao">
+        <strong> Vamos brincar! </strong>
 
-        <div class="explicacao">
+        <br />
 
-            <strong>
-                Vamos brincar!
-            </strong>
+        Arraste cada figura para a vogal que começa o nome dela.
+      </div>
 
-            <br>
+      <div class="jogo-wrapper-etapa5">
+        <div class="painel-dropzones">
+          <div
+            class="card-drop"
+            data-letra="a"
+            ondragover="permitirSoltar(event)"
+            ondragleave="sairDrop(event)"
+            ondrop="soltar(event)"
+          >
+            Aa
+          </div>
 
-            Arraste cada figura
-            para a vogal que começa
-            o nome dela.
+          <div
+            class="card-drop"
+            data-letra="e"
+            ondragover="permitirSoltar(event)"
+            ondragleave="sairDrop(event)"
+            ondrop="soltar(event)"
+          >
+            Ee
+          </div>
 
+          <div
+            class="card-drop"
+            data-letra="i"
+            ondragover="permitirSoltar(event)"
+            ondragleave="sairDrop(event)"
+            ondrop="soltar(event)"
+          >
+            Ii
+          </div>
+
+          <div
+            class="card-drop"
+            data-letra="o"
+            ondragover="permitirSoltar(event)"
+            ondragleave="sairDrop(event)"
+            ondrop="soltar(event)"
+          >
+            Oo
+          </div>
+
+          <div
+            class="card-drop"
+            data-letra="u"
+            ondragover="permitirSoltar(event)"
+            ondragleave="sairDrop(event)"
+            ondrop="soltar(event)"
+          >
+            Uu
+          </div>
+
+          <button class="btn-som" onclick="tocarSom('audioInstrucao')">🔊</button>
         </div>
 
-
-        <div class="jogo-wrapper-etapa5">
-
-
-            <!-- VOGAIS -->
-
-            <div class="painel-dropzones">
-
-
-                <div class="card-drop" data-letra="a" ondragover="permitirSoltar(event)" ondragleave="sairDrop(event)"
-                    ondrop="soltar(event)">
-
-                    Aa
-
-                </div>
-
-
-                <div class="card-drop" data-letra="e" ondragover="permitirSoltar(event)" ondragleave="sairDrop(event)"
-                    ondrop="soltar(event)">
-
-                    Ee
-
-                </div>
-
-
-                <div class="card-drop" data-letra="i" ondragover="permitirSoltar(event)" ondragleave="sairDrop(event)"
-                    ondrop="soltar(event)">
-
-                    Ii
-
-                </div>
-
-
-                <div class="card-drop" data-letra="o" ondragover="permitirSoltar(event)" ondragleave="sairDrop(event)"
-                    ondrop="soltar(event)">
-
-                    Oo
-
-                </div>
-
-
-                <div class="card-drop" data-letra="u" ondragover="permitirSoltar(event)" ondragleave="sairDrop(event)"
-                    ondrop="soltar(event)">
-
-                    Uu
-
-                </div>
-
-
-                <button class="btn-som" onclick="tocarSom('audioInstrucao')">
-                    🔊
-                </button>
-
-            </div>
-
-
-            <!-- FIGURAS -->
-
-            <div class="grid-figuras">
-
-
-                <!-- A -->
-
-                <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-abelha" data-letra="a">
-
-                    <img src="../img/abelha.png" alt="Abelha">
-
-                </div>
-
-
-                <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-aviao" data-letra="a">
-
-                    <img src="../img/aviao.png" alt="Avião">
-
-                </div>
-
-
-                <!-- E -->
-
-                <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-elefante"
-                    data-letra="e">
-
-                    <img src="../img/elefante.png" alt="Elefante">
-
-                </div>
-
-
-                <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-escada" data-letra="e">
-
-                    <img src="../img/escada.png" alt="Escada">
-
-                </div>
-
-
-                <!-- I -->
-
-                <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-iguana" data-letra="i">
-
-                    <img src="../img/iguana.png" alt="Iguana">
-
-                </div>
-
-
-                <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-igreja" data-letra="i">
-
-                    <img src="../img/igreja.png" alt="Igreja">
-
-                </div>
-
-
-                <!-- O -->
-
-                <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-ovo" data-letra="o">
-
-                    <img src="../img/ovo.png" alt="Ovo">
-
-                </div>
-
-
-                <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-olho" data-letra="o">
-
-                    <img src="../img/olho.png" alt="Olho">
-
-                </div>
-
-
-                <!-- U -->
-
-                <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-uva" data-letra="u">
-
-                    <img src="../img/uva.png" alt="Uva">
-
-                </div>
-
-
-                <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-urso" data-letra="u">
-
-                    <img src="../img/urso.png" alt="Urso">
-
-                </div>
-
-            </div>
-
+        <div class="grid-figuras">
+          <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-abelha" data-letra="a">
+            <img src="../img/abelha.png" alt="Abelha" />
+          </div>
+
+          <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-aviao" data-letra="a">
+            <img src="../img/aviao.png" alt="Avião" />
+          </div>
+
+          <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-elefante" data-letra="e">
+            <img src="../img/elefante.png" alt="Elefante" />
+          </div>
+
+          <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-escada" data-letra="e">
+            <img src="../img/escada.png" alt="Escada" />
+          </div>
+
+          <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-iguana" data-letra="i">
+            <img src="../img/iguana.png" alt="Iguana" />
+          </div>
+
+          <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-igreja" data-letra="i">
+            <img src="../img/igreja.png" alt="Igreja" />
+          </div>
+
+          <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-ovo" data-letra="o">
+            <img src="../img/ovo.png" alt="Ovo" />
+          </div>
+
+          <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-olho" data-letra="o">
+            <img src="../img/olho.png" alt="Olho" />
+          </div>
+
+          <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-uva" data-letra="u">
+            <img src="../img/uva.png" alt="Uva" />
+          </div>
+
+          <div class="item-figura" draggable="true" ondragstart="arrastar(event)" id="fig-urso" data-letra="u">
+            <img src="../img/urso.png" alt="Urso" />
+          </div>
         </div>
+      </div>
 
-
-        <button id="btn-avancar-etapa5" class="btn-avancar" onclick="mudarEtapa('etapa5','etapa6')" disabled>
-            ➔
-        </button>
-
+      <button id="btn-avancar-etapa5" class="btn-avancar" onclick="mudarEtapa('etapa5','etapa6')" disabled>➔</button>
     </div>
-
-
-    <!-- =====================================================
-     ETAPA 6
-     COMPLETE AS PALAVRAS
-===================================================== -->
 
     <div id="etapa6" class="esconder">
-
-
-        <div class="painel-letras">
-
-
-            <div class="card-letra-arrastavel" draggable="true" ondragstart="arrastarLetra(event)" id="letra-A"
-                data-letra="a">
-
-                Aa
-
-            </div>
-
-
-            <div class="card-letra-arrastavel" draggable="true" ondragstart="arrastarLetra(event)" id="letra-E"
-                data-letra="e">
-
-                Ee
-
-            </div>
-
-
-            <div class="card-letra-arrastavel" draggable="true" ondragstart="arrastarLetra(event)" id="letra-I"
-                data-letra="i">
-
-                Ii
-
-            </div>
-
-
-            <div class="card-letra-arrastavel" draggable="true" ondragstart="arrastarLetra(event)" id="letra-O"
-                data-letra="o">
-
-                Oo
-
-            </div>
-
-
-            <div class="card-letra-arrastavel" draggable="true" ondragstart="arrastarLetra(event)" id="letra-U"
-                data-letra="u">
-
-                Uu
-
-            </div>
-
-
-            <button class="btn-som" onclick="tocarSom('audioInstrucao')" title="Ouvir instrução">
-                🔊
-            </button>
-
+      <div class="painel-letras">
+        <div
+          class="card-letra-arrastavel"
+          draggable="true"
+          ondragstart="arrastarLetra(event)"
+          id="letra-A"
+          data-letra="a"
+        >
+          Aa
         </div>
 
-
-        <div class="grid-palavras-jogo">
-
-
-            <!-- ABELHA -->
-
-            <div class="card-palavra-drop" data-correta="a" data-resto="BELHA" data-audio="somAbelha"
-                ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
-
-                <span class="texto-palavra">
-                    _BELHA
-                </span>
-
-                <img src="../img/abelha.png" alt="Abelha" class="imagem-palavra">
-
-            </div>
-
-
-            <!-- ELEFANTE -->
-
-            <div class="card-palavra-drop" data-correta="e" data-resto="LEFANTE" data-audio="somElefante"
-                ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
-
-                <span class="texto-palavra">
-                    _LEFANTE
-                </span>
-
-                <img src="../img/elefante.png" alt="Elefante" class="imagem-palavra">
-
-            </div>
-
-
-            <!-- IGUANA -->
-
-            <div class="card-palavra-drop" data-correta="i" data-resto="GUANA" data-audio="somIguana"
-                ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
-
-                <span class="texto-palavra">
-                    _GUANA
-                </span>
-
-                <img src="../img/iguana.png" alt="Iguana" class="imagem-palavra">
-
-            </div>
-
-
-            <!-- OVO -->
-
-            <div class="card-palavra-drop" data-correta="o" data-resto="VO" data-audio="somOvo"
-                ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
-
-                <span class="texto-palavra">
-                    _VO
-                </span>
-
-                <img src="../img/ovo.png" alt="Ovo" class="imagem-palavra">
-
-            </div>
-
-
-            <!-- UVA -->
-
-            <div class="card-palavra-drop" data-correta="u" data-resto="VA" data-audio="somUva"
-                ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
-
-                <span class="texto-palavra">
-                    _VA
-                </span>
-
-                <img src="../img/uva.png" alt="Uva" class="imagem-palavra">
-
-            </div>
-
-
-            <!-- AVIÃO -->
-
-            <div class="card-palavra-drop" data-correta="a" data-resto="VIÃO" data-audio="somAviao"
-                ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
-
-                <span class="texto-palavra">
-                    _VIÃO
-                </span>
-
-                <img src="../img/aviao.png" alt="Avião" class="imagem-palavra">
-
-            </div>
-
-
-            <!-- ESCADA -->
-
-            <div class="card-palavra-drop" data-correta="e" data-resto="SCADA" data-audio="somEscada"
-                ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
-
-                <span class="texto-palavra">
-                    _SCADA
-                </span>
-
-                <img src="../img/escada.png" alt="Escada" class="imagem-palavra">
-
-            </div>
-
-
-            <!-- IGREJA -->
-
-            <div class="card-palavra-drop" data-correta="i" data-resto="GREJA" data-audio="somIgreja"
-                ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
-
-                <span class="texto-palavra">
-                    _GREJA
-                </span>
-
-                <img src="../img/igreja.png" alt="Igreja" class="imagem-palavra">
-
-            </div>
-
-
-            <!-- OLHO -->
-
-            <div class="card-palavra-drop" data-correta="o" data-resto="LHO" data-audio="somOlho"
-                ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
-
-                <span class="texto-palavra">
-                    _LHO
-                </span>
-
-                <img src="../img/olho.png" alt="Olho" class="imagem-palavra">
-
-            </div>
-
-
-            <!-- URSO -->
-
-            <div class="card-palavra-drop" data-correta="u" data-resto="RSO" data-audio="somUrso"
-                ondragover="permitirSoltarLetra(event)" ondragleave="sairDropLetra(event)" ondrop="soltarLetra(event)">
-
-                <span class="texto-palavra">
-                    _RSO
-                </span>
-
-                <img src="../img/urso.png" alt="Urso" class="imagem-palavra">
-
-            </div>
-
+        <div
+          class="card-letra-arrastavel"
+          draggable="true"
+          ondragstart="arrastarLetra(event)"
+          id="letra-E"
+          data-letra="e"
+        >
+          Ee
         </div>
 
+        <div
+          class="card-letra-arrastavel"
+          draggable="true"
+          ondragstart="arrastarLetra(event)"
+          id="letra-I"
+          data-letra="i"
+        >
+          Ii
+        </div>
+
+        <div
+          class="card-letra-arrastavel"
+          draggable="true"
+          ondragstart="arrastarLetra(event)"
+          id="letra-O"
+          data-letra="o"
+        >
+          Oo
+        </div>
+
+        <div
+          class="card-letra-arrastavel"
+          draggable="true"
+          ondragstart="arrastarLetra(event)"
+          id="letra-U"
+          data-letra="u"
+        >
+          Uu
+        </div>
+
+        <button class="btn-som" onclick="tocarSom('audioInstrucao')" title="Ouvir instrução">🔊</button>
+      </div>
+
+      <div class="grid-palavras-jogo">
+        <div
+          class="card-palavra-drop"
+          data-correta="a"
+          data-resto="BELHA"
+          data-audio="somAbelha"
+          ondragover="permitirSoltarLetra(event)"
+          ondragleave="sairDropLetra(event)"
+          ondrop="soltarLetra(event)"
+        >
+          <span class="texto-palavra"> _BELHA </span>
+
+          <img src="../img/abelha.png" alt="Abelha" class="imagem-palavra" />
+        </div>
+
+        <div
+          class="card-palavra-drop"
+          data-correta="e"
+          data-resto="LEFANTE"
+          data-audio="somElefante"
+          ondragover="permitirSoltarLetra(event)"
+          ondragleave="sairDropLetra(event)"
+          ondrop="soltarLetra(event)"
+        >
+          <span class="texto-palavra"> _LEFANTE </span>
+
+          <img src="../img/elefante.png" alt="Elefante" class="imagem-palavra" />
+        </div>
+
+        <div
+          class="card-palavra-drop"
+          data-correta="i"
+          data-resto="GUANA"
+          data-audio="somIguana"
+          ondragover="permitirSoltarLetra(event)"
+          ondragleave="sairDropLetra(event)"
+          ondrop="soltarLetra(event)"
+        >
+          <span class="texto-palavra"> _GUANA </span>
+
+          <img src="../img/iguana.png" alt="Iguana" class="imagem-palavra" />
+        </div>
+
+        <div
+          class="card-palavra-drop"
+          data-correta="o"
+          data-resto="VO"
+          data-audio="somOvo"
+          ondragover="permitirSoltarLetra(event)"
+          ondragleave="sairDropLetra(event)"
+          ondrop="soltarLetra(event)"
+        >
+          <span class="texto-palavra"> _VO </span>
+
+          <img src="../img/ovo.png" alt="Ovo" class="imagem-palavra" />
+        </div>
+
+        <div
+          class="card-palavra-drop"
+          data-correta="u"
+          data-resto="VA"
+          data-audio="somUva"
+          ondragover="permitirSoltarLetra(event)"
+          ondragleave="sairDropLetra(event)"
+          ondrop="soltarLetra(event)"
+        >
+          <span class="texto-palavra"> _VA </span>
+
+          <img src="../img/uva.png" alt="Uva" class="imagem-palavra" />
+        </div>
+
+        <div
+          class="card-palavra-drop"
+          data-correta="a"
+          data-resto="VIÃO"
+          data-audio="somAviao"
+          ondragover="permitirSoltarLetra(event)"
+          ondragleave="sairDropLetra(event)"
+          ondrop="soltarLetra(event)"
+        >
+          <span class="texto-palavra"> _VIÃO </span>
+
+          <img src="../img/aviao.png" alt="Avião" class="imagem-palavra" />
+        </div>
+
+        <div
+          class="card-palavra-drop"
+          data-correta="e"
+          data-resto="SCADA"
+          data-audio="somEscada"
+          ondragover="permitirSoltarLetra(event)"
+          ondragleave="sairDropLetra(event)"
+          ondrop="soltarLetra(event)"
+        >
+          <span class="texto-palavra"> _SCADA </span>
+
+          <img src="../img/escada.png" alt="Escada" class="imagem-palavra" />
+        </div>
+
+        <div
+          class="card-palavra-drop"
+          data-correta="i"
+          data-resto="GREJA"
+          data-audio="somIgreja"
+          ondragover="permitirSoltarLetra(event)"
+          ondragleave="sairDropLetra(event)"
+          ondrop="soltarLetra(event)"
+        >
+          <span class="texto-palavra"> _GREJA </span>
+
+          <img src="../img/igreja.png" alt="Igreja" class="imagem-palavra" />
+        </div>
+
+        <div
+          class="card-palavra-drop"
+          data-correta="o"
+          data-resto="LHO"
+          data-audio="somOlho"
+          ondragover="permitirSoltarLetra(event)"
+          ondragleave="sairDropLetra(event)"
+          ondrop="soltarLetra(event)"
+        >
+          <span class="texto-palavra"> _LHO </span>
+
+          <img src="../img/olho.png" alt="Olho" class="imagem-palavra" />
+        </div>
+
+        <div
+          class="card-palavra-drop"
+          data-correta="u"
+          data-resto="RSO"
+          data-audio="somUrso"
+          ondragover="permitirSoltarLetra(event)"
+          ondragleave="sairDropLetra(event)"
+          ondrop="soltarLetra(event)"
+        >
+          <span class="texto-palavra"> _RSO </span>
+
+          <img src="../img/urso.png" alt="Urso" class="imagem-palavra" />
+        </div>
+      </div>
     </div>
 
-
-    <!-- =====================================================
-     ÁUDIOS
-===================================================== -->
-
     <audio id="audioIniciando" src="../audios/iniciando_fase.mp3" autoplay></audio>
-
 
     <audio id="somLetraA" src="../audios/Letra A.m4a"></audio>
 
@@ -2035,45 +1693,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
 
     <audio id="somLetraU" src="../audios/Letra U.m4a"></audio>
 
-
-    <!-- PALAVRAS A -->
-
     <audio id="somAbelha" src="../audios/Abelha.mp3"></audio>
 
     <audio id="somAviao" src="../audios/Avião.mp3"></audio>
 
     <audio id="somAbacaxi" src="../audios/Abacaxi.mp3"></audio>
 
-
-    <!-- PALAVRAS E -->
-
     <audio id="somElefante" src="../audios/Elefante.mp3"></audio>
 
     <audio id="somEscada" src="../audios/Escada.mp3"></audio>
-
-
-    <!-- PALAVRAS I -->
 
     <audio id="somIguana" src="../audios/Iguana.mp3"></audio>
 
     <audio id="somIgreja" src="../audios/Igreja.mp3"></audio>
 
-
-    <!-- PALAVRAS O -->
-
     <audio id="somOvo" src="../audios/Ovo.mp3"></audio>
 
     <audio id="somOlho" src="../audios/Olho.mp3"></audio>
 
-
-    <!-- PALAVRAS U -->
-
     <audio id="somUva" src="../audios/Uva.mp3"></audio>
 
     <audio id="somUrso" src="../audios/Urso.mp3"></audio>
-
-
-    <!-- SONS DO JOGO -->
 
     <audio id="somAcerto" src="../audios/acerto.mp3"></audio>
 
@@ -2085,700 +1725,590 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
 
     <audio id="somParabens" src="../audios/parabens.mp3"></audio>
 
-
-    <!-- MÚSICA DE FUNDO -->
-
     <audio id="somFundoatv" loop preload="auto">
-
-        <source src="../audios/fundoatv.mp3" type="audio/mpeg">
-
+      <source src="../audios/fundoatv.mp3" type="audio/mpeg" />
     </audio>
 
-
     <script>
+      setTimeout(() => {
 
-        /* =========================================================
-           TRANSIÇÃO
-        ========================================================= */
+          const tela =
+              document.getElementById(
+                  'tela-transicao'
+              );
 
-        setTimeout(() => {
+          if (tela) {
 
-            const tela =
-                document.getElementById(
-                    'tela-transicao'
-                );
+              tela.classList.add(
+                  'transicao-oculta'
+              );
+          }
 
-            if (tela) {
+      }, 4000);
 
-                tela.classList.add(
-                    'transicao-oculta'
-                );
-            }
+      function mudarEtapa(
+          etapaAtual,
+          proximaEtapa
+      ) {
 
-        }, 4000);
+          const atual =
+              document.getElementById(
+                  etapaAtual
+              );
 
+          const proxima =
+              document.getElementById(
+                  proximaEtapa
+              );
 
-        /* =========================================================
-           MUDAR ETAPA
-        ========================================================= */
 
-        function mudarEtapa(
-            etapaAtual,
-            proximaEtapa
-        ) {
+          if (atual) {
 
-            const atual =
-                document.getElementById(
-                    etapaAtual
-                );
+              atual.classList.add(
+                  'esconder'
+              );
+          }
 
-            const proxima =
-                document.getElementById(
-                    proximaEtapa
-                );
 
+          if (proxima) {
 
-            if (atual) {
+              proxima.classList.remove(
+                  'esconder'
+              );
+          }
 
-                atual.classList.add(
-                    'esconder'
-                );
-            }
 
+          if (
+              proximaEtapa ===
+              'etapa6'
+          ) {
 
-            if (proxima) {
+              tocarSom(
+                  'audioInstrucao'
+              );
+          }
+      }
 
-                proxima.classList.remove(
-                    'esconder'
-                );
-            }
+      function tocarSom(idAudio) {
 
+          const el =
+              document.getElementById(
+                  idAudio
+              );
 
-            if (
-                proximaEtapa ===
-                'etapa6'
-            ) {
 
-                tocarSom(
-                    'audioInstrucao'
-                );
-            }
-        }
+          if (el) {
 
+              el.currentTime = 0;
 
-        /* =========================================================
-           TOCAR SOM
-        ========================================================= */
+              el.play().catch(() => { });
+          }
+      }
 
-        function tocarSom(idAudio) {
+      function mostrarErroArraste(elemento) {
 
-            const el =
-                document.getElementById(
-                    idAudio
-                );
+          if (!elemento) return;
 
 
-            if (el) {
+          elemento.classList.remove(
+              'erro-arraste'
+          );
 
-                el.currentTime = 0;
 
-                el.play().catch(() => { });
-            }
-        }
+          void elemento.offsetWidth;
 
 
-        /* =========================================================
-           ERRO
-        ========================================================= */
+          elemento.classList.add(
+              'erro-arraste'
+          );
 
-        function mostrarErroArraste(elemento) {
 
-            if (!elemento) return;
+          tocarSom(
+              'audioTentarNovamente'
+          );
 
 
-            elemento.classList.remove(
-                'erro-arraste'
-            );
+          setTimeout(() => {
 
+              elemento.classList.remove(
+                  'erro-arraste'
+              );
 
-            void elemento.offsetWidth;
+          }, 1500);
+      }
 
+      let acertos = 0;
 
-            elemento.classList.add(
-                'erro-arraste'
-            );
+      const TOTAL_ACERTOS = 10;
 
+      function arrastar(event) {
 
-            tocarSom(
-                'audioTentarNovamente'
-            );
+          event.dataTransfer.setData(
+              "text/plain",
+              event.currentTarget.id
+          );
+      }
 
+      function permitirSoltar(event) {
 
-            setTimeout(() => {
+          event.preventDefault();
 
-                elemento.classList.remove(
-                    'erro-arraste'
-                );
 
-            }, 1500);
-        }
+          event.currentTarget.classList.add(
+              'soltar-hoover'
+          );
+      }
 
+      function sairDrop(event) {
 
-        /* =========================================================
-           ETAPA 5
-           TOTAL DE FIGURAS
-        ========================================================= */
+          event.currentTarget.classList.remove(
+              'soltar-hoover'
+          );
+      }
 
-        let acertos = 0;
+      function soltar(event) {
 
-        const TOTAL_ACERTOS = 10;
+          event.preventDefault();
 
 
-        /* =========================================================
-           INÍCIO DO ARRASTE
-        ========================================================= */
+          const dropzone =
+              event.currentTarget;
 
-        function arrastar(event) {
 
-            event.dataTransfer.setData(
-                "text/plain",
-                event.currentTarget.id
-            );
-        }
+          dropzone.classList.remove(
+              'soltar-hoover'
+          );
 
 
-        /* =========================================================
-           PERMITIR SOLTAR
-        ========================================================= */
+          const idFigura =
+              event.dataTransfer.getData(
+                  "text/plain"
+              );
 
-        function permitirSoltar(event) {
 
-            event.preventDefault();
+          const figura =
+              document.getElementById(
+                  idFigura
+              );
 
 
-            event.currentTarget.classList.add(
-                'soltar-hoover'
-            );
-        }
+          if (!figura) return;
 
 
-        /* =========================================================
-           SAIR DO DROP
-        ========================================================= */
+          const letraFigura =
+              figura.getAttribute(
+                  'data-letra'
+              );
 
-        function sairDrop(event) {
 
-            event.currentTarget.classList.remove(
-                'soltar-hoover'
-            );
-        }
+          const letraZona =
+              dropzone.getAttribute(
+                  'data-letra'
+              );
 
+          if (
+              letraFigura ===
+              letraZona
+          ) {
 
-        /* =========================================================
-           SOLTAR FIGURA
-        ========================================================= */
+              tocarSom(
+                  'somAcerto'
+              );
 
-        function soltar(event) {
 
-            event.preventDefault();
+              figura.classList.add(
+                  'concluido'
+              );
 
 
-            const dropzone =
-                event.currentTarget;
+              figura.setAttribute(
+                  'draggable',
+                  'false'
+              );
 
 
-            dropzone.classList.remove(
-                'soltar-hoover'
-            );
+              acertos++;
 
 
-            const idFigura =
-                event.dataTransfer.getData(
-                    "text/plain"
-                );
+              if (
+                  acertos ===
+                  TOTAL_ACERTOS
+              ) {
 
+                  const btn =
+                      document.getElementById(
+                          'btn-avancar-etapa5'
+                      );
 
-            const figura =
-                document.getElementById(
-                    idFigura
-                );
 
+                  if (btn) {
 
-            if (!figura) return;
+                      btn.removeAttribute(
+                          'disabled'
+                      );
+                  }
+              }
 
 
-            const letraFigura =
-                figura.getAttribute(
-                    'data-letra'
-                );
+          } else {
+              tocarSom(
+                  'somErro'
+              );
 
 
-            const letraZona =
-                dropzone.getAttribute(
-                    'data-letra'
-                );
+              mostrarErroArraste(
+                  dropzone
+              );
+          }
+      }
 
+      let acertosEtapa6 = 0;
 
-            /* ACERTO */
+      const TOTAL_ACERTOS_ETAPA6 = 10;
 
-            if (
-                letraFigura ===
-                letraZona
-            ) {
+      function arrastarLetra(event) {
 
-                tocarSom(
-                    'somAcerto'
-                );
+          event.dataTransfer.setData(
+              "text/plain",
+              event.currentTarget.dataset.letra
+          );
+      }
 
+      function permitirSoltarLetra(event) {
 
-                figura.classList.add(
-                    'concluido'
-                );
+          event.preventDefault();
 
 
-                figura.setAttribute(
-                    'draggable',
-                    'false'
-                );
+          const dropzone =
+              event.currentTarget;
 
 
-                acertos++;
+          if (
+              !dropzone.classList.contains(
+                  'concluido'
+              )
+          ) {
 
+              dropzone.classList.add(
+                  'hover-drop'
+              );
+          }
+      }
 
-                if (
-                    acertos ===
-                    TOTAL_ACERTOS
-                ) {
+      function sairDropLetra(event) {
 
-                    const btn =
-                        document.getElementById(
-                            'btn-avancar-etapa5'
-                        );
+          event.currentTarget.classList.remove(
+              'hover-drop'
+          );
+      }
 
+      function soltarLetra(event) {
 
-                    if (btn) {
+          event.preventDefault();
 
-                        btn.removeAttribute(
-                            'disabled'
-                        );
-                    }
-                }
 
+          const dropzone =
+              event.currentTarget;
 
-            } else {
 
-                /* ERRO */
+          dropzone.classList.remove(
+              'hover-drop'
+          );
 
-                tocarSom(
-                    'somErro'
-                );
 
+          if (
+              dropzone.classList.contains(
+                  'concluido'
+              )
+          ) {
 
-                mostrarErroArraste(
-                    dropzone
-                );
-            }
-        }
+              return;
+          }
 
 
-        /* =========================================================
-           ETAPA 6
-        ========================================================= */
+          const letraArrastada =
+              event.dataTransfer.getData(
+                  "text/plain"
+              );
 
-        let acertosEtapa6 = 0;
 
-        const TOTAL_ACERTOS_ETAPA6 = 10;
+          const letraCorreta =
+              dropzone.dataset.correta;
 
+          if (
+              letraArrastada ===
+              letraCorreta
+          ) {
 
-        /* =========================================================
-           ARRASTAR LETRA
-        ========================================================= */
+              tocarSom(
+                  'somAcerto'
+              );
 
-        function arrastarLetra(event) {
 
-            event.dataTransfer.setData(
-                "text/plain",
-                event.currentTarget.dataset.letra
-            );
-        }
+              const letraMaiuscula =
+                  letraCorreta.toUpperCase();
 
 
-        /* =========================================================
-           PERMITIR SOLTAR LETRA
-        ========================================================= */
+              const restoPalavra =
+                  dropzone.dataset.resto;
 
-        function permitirSoltarLetra(event) {
 
-            event.preventDefault();
+              const spanTexto =
+                  dropzone.querySelector(
+                      '.texto-palavra'
+                  );
 
 
-            const dropzone =
-                event.currentTarget;
+              spanTexto.textContent =
+                  letraMaiuscula +
+                  restoPalavra;
 
 
-            if (
-                !dropzone.classList.contains(
-                    'concluido'
-                )
-            ) {
+              dropzone.classList.add(
+                  'concluido'
+              );
 
-                dropzone.classList.add(
-                    'hover-drop'
-                );
-            }
-        }
 
+              acertosEtapa6++;
 
-        /* =========================================================
-           SAIR DO DROP DA LETRA
-        ========================================================= */
 
-        function sairDropLetra(event) {
+              const audioPalavra =
+                  dropzone.dataset.audio;
 
-            event.currentTarget.classList.remove(
-                'hover-drop'
-            );
-        }
 
+              if (audioPalavra) {
 
-        /* =========================================================
-           SOLTAR LETRA
-        ========================================================= */
+                  setTimeout(() => {
 
-        function soltarLetra(event) {
+                      tocarSom(
+                          audioPalavra
+                      );
 
-            event.preventDefault();
+                  }, 500);
+              }
 
+              if (
+                  acertosEtapa6 ===
+                  TOTAL_ACERTOS_ETAPA6
+              ) {
 
-            const dropzone =
-                event.currentTarget;
+                  setTimeout(() => {
 
+                      finalizarAtividade();
 
-            dropzone.classList.remove(
-                'hover-drop'
-            );
+                  }, 1000);
+              }
 
 
-            if (
-                dropzone.classList.contains(
-                    'concluido'
-                )
-            ) {
+          } else {
+              tocarSom(
+                  'somErro'
+              );
 
-                return;
-            }
 
+              mostrarErroArraste(
+                  dropzone
+              );
+          }
+      }
 
-            const letraArrastada =
-                event.dataTransfer.getData(
-                    "text/plain"
-                );
+      function finalizarAtividade() {
 
+          fetch(
+              'atv1n1.php',
+              {
+                  method: 'POST',
 
-            const letraCorreta =
-                dropzone.dataset.correta;
+                  headers: {
+                      'Content-Type':
+                          'application/x-www-form-urlencoded'
+                  },
 
+                  body:
+                      'concluir_fase=1'
+              }
+          )
+              .finally(() => {
 
-            /* ACERTO */
+                  setTimeout(() => {
 
-            if (
-                letraArrastada ===
-                letraCorreta
-            ) {
+                      const telaParabens =
+                          document.getElementById(
+                              'tela-parabens'
+                          );
 
-                tocarSom(
-                    'somAcerto'
-                );
 
+                      if (telaParabens) {
 
-                const letraMaiuscula =
-                    letraCorreta.toUpperCase();
+                          telaParabens.classList.remove(
+                              'esconder'
+                          );
 
 
-                const restoPalavra =
-                    dropzone.dataset.resto;
+                          gerarConfetes();
 
 
-                const spanTexto =
-                    dropzone.querySelector(
-                        '.texto-palavra'
-                    );
+                          tocarSom(
+                              'somParabens'
+                          );
+                      }
 
 
-                spanTexto.textContent =
-                    letraMaiuscula +
-                    restoPalavra;
+                      setTimeout(() => {
 
+                          window.location.href =
+                              "nivel1.php";
 
-                dropzone.classList.add(
-                    'concluido'
-                );
+                      }, 4500);
 
 
-                acertosEtapa6++;
+                  }, 600);
 
+              });
+      }
 
-                const audioPalavra =
-                    dropzone.dataset.audio;
+      function gerarConfetes() {
 
+          const container =
+              document.getElementById(
+                  'containerConfetes'
+              );
 
-                if (audioPalavra) {
 
-                    setTimeout(() => {
+          if (!container) return;
 
-                        tocarSom(
-                            audioPalavra
-                        );
 
-                    }, 500);
-                }
+          const cores = [
 
+              '#ff5252',
+              '#ff7043',
+              '#fbc02d',
+              '#9ccc65',
+              '#26a69a',
+              '#42a5f5',
+              '#7e57c2',
+              '#ec407a'
 
-                /* TERMINOU TUDO */
+          ];
 
-                if (
-                    acertosEtapa6 ===
-                    TOTAL_ACERTOS_ETAPA6
-                ) {
 
-                    setTimeout(() => {
+          const formatos = [
 
-                        finalizarAtividade();
+              'retangulo',
+              'circulo',
+              'serpentina'
 
-                    }, 1000);
-                }
+          ];
 
 
-            } else {
+          for (
+              let i = 0;
+              i < 75;
+              i++
+          ) {
 
-                /* ERRO */
+              const confete =
+                  document.createElement(
+                      'div'
+                  );
 
-                tocarSom(
-                    'somErro'
-                );
 
+              confete.className =
+                  `confete ${formatos[
+                  Math.floor(
+                      Math.random() *
+                      formatos.length
+                  )
+                  ]
+                  }`;
 
-                mostrarErroArraste(
-                    dropzone
-                );
-            }
-        }
 
+              confete.style.backgroundColor =
+                  cores[
+                  Math.floor(
+                      Math.random() *
+                      cores.length
+                  )
+                  ];
 
-        /* =========================================================
-           FINALIZAR ATIVIDADE
-        ========================================================= */
 
-        function finalizarAtividade() {
+              confete.style.left =
+                  `${Math.random() * 100}%`;
 
-            fetch(
-                'atv1n1.php',
-                {
-                    method: 'POST',
 
-                    headers: {
-                        'Content-Type':
-                            'application/x-www-form-urlencoded'
-                    },
+              confete.style.animationDuration =
+                  `${2.5 + Math.random() * 3}s`;
 
-                    body:
-                        'concluir_fase=1'
-                }
-            )
-                .finally(() => {
 
-                    setTimeout(() => {
+              confete.style.animationDelay =
+                  `${Math.random() * 2}s`;
 
-                        const telaParabens =
-                            document.getElementById(
-                                'tela-parabens'
-                            );
 
+              container.appendChild(
+                  confete
+              );
+          }
+      }
 
-                        if (telaParabens) {
+      const audioFundo =
+          document.getElementById(
+              'somFundoatv'
+          );
 
-                            telaParabens.classList.remove(
-                                'esconder'
-                            );
 
+      if (audioFundo) {
 
-                            gerarConfetes();
+          audioFundo.volume = 0.2;
 
 
-                            tocarSom(
-                                'somParabens'
-                            );
-                        }
+          const tempoSalvo =
+              localStorage.getItem(
+                  'musica_tempo'
+              );
 
 
-                        setTimeout(() => {
+          if (tempoSalvo) {
 
-                            window.location.href =
-                                "nivel1.php";
+              audioFundo.currentTime =
+                  parseFloat(
+                      tempoSalvo
+                  );
+          }
 
-                        }, 4500);
 
+          audioFundo
+              .play()
+              .catch(() => {
 
-                    }, 600);
+                  document.addEventListener(
+                      'click',
+                      () => {
 
-                });
-        }
+                          audioFundo
+                              .play()
+                              .catch(() => { });
 
+                      },
+                      {
+                          once: true
+                      }
+                  );
 
-        /* =========================================================
-           CONFETES
-        ========================================================= */
+              });
 
-        function gerarConfetes() {
 
-            const container =
-                document.getElementById(
-                    'containerConfetes'
-                );
+          audioFundo.addEventListener(
+              'timeupdate',
+              () => {
 
+                  localStorage.setItem(
+                      'musica_tempo',
+                      audioFundo.currentTime
+                  );
 
-            if (!container) return;
-
-
-            const cores = [
-
-                '#ff5252',
-                '#ff7043',
-                '#fbc02d',
-                '#9ccc65',
-                '#26a69a',
-                '#42a5f5',
-                '#7e57c2',
-                '#ec407a'
-
-            ];
-
-
-            const formatos = [
-
-                'retangulo',
-                'circulo',
-                'serpentina'
-
-            ];
-
-
-            for (
-                let i = 0;
-                i < 75;
-                i++
-            ) {
-
-                const confete =
-                    document.createElement(
-                        'div'
-                    );
-
-
-                confete.className =
-                    `confete ${formatos[
-                    Math.floor(
-                        Math.random() *
-                        formatos.length
-                    )
-                    ]
-                    }`;
-
-
-                confete.style.backgroundColor =
-                    cores[
-                    Math.floor(
-                        Math.random() *
-                        cores.length
-                    )
-                    ];
-
-
-                confete.style.left =
-                    `${Math.random() * 100}%`;
-
-
-                confete.style.animationDuration =
-                    `${2.5 + Math.random() * 3}s`;
-
-
-                confete.style.animationDelay =
-                    `${Math.random() * 2}s`;
-
-
-                container.appendChild(
-                    confete
-                );
-            }
-        }
-
-
-        /* =========================================================
-           MÚSICA DE FUNDO
-        ========================================================= */
-
-        const audioFundo =
-            document.getElementById(
-                'somFundoatv'
-            );
-
-
-        if (audioFundo) {
-
-            audioFundo.volume = 0.2;
-
-
-            const tempoSalvo =
-                localStorage.getItem(
-                    'musica_tempo'
-                );
-
-
-            if (tempoSalvo) {
-
-                audioFundo.currentTime =
-                    parseFloat(
-                        tempoSalvo
-                    );
-            }
-
-
-            audioFundo
-                .play()
-                .catch(() => {
-
-                    document.addEventListener(
-                        'click',
-                        () => {
-
-                            audioFundo
-                                .play()
-                                .catch(() => { });
-
-                        },
-                        {
-                            once: true
-                        }
-                    );
-
-                });
-
-
-            audioFundo.addEventListener(
-                'timeupdate',
-                () => {
-
-                    localStorage.setItem(
-                        'musica_tempo',
-                        audioFundo.currentTime
-                    );
-
-                }
-            );
-        }
-
+              }
+          );
+      }
     </script>
-
-</body>
-
+  </body>
 </html>
