@@ -194,6 +194,45 @@ INSERT INTO `turmas` (`id`, `professor_id`, `nome`, `descricao`) VALUES
 (9, 3, '1 ano D', NULL),
 (10, 3, '1 ano A', NULL);
 
+CREATE TABLE provas (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    aluno_id INT(11) NOT NULL,
+    pontuacao INT(11) NOT NULL DEFAULT 0,
+    acertos INT(11) NOT NULL DEFAULT 0,
+    erros INT(11) NOT NULL DEFAULT 0,
+    total_questoes INT(11) NOT NULL DEFAULT 10,
+    percentual DECIMAL(5,2) NOT NULL DEFAULT 0,
+    tempo_gasto INT(11) NOT NULL DEFAULT 0,
+    aprovado TINYINT(1) NOT NULL DEFAULT 0,
+    data_realizacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY aluno_id (aluno_id),
+    CONSTRAINT provas_ibfk_1
+        FOREIGN KEY (aluno_id)
+        REFERENCES alunos (id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE prova_questoes (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    prova_id INT(11) NOT NULL,
+    questao_numero INT(11) NOT NULL,
+    tipo VARCHAR(50) NOT NULL,
+    resposta VARCHAR(100) DEFAULT NULL,
+    resposta_correta VARCHAR(100) NOT NULL,
+    acertou TINYINT(1) NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    KEY prova_id (prova_id),
+    CONSTRAINT prova_questoes_ibfk_1
+        FOREIGN KEY (prova_id)
+        REFERENCES provas (id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci;
+
 --
 -- Índices para tabelas despejadas
 --
