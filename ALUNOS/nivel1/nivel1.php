@@ -20,9 +20,6 @@ $atividades_arquivos = [
     8  => 'atv8n1.php',
     9  => 'atv9n1.php',
     10 => 'atv10n1.php',
-    11 => 'atv11n1.php',
-    12 => 'atv12n1.php',
-    13 => 'atv13n1.php',
 ];
 
 $aluno_id = $_SESSION['aluno_id'] ?? 1;
