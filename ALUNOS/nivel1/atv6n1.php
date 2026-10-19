@@ -1203,418 +1203,186 @@ json_encode([ 'status' => 'erro', 'mensagem' => $e->getMessage() ]); } exit; } ?
     </audio>
 
     <script>
-      setTimeout(() => {
-
-          const tela =
-              document.getElementById('tela-transicao');
-
-          if (tela) {
-              tela.classList.add('transicao-oculta');
-          }
-
-      }, 4000);
-
-      function mudarEtapa(etapaAtual, proximaEtapa) {
-
-          const atual =
-              document.getElementById(etapaAtual);
-
-          const proxima =
-              document.getElementById(proximaEtapa);
-
-          if (!atual || !proxima) return;
-
-          atual.classList.add('esconder');
-
-          proxima.classList.remove('esconder');
-
-          if (proximaEtapa === 'etapa7') {
-
-              setTimeout(() => {
-                  tocarSom('audioInstrucao');
-              }, 300);
-
-          }
-
-      }
-
-      function tocarSom(idAudio) {
-
-          const audio =
-              document.getElementById(idAudio);
-
-          if (!audio) return;
-
-          audio.currentTime = 0;
-
-          audio.play().catch(() => { });
-
-      }
-
-      function mostrarErroArraste(elemento) {
-
-          if (!elemento) return;
-
-          elemento.classList.remove('erro-arraste');
-
-          void elemento.offsetWidth;
-
-          elemento.classList.add('erro-arraste');
-
-          tocarSom('audioTentarNovamente');
-
-          setTimeout(() => {
-
-              elemento.classList.remove('erro-arraste');
-
-          }, 1500);
-
-      }
-
-      let acertosEtapaFinal = 0;
-
-      const TOTAL_ACERTOS_ETAPA_FINAL = 6;
-
-
-      function arrastarLetra(event) {
-
-          const letra =
-              event.currentTarget.dataset.letra;
-
-          event.dataTransfer.setData(
-              "text/plain",
-              letra
-          );
-
-      }
-
-
-      function permitirSoltarLetra(event) {
-
-          event.preventDefault();
-
-          const dropzone =
-              event.currentTarget;
-
-          if (
-              !dropzone.classList.contains('concluido')
-          ) {
-
-              dropzone.classList.add('hover-drop');
-
-          }
-
-      }
-
-
-      function sairDropLetra(event) {
-
-          event.currentTarget.classList.remove(
-              'hover-drop'
-          );
-
-      }
-
-
-      function soltarLetra(event) {
-
-          event.preventDefault();
-
-          const dropzone =
-              event.currentTarget;
-
-          dropzone.classList.remove(
-              'hover-drop'
-          );
-
-
-          if (
-              dropzone.classList.contains('concluido')
-          ) {
-              return;
-          }
-
-
-          const letraArrastada =
-              event.dataTransfer.getData(
-                  "text/plain"
-              ).toLowerCase();
-
-
-          const letraCorreta =
-              dropzone.dataset.correta.toLowerCase();
-
-          if (letraArrastada === letraCorreta) {
-
-              tocarSom('somAcerto');
-
-
-              const letraMaiuscula =
-                  letraCorreta.toUpperCase();
-
-
-              const restoPalavra =
-                  dropzone.dataset.resto;
-
-
-              const texto =
-                  dropzone.querySelector(
-                      '.texto-palavra'
-                  );
-
-
-              if (texto) {
-
-                  texto.textContent =
-                      letraMaiuscula +
-                      restoPalavra;
-
-              }
-
-
-              dropzone.classList.add(
-                  'concluido'
-              );
-
-
-              acertosEtapaFinal++;
-
-              const audioPalavra =
-                  dropzone.dataset.audio;
-
-
-              if (audioPalavra) {
-
-                  setTimeout(() => {
-
-                      tocarSom(audioPalavra);
-
-                  }, 400);
-
-              }
-
-              if (
-                  acertosEtapaFinal ===
-                  TOTAL_ACERTOS_ETAPA_FINAL
-              ) {
-
-                  setTimeout(() => {
-
-                      concluirFase();
-
-                  }, 1000);
-
-              }
-
-          }
-
-          else {
-
-              tocarSom('somErro');
-
-              mostrarErroArraste(
-                  dropzone
-              );
-
-          }
-
-      }
-
-      function concluirFase() {
-
-          fetch(
-              'atv6n1.php',
-              {
-                  method: 'POST',
-
-                  headers: {
-                      'Content-Type':
-                          'application/x-www-form-urlencoded'
-                  },
-
-                  body:
-                      'concluir_fase=6'
-              }
-          )
-              .catch(() => { })
-              .finally(() => {
-
-                  const telaParabens =
-                      document.getElementById(
-                          'tela-parabens'
-                      );
-
-
-                  if (telaParabens) {
-
-                      telaParabens.classList.remove(
-                          'esconder'
-                      );
-
-                      gerarConfetes();
-
-                      tocarSom(
-                          'somParabens'
-                      );
-
-                  }
-
-
-                  setTimeout(() => {
-
-                      window.location.href =
-                          'nivel1.php';
-
-                  }, 4500);
-
-              });
-
-      }
-
-      function gerarConfetes() {
-
-          const container =
-              document.getElementById(
-                  'containerConfetes'
-              );
-
-
-          if (!container) return;
-
-
-          const cores = [
-
-              '#ff5252',
-              '#ff7043',
-              '#fbc02d',
-              '#9ccc65',
-              '#26a69a',
-              '#42a5f5',
-              '#7e57c2',
-              '#ec407a'
-
-          ];
-
-
-          const formatos = [
-
-              'retangulo',
-              'circulo',
-              'serpentina'
-
-          ];
-
-
-          for (
-              let i = 0;
-              i < 75;
-              i++
-          ) {
-
-              const confete =
-                  document.createElement(
-                      'div'
-                  );
-
-
-              const formato =
-                  formatos[
-                  Math.floor(
-                      Math.random() *
-                      formatos.length
-                  )
-                  ];
-
-
-              confete.className =
-                  `confete ${formato}`;
-
-
-              confete.style.backgroundColor =
-                  cores[
-                  Math.floor(
-                      Math.random() *
-                      cores.length
-                  )
-                  ];
-
-
-              confete.style.left =
-                  `${Math.random() * 100}%`;
-
-
-              confete.style.animationDuration =
-                  `${2.5 + Math.random() * 3}s`;
-
-
-              confete.style.animationDelay =
-                  `${Math.random() * 2}s`;
-
-
-              container.appendChild(
-                  confete
-              );
-
-          }
-
-      }
-
-      const audioFundo =
-          document.getElementById(
-              'somFundo'
-          );
-
-
-      if (audioFundo) {
-
-          audioFundo.volume = 0.2;
-
-
-          const tempoSalvo =
-              localStorage.getItem(
-                  'musica_tempo'
-              );
-
-
-          if (tempoSalvo) {
-
-              audioFundo.currentTime =
-                  parseFloat(tempoSalvo);
-
-          }
-
-
-          audioFundo.play().catch(() => {
-
-              document.addEventListener(
-                  'click',
-                  () => {
-
-                      audioFundo.play()
-                          .catch(() => { });
-
-                  },
-                  {
-                      once: true
-                  }
-              );
-
-          });
-
-
-          audioFundo.addEventListener(
-              'timeupdate',
-              () => {
-
-                  localStorage.setItem(
-                      'musica_tempo',
-                      audioFundo.currentTime
-                  );
-
-              }
-          );
-
-      }
+        setTimeout(() => {
+            document.getElementById('tela-transicao').classList.add('transicao-oculta');
+        }, 4000);
+
+        function mudarEtapa(etapaAtual, proximaEtapa) {
+            document.getElementById(etapaAtual).classList.add('esconder');
+            document.getElementById(proximaEtapa).classList.remove('esconder');
+            if (proximaEtapa === 'etapa7') {
+                tocarSom('audioInstrucao');
+            }
+        }
+
+        function tocarSom(idAudio) {
+            const el = document.getElementById(idAudio);
+            if (el) {
+                el.currentTime = 0;
+                el.play();
+            }
+        }
+
+        function mostrarErroArraste(elemento) {
+            if (!elemento) return;
+            elemento.classList.remove('erro-arraste');
+            void elemento.offsetWidth;
+            elemento.classList.add('erro-arraste');
+            tocarSom('audioTentarNovamente');
+            setTimeout(() => {
+                elemento.classList.remove('erro-arraste');
+            }, 1500);
+        }
+
+        let acertos = 0;
+        const TOTAL_ACERTOS = 6;
+
+        function arrastar(event) {
+            event.dataTransfer.setData("text/plain", event.target.id);
+        }
+
+        function permitirSoltar(event) {
+            event.preventDefault();
+            event.currentTarget.classList.add('soltar-hoover');
+        }
+
+        function sairDrop(event) {
+            event.currentTarget.classList.remove('soltar-hoover');
+        }
+
+        function soltar(event) {
+            event.preventDefault();
+            const dropzone = event.currentTarget;
+            dropzone.classList.remove('soltar-hoover');
+
+            const idFigura = event.dataTransfer.getData("text/plain");
+            const figura = document.getElementById(idFigura);
+
+            if (!figura) return;
+
+            const letraFigura = figura.getAttribute('data-letra');
+            const letraZona = dropzone.getAttribute('data-letra');
+
+            if (letraFigura === letraZona) {
+                tocarSom('somAcerto');
+                figura.classList.add('concluido');
+                figura.setAttribute('draggable', 'false');
+                acertos++;
+
+                if (acertos === TOTAL_ACERTOS) {
+                    const btnAvancar6 = document.getElementById('btn-avancar-etapa5');
+                    if (btnAvancar6) {
+                        btnAvancar6.removeAttribute('disabled');
+                    }
+                }
+            } else {
+                tocarSom('somErro');
+                mostrarErroArraste(dropzone);
+            }
+        }
+
+        let acertosEtapa7 = 0;
+        const TOTAL_ACERTOS_ETAPA7 = 6;
+
+        function arrastarLetra(event) {
+            event.dataTransfer.setData("text/plain", event.target.dataset.letra);
+        }
+
+        function permitirSoltarLetra(event) {
+            event.preventDefault();
+            const dropzone = event.currentTarget;
+            if (!dropzone.classList.contains('concluido')) {
+                dropzone.classList.add('hover-drop');
+            }
+        }
+
+        function sairDropLetra(event) {
+            event.currentTarget.classList.remove('hover-drop');
+        }
+
+        function soltarLetra(event) {
+            event.preventDefault();
+            const dropzone = event.currentTarget;
+            dropzone.classList.remove('hover-drop');
+
+            if (dropzone.classList.contains('concluido')) return;
+
+            const letraArrastada = event.dataTransfer.getData("text/plain");
+            const letraCorreta = dropzone.dataset.correta;
+
+            if (letraArrastada === letraCorreta) {
+                tocarSom('somAcerto');
+
+                const letraMaiuscula = letraCorreta.toUpperCase();
+                const restoPalavra = dropzone.dataset.resto;
+                const spanTexto = dropzone.querySelector('.texto-palavra');
+                
+                spanTexto.textContent = letraMaiuscula + restoPalavra;
+                dropzone.classList.add('concluido');
+                acertosEtapa6++;
+
+                const audioPalavra = dropzone.dataset.audio;
+                if (audioPalavra) {
+                    setTimeout(() => tocarSom(audioPalavra), 500);
+                }
+
+                if (acertosEtapa6 === TOTAL_ACERTOS_ETAPA6) {
+                    setTimeout(() => {
+                        fetch('atv6n1.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: 'concluir_fase=6'
+                        }).finally(() => {
+                            setTimeout(() => {
+                                const telaParabens = document.getElementById('tela-parabens');
+                                if (telaParabens) {
+                                    telaParabens.classList.remove('esconder');
+                                    gerarConfetes();
+                                    tocarSom('somParabens');
+                                }
+                                setTimeout(() => {
+                                    window.location.href = "nivel1.php";
+                                }, 4500);
+                            }, 600);
+                        });
+                    }, 1000);
+                }
+            } else {
+                tocarSom('somErro');
+                mostrarErroArraste(dropzone);
+            }
+        }
+
+        function gerarConfetes() {
+            const container = document.getElementById('containerConfetes');
+            if (!container) return;
+
+            const cores = ['#ff5252', '#ff7043', '#fbc02d', '#9ccc65', '#26a69a', '#42a5f5', '#7e57c2', '#ec407a'];
+            const formatos = ['retangulo', 'circulo', 'serpentina'];
+
+            for (let i = 0; i < 75; i++) {
+                const confete = document.createElement('div');
+                confete.className = `confete ${formatos[Math.floor(Math.random() * formatos.length)]}`;
+                confete.style.backgroundColor = cores[Math.floor(Math.random() * cores.length)];
+                confete.style.left = `${Math.random() * 100}%`;
+                confete.style.animationDuration = `${2.5 + Math.random() * 3}s`;
+                confete.style.animationDelay = `${Math.random() * 2}s`;
+                container.appendChild(confete);
+            }
+        }
+
+        const audioFundo = document.getElementById('somFundo');
+        audioFundo.volume = 0.2;
+        const tempoSalvo = localStorage.getItem('musica_tempo');
+        if (tempoSalvo) audioFundo.currentTime = parseFloat(tempoSalvo);
+
+        audioFundo.play().catch(() => {
+            document.addEventListener('click', () => audioFundo.play(), { once: true });
+        });
+
+        audioFundo.addEventListener('timeupdate', () => {
+            localStorage.setItem('musica_tempo', audioFundo.currentTime);
+        });
     </script>
   </body>
 </html>
