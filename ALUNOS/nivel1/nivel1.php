@@ -3,7 +3,7 @@ session_start();
 require_once '../conexao.php';
 
 $nivel_atual  = 1;
-$total_niveis = 13;
+$total_niveis = 12;
 $estrutura_id = 1;
 $titulo       = 'O ALFABETO';
 $fundo        = 'fn1.png';

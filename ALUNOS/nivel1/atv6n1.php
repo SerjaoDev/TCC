@@ -2,12 +2,46 @@
 session_start();
 require_once '../conexao.php';
 
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
-isset($_POST['concluir_fase'])) { header('Content-Type: application/json'); $aluno_id = $_SESSION['aluno_id'] ?? 1; try
-{ $stmt = $pdo->prepare(" INSERT INTO progresso (aluno_id, estrutura_id, nivel_atual, licoes_concluidas) VALUES
-(:aluno_id, 1, 5, 1) ON DUPLICATE KEY UPDATE licoes_concluidas = licoes_concluidas + 1 "); $stmt->execute([ ':aluno_id'
-=> $aluno_id ]); echo json_encode([ 'status' => 'sucesso', 'aluno_id' => $aluno_id ]); } catch (PDOException $e) { echo
-json_encode([ 'status' => 'erro', 'mensagem' => $e->getMessage() ]); } exit; } ?>
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
+    header('Content-Type: application/json; charset=utf-8');
+
+    $aluno_id = $_SESSION['aluno_id'] ?? 1;
+
+    try {
+        $stmt = $pdo->prepare("
+            INSERT INTO progresso (
+                aluno_id,
+                estrutura_id,
+                nivel_atual,
+                licoes_concluidas
+            )
+            VALUES (:aluno_id, 1, 6, 1)
+            ON DUPLICATE KEY UPDATE
+                licoes_concluidas = licoes_concluidas + 1
+        ");
+
+        $stmt->execute([
+            ':aluno_id' => $aluno_id
+        ]);
+
+        echo json_encode([
+            'status' => 'sucesso',
+            'aluno_id' => $aluno_id
+        ]);
+    } catch (PDOException $e) {
+        http_response_code(500);
+
+        echo json_encode([
+            'status' => 'erro',
+            'mensagem' => $e->getMessage()
+        ]);
+    }
+
+    exit;
+}
+?>
 
 <!DOCTYPE html>
 
@@ -1212,6 +1246,28 @@ json_encode([ 'status' => 'erro', 'mensagem' => $e->getMessage() ]); } exit; } ?
             document.getElementById(proximaEtapa).classList.remove('esconder');
             if (proximaEtapa === 'etapa7') {
                 tocarSom('audioInstrucao');
+                setTimeout(() => {
+                    const total = contarFigurasVisiveis();
+                    if (total === 0) {
+                        const btn = document.getElementById('btn-avancar-etapa6');
+                        if (btn) btn.removeAttribute('disabled');
+                    } else {
+                        acertos = 0;
+                        TOTAL_ACERTOS = total;
+                    }
+                }, 200);
+            }
+            if (proximaEtapa === 'etapa8') {
+                tocarSom('audioInstrucao');
+                setTimeout(() => {
+                    const total = contarPalavrasVisiveis();
+                    if (total === 0) {
+                        concluirFase();
+                    } else {
+                        acertosEtapa6 = 0;
+                        TOTAL_ACERTOS_ETAPA6 = total;
+                    }
+                }, 200);
             }
         }
 
@@ -1270,7 +1326,7 @@ json_encode([ 'status' => 'erro', 'mensagem' => $e->getMessage() ]); } exit; } ?
                 acertos++;
 
                 if (acertos === TOTAL_ACERTOS) {
-                    const btnAvancar6 = document.getElementById('btn-avancar-etapa5');
+                    const btnAvancar5 = document.getElementById('btn-avancar-etapa5');
                     if (btnAvancar5) {
                         btnAvancar5.removeAttribute('disabled');
                     }
