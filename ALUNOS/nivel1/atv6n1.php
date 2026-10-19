@@ -1319,7 +1319,7 @@ json_encode([ 'status' => 'erro', 'mensagem' => $e->getMessage() ]); } exit; } ?
                 
                 spanTexto.textContent = letraMaiuscula + restoPalavra;
                 dropzone.classList.add('concluido');
-                acertosEtapa6++;
+                acertosEtapa7++;
 
                 const audioPalavra = dropzone.dataset.audio;
                 if (audioPalavra) {
