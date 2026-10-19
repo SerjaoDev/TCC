@@ -860,7 +860,6 @@ json_encode([ 'status' => 'erro', 'mensagem' => $e->getMessage() ]); } exit; } ?
 
       }
     </style>
-    ```
   </head>
 
   <body>
