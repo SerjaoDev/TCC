@@ -971,7 +971,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['concluir_fase'])) {
                 fetch('atv7n1.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: 'concluir_fase=1'
+                    body: 'concluir_fase=7'
                 }).finally(() => {
                     setTimeout(() => {
                         const telaParabens = document.getElementById('tela-parabens');
