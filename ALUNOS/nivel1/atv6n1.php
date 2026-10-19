@@ -1271,8 +1271,8 @@ json_encode([ 'status' => 'erro', 'mensagem' => $e->getMessage() ]); } exit; } ?
 
                 if (acertos === TOTAL_ACERTOS) {
                     const btnAvancar6 = document.getElementById('btn-avancar-etapa5');
-                    if (btnAvancar6) {
-                        btnAvancar6.removeAttribute('disabled');
+                    if (btnAvancar5) {
+                        btnAvancar5.removeAttribute('disabled');
                     }
                 }
             } else {
@@ -1281,8 +1281,8 @@ json_encode([ 'status' => 'erro', 'mensagem' => $e->getMessage() ]); } exit; } ?
             }
         }
 
-        let acertosEtapa7 = 0;
-        const TOTAL_ACERTOS_ETAPA7 = 6;
+        let acertosEtapa6 = 0;
+        const TOTAL_ACERTOS_ETAPA6 = 6;
 
         function arrastarLetra(event) {
             event.dataTransfer.setData("text/plain", event.target.dataset.letra);
@@ -1319,7 +1319,7 @@ json_encode([ 'status' => 'erro', 'mensagem' => $e->getMessage() ]); } exit; } ?
                 
                 spanTexto.textContent = letraMaiuscula + restoPalavra;
                 dropzone.classList.add('concluido');
-                acertosEtapa7++;
+                acertosEtapa6++;
 
                 const audioPalavra = dropzone.dataset.audio;
                 if (audioPalavra) {
