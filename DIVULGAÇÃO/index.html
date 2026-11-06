@@ -4,424 +4,510 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Lumi: uma experiência divertida, segura e acolhedora para apoiar a alfabetização infantil.">
+    <meta name="theme-color" content="#fff8ed">
+
     <title>Lumi • Iluminando o começo de grandes histórias</title>
-    <link rel="shortcut icon" href="img/Luminho.png" type="image/x-icon">
+
+    <link rel="icon" href="img/Luminho.png" type="image/png">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <header class="header">
-        <nav class="navbar">
-            <a href="#inicio">Início</a>
-            <a href="#site">Plataforma</a>
-            <a href="#funciona">Como funciona?</a>
-            <a href="#metodologia">Metodologia</a>
-            <a href="#beneficios">Benefícios</a>
-            <a href="#mvv">MVV</a>
-            <a href="#objetivo">Objetivo</a>
-            <a href="#equipe">Quem somos?</a>
-        </nav>
+
+    <header class="site-header">
+        <div class="header-inner">
+
+            <a class="brand" href="#inicio" aria-label="Lumi - início">
+                <img src="img/Luminho.png" alt="" class="brand-icon">
+                <span>Lumi</span>
+            </a>
+
+            <nav class="navbar" aria-label="Navegação principal">
+                <a href="#inicio">Início</a>
+                <a href="#plataforma">Plataforma</a>
+                <a href="#funciona">Como funciona</a>
+                <a href="#metodologia">Metodologia</a>
+                <a href="#beneficios">Benefícios</a>
+                <a href="#mvv">MVV</a>
+                <a href="#equipe">Quem somos</a>
+            </nav>
+
+        </div>
     </header>
 
     <main>
-        <section class="hero" id="inicio">
-            <div class="hero-text">
+
+        <!-- INÍCIO -->
+        <section class="hero section-shell" id="inicio">
+
+            <div class="hero-copy">
+                <span class="eyebrow">Aprender pode ser uma grande aventura</span>
+
                 <h1>
-                    Iluminando o começo de grandes histórias.
+                    Iluminando o começo de
+                    <span>grandes histórias.</span>
                 </h1>
+
                 <p>
                     A <strong>Lumi</strong> transforma a alfabetização infantil em
-                    uma experiência divertida, segura e cheia de descobertas.
-                    Com a ajuda do nosso mascote
-                    <strong>Luminho</strong>, aprender a ler e escrever se torna
-                    uma aventura repleta de jogos, desafios e recompensas.
+                    uma experiência divertida, acolhedora e cheia de descobertas.
+                    Com a ajuda do nosso mascote <strong>Luminho</strong>,
+                    aprender a ler e escrever se torna uma aventura com jogos,
+                    desafios e recompensas.
                 </p>
+
+                <a class="button button-primary" href="#plataforma">
+                    Conheça a Lumi <span aria-hidden="true">→</span>
+                </a>
             </div>
-            <div class="hero-img">
-                <div class="hero-circle"></div>
-                <div class="hero-stars">
-                    <span>⭐</span>
-                    <span>✨</span>
-                    <span>⭐</span>
-                </div>
-                <img src="img/Lumi.png" alt="Mascote Luminho" class="mascote">
+
+            <div class="hero-art" aria-label="Mascote da Lumi">
+                <div class="hero-orbit orbit-one"></div>
+                <div class="hero-orbit orbit-two"></div>
+
+                <span class="spark spark-one" aria-hidden="true">✦</span>
+                <span class="spark spark-two" aria-hidden="true">✧</span>
+                <span class="spark spark-three" aria-hidden="true">★</span>
+
+                <img src="img/Lumi.png" alt="Mascote Luminho" class="hero-mascot">
             </div>
+
         </section>
 
-        <section class="app-section" id="site">
-            <div class="section-header">
-                <h2 class="titulo">
-                    Aprender ficou muito mais divertido
-                </h2>
-                <p class="subtitulo">
+        <!-- PLATAFORMA -->
+        <section class="section section-soft" id="plataforma">
+
+            <div class="section-heading">
+                <span class="eyebrow">Um universo de descobertas</span>
+
+                <h2>Aprender ficou muito mais divertido</h2>
+
+                <p>
                     A Lumi reúne atividades educativas, desafios e recursos
-                    desenvolvidos para tornar o processo de alfabetização mais
-                    leve, seguro e envolvente.
+                    desenvolvidos para tornar o processo de alfabetização
+                    mais leve, seguro e envolvente.
                 </p>
             </div>
-            <div class="cards">
-                <article class="card">
-                    <div class="card-icon">📚</div>
+
+            <div class="feature-grid">
+
+                <article class="feature-card">
+                    <div class="feature-icon" aria-hidden="true">📚</div>
                     <h3>Alfabetização</h3>
                     <p>
-                        Atividades educativas desenvolvidas para auxiliar no
-                        aprendizado da leitura e da escrita.
+                        Atividades educativas que apoiam o aprendizado
+                        da leitura e da escrita.
                     </p>
                 </article>
-                <article class="card">
-                    <div class="card-icon">🛡️</div>
-                    <h3>Ambiente Seguro</h3>
+
+                <article class="feature-card">
+                    <div class="feature-icon" aria-hidden="true">🛡️</div>
+                    <h3>Ambiente acolhedor</h3>
                     <p>
-                        Uma plataforma desenvolvida especialmente para o público
-                        infantil, com foco em segurança e acessibilidade.
+                        Uma proposta pensada para o público infantil,
+                        com atenção à segurança e à acessibilidade.
                     </p>
                 </article>
-                <article class="card">
-                    <div class="card-icon">💡</div>
-                    <h3>Aprender Brincando</h3>
+
+                <article class="feature-card">
+                    <div class="feature-icon" aria-hidden="true">💡</div>
+                    <h3>Aprender brincando</h3>
                     <p>
-                        Atividades que estimulam a curiosidade e transformam
-                        o aprendizado em uma nova descoberta.
+                        Experiências que estimulam a curiosidade e
+                        transformam o aprendizado em descoberta.
                     </p>
                 </article>
-                <article class="card">
-                    <div class="card-icon">📈</div>
+
+                <article class="feature-card">
+                    <div class="feature-icon" aria-hidden="true">📈</div>
                     <h3>Acompanhamento</h3>
                     <p>
-                        Professores acompanham o progresso da
-                        criança durante sua evolução.
+                        Recursos para que professores acompanhem
+                        o desenvolvimento da criança.
                     </p>
                 </article>
+
             </div>
         </section>
 
-        <section class="como-funciona" id="funciona">
-            <div class="section-header">
-                <h2 class="titulo">
-                    Começar é muito simples
-                </h2>
-                <p class="subtitulo">
-                    Em poucos passos a criança já pode iniciar sua jornada de
-                    aprendizagem com o Luminho.
+        <!-- COMO FUNCIONA -->
+        <section class="section section-shell" id="funciona">
+
+            <div class="section-heading">
+                <span class="eyebrow">Passo a passo</span>
+
+                <h2>Começar é muito simples</h2>
+
+                <p>
+                    Em poucos passos, a criança poderá iniciar sua jornada
+                    de aprendizagem com o Luminho.
                 </p>
             </div>
-            <div class="timeline">
-                <article class="passo">
-                    <div class="numero">1</div>
-                    <div class="conteudo">
-                        <h3>🖥️​ Acesse a plataforma</h3>
+
+            <div class="steps-grid">
+
+                <article class="step-card">
+                    <span class="step-number">1</span>
+                    <div>
+                        <h3>🖥️ Acesse a plataforma</h3>
                         <p>
-                            Entre no site da Lumi quando estiver disponível
+                            Entre na plataforma Lumi quando ela estiver disponível.
                         </p>
                     </div>
                 </article>
-                <article class="passo">
-                    <div class="numero">2</div>
-                    <div class="conteudo">
+
+                <article class="step-card">
+                    <span class="step-number">2</span>
+                    <div>
                         <h3>🏁 Inicie sua jornada</h3>
                         <p>
-                            Conheça o Luminho e veja tudo que temos para te
-                            oferecer durante o seu aprendizado
+                            Conheça o Luminho e descubra os recursos disponíveis.
                         </p>
                     </div>
                 </article>
-                <article class="passo">
-                    <div class="numero">3</div>
-                    <div class="conteudo">
-                        <h3>⤴️​ Siga a trajetória</h3>
+
+                <article class="step-card">
+                    <span class="step-number">3</span>
+                    <div>
+                        <h3>🧭 Siga a trajetória</h3>
                         <p>
-                            Explore atividades, desafios e exercícios preparados
-                            para cada etapa da alfabetização.
+                            Explore atividades, desafios e exercícios
+                            preparados para cada etapa.
                         </p>
                     </div>
                 </article>
-                <article class="passo">
-                    <div class="numero">4</div>
-                    <div class="conteudo">
+
+                <article class="step-card">
+                    <span class="step-number">4</span>
+                    <div>
                         <h3>⭐ Aprenda com o Luminho</h3>
                         <p>
-                            Evolua por meio de missões, recompensas e muita
-                            diversão enquanto aprende.
+                            Avance por meio de missões e atividades que
+                            tornam o aprendizado mais envolvente.
                         </p>
                     </div>
                 </article>
+
             </div>
         </section>
 
-        <section class="metodologia" id="metodologia">
-            <div class="metodologia-container">
-                <div class="section-header">
-                    <h2 class="titulo">
-                        Como ensinamos
-                    </h2>
-                </div>
+        <!-- METODOLOGIA -->
+        <section class="section section-lilac" id="metodologia">
+
+            <div class="section-heading">
+                <span class="eyebrow">Nossa forma de ensinar</span>
+
+                <h2>Como ensinamos</h2>
+
                 <p>
-                    A <strong>Lumi</strong> utiliza uma metodologia baseada na
-                    aprendizagem lúdica, no método fônico e na progressão inteligente,
+                    A Lumi apresenta uma proposta baseada na aprendizagem
+                    lúdica, no método fônico e na progressão das atividades,
                     respeitando o ritmo de cada criança.
                 </p>
+            </div>
+
+            <div class="method-grid">
+
+                <article class="method-card">
+                    <div class="feature-icon">👨‍🏫</div>
+                    <h3>Aprendizagem lúdica</h3>
+                    <p>
+                        Aprender brincando pode tornar cada descoberta
+                        mais divertida e significativa.
+                    </p>
+                </article>
+
+                <article class="method-card">
+                    <div class="feature-icon">🗣️</div>
+                    <h3>Método fônico</h3>
+                    <p>
+                        Abordagem que trabalha a relação entre os sons
+                        da fala e as letras escritas.
+                    </p>
+                </article>
+
+                <article class="method-card">
+                    <div class="feature-icon">📚</div>
+                    <h3>Progressão das atividades</h3>
+                    <p>
+                        Atividades organizadas para acompanhar o
+                        desenvolvimento e o ritmo de aprendizagem.
+                    </p>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- BENEFÍCIOS -->
+        <section class="section section-shell" id="beneficios">
+
+            <div class="section-heading">
+                <span class="eyebrow">Desenvolvimento em cada etapa</span>
+
+                <h2>Muito mais do que alfabetização</h2>
+
                 <p>
-                    Cada atividade foi planejada para estimular a curiosidade,
-                    fortalecer a autonomia e transformar a alfabetização em uma
-                    experiência positiva.
+                    Atividades que podem estimular habilidades importantes
+                    para a vida escolar e pessoal.
                 </p>
-                <div class="metodologia-cards">
-                    <article class="met-card">
-                        <div class="card-icon">👨‍🏫</div>
-                        <h3>Aprendizagem Lúdica</h3>
-                        <p>
-                            Aprender brincando torna cada descoberta mais
-                            divertida e significativa.
-                        </p>
-                    </article>
-                    <article class="met-card">
-                        <div class="card-icon">🗣️​</div>
-                        <h3>Método Fônico</h3>
-                        <p>
-                            Sistema que ensina a relação direta entre os sons da fala e as
-                            letras escritas
-                        </p>
-                    </article>
-                    <article class="met-card">
-                        <div class="card-icon">📚</div>
-                        <h3>Progressão Inteligente</h3>
-                        <p>
-                            As atividades acompanham o desenvolvimento da
-                            criança, respeitando seu ritmo de aprendizagem.
-                        </p>
-                    </article>
-                </div>
             </div>
-        </section>
 
-        <section class="beneficios" id="beneficios">
-            <div class="beneficios-container">
-                <div class="section-header">
-                    <h2 class="titulo">
-                        Muito mais do que alfabetização
-                    </h2>
-                    <p class="subtitulo">
-                        A Lumi ajuda no desenvolvimento infantil por meio de
-                        atividades que estimulam habilidades importantes para a
-                        vida escolar e pessoal.
-                    </p>
-                </div>
-                <div class="beneficios-grid">
-                    <article class="beneficio-card">
-                        <div class="card-icon">📖</div>
-                        <h3>Leitura</h3>
-                        <p>
-                            Desenvolve o reconhecimento de letras, sílabas e
-                            palavras de forma divertida.
-                        </p>
-                    </article>
-                    <article class="beneficio-card">
-                        <div class="card-icon">✏️</div>
-                        <h3>Escrita</h3>
-                        <p>
-                            Exercícios interativos fortalecem a escrita e a
-                            formação das primeiras palavras.
-                        </p>
-                    </article>
-                    <article class="beneficio-card">
-                        <div class="card-icon">🧠</div>
-                        <h3>Raciocínio</h3>
-                        <p>
-                            Atividades que estimulam lógica, memória, criatividade
-                            e resolução de problemas.
-                        </p>
-                    </article>
-                    <article class="beneficio-card">
-                        <div class="card-icon">🤲</div>
-                        <h3>Coordenação</h3>
-                        <p>
-                            Atividades desenvolvidas para fortalecer a
-                            coordenação motora fina.
-                        </p>
-                    </article>
-                    <article class="beneficio-card">
-                        <div class="card-icon">🎯</div>
-                        <h3>Concentração</h3>
-                        <p>
-                            Desafios educativos que incentivam foco,
-                            persistência e autonomia.
-                        </p>
-                    </article>
-                    <article class="beneficio-card">
-                        <div class="card-icon">🏆</div>
-                        <h3>Motivação</h3>
-                        <p>
-                            Missões e recompensas tornam o aprendizado mais
-                            envolvente para a criança.
-                        </p>
-                    </article>
-                </div>
-            </div>
-        </section>
+            <div class="benefit-grid">
 
-        <section class="missao-visao-valores" id="mvv">
-            <div class="mvv-container">
-                <div class="section-header">
-                    <h2 class="titulo">
-                        Missão, Visão e Valores
-                    </h2>
-                </div>
-                <div class="mvv-cards">
-                    <article class="mvv-card">
-                        <div class="card-icon">🎯</div>
-                        <h3>Missão</h3>
-                        <p>
-                            Tornar a alfabetização infantil mais divertida,
-                            acessível e eficiente por meio da tecnologia,
-                            despertando nas crianças o prazer de aprender.
-                        </p>
-                    </article>
-                    <article class="mvv-card">
-                        <div class="card-icon">🌎</div>
-                        <h3>Visão</h3>
-                        <p>
-                            Ser referência em soluções digitais para a
-                            alfabetização infantil, contribuindo para um futuro
-                            onde aprender seja uma experiência encantadora.
-                        </p>
-                    </article>
-                    <article class="mvv-card">
-                        <div class="card-icon">💛</div>
-                        <h3>Valores</h3>
-                        <ul>
-                            <li>Educação</li>
-                            <li>Inovação</li>
-                            <li>Criatividade</li>
-                            <li>Segurança</li>
-                            <li>Compromisso</li>
-                        </ul>
-                    </article>
-                </div>
-            </div>
-        </section>
-
-        <section class="objetivo" id="objetivo">
-            <div class="objetivo-container">
-                <div class="objetivo-texto">
-                    <h2 class="titulo">
-                        Transformando o aprendizado em uma aventura
-                    </h2>
+                <article class="benefit-card">
+                    <span>📖</span>
+                    <h3>Leitura</h3>
                     <p>
-                        Na Lumi acreditamos que toda criança merece aprender em
-                        um ambiente acolhedor, divertido e inspirador. Nosso
-                        objetivo é despertar o interesse pela leitura e pela
-                        escrita desde os primeiros anos de vida.
+                        Reconhecimento de letras, sílabas e palavras.
                     </p>
+                </article>
+
+                <article class="benefit-card">
+                    <span>✏️</span>
+                    <h3>Escrita</h3>
                     <p>
-                        Por meio da tecnologia e de atividades
-                        educativas cuidadosamente planejadas, buscamos estimular
-                        o desenvolvimento infantil respeitando o ritmo de cada
-                        criança.
+                        Exercícios para fortalecer a escrita e a
+                        formação de palavras.
                     </p>
-                </div>
-                <div class="objetivo-ilustracao">
-                    <div class="emoji">
-                        🎓
+                </article>
+
+                <article class="benefit-card">
+                    <span>🧠</span>
+                    <h3>Raciocínio</h3>
+                    <p>
+                        Atividades de lógica, memória, criatividade e
+                        resolução de problemas.
+                    </p>
+                </article>
+
+                <article class="benefit-card">
+                    <span>🤲</span>
+                    <h3>Coordenação</h3>
+                    <p>
+                        Propostas que trabalham a coordenação motora fina.
+                    </p>
+                </article>
+
+                <article class="benefit-card">
+                    <span>🎯</span>
+                    <h3>Concentração</h3>
+                    <p>
+                        Desafios que incentivam foco, persistência e autonomia.
+                    </p>
+                </article>
+
+                <article class="benefit-card">
+                    <span>🏆</span>
+                    <h3>Motivação</h3>
+                    <p>
+                        Missões e recompensas para tornar a experiência
+                        mais envolvente.
+                    </p>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- MISSÃO, VISÃO E VALORES -->
+        <section class="section section-soft" id="mvv">
+
+            <div class="section-heading">
+                <span class="eyebrow">O que nos guia</span>
+                <h2>Missão, visão e valores</h2>
+            </div>
+
+            <div class="mvv-grid">
+
+                <article class="mvv-card">
+                    <span>🎯</span>
+                    <h3>Missão</h3>
+                    <p>
+                        Tornar a alfabetização infantil mais divertida,
+                        acessível e eficiente por meio da tecnologia,
+                        despertando nas crianças o prazer de aprender.
+                    </p>
+                </article>
+
+                <article class="mvv-card">
+                    <span>🌎</span>
+                    <h3>Visão</h3>
+                    <p>
+                        Ser referência em soluções digitais para a
+                        alfabetização infantil, contribuindo para um futuro
+                        em que aprender seja uma experiência encantadora.
+                    </p>
+                </article>
+
+                <article class="mvv-card">
+                    <span>💛</span>
+                    <h3>Valores</h3>
+                    <ul>
+                        <li>Educação</li>
+                        <li>Inovação</li>
+                        <li>Criatividade</li>
+                        <li>Segurança</li>
+                        <li>Compromisso</li>
+                    </ul>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- OBJETIVO -->
+        <section class="section objective-section" id="objetivo">
+
+            <div class="objective-copy">
+                <span class="eyebrow">Nosso propósito</span>
+
+                <h2>Transformando o aprendizado em uma aventura</h2>
+
+                <p>
+                    Na Lumi, acreditamos que toda criança merece aprender
+                    em um ambiente acolhedor, divertido e inspirador.
+                    Nosso objetivo é despertar o interesse pela leitura
+                    e pela escrita desde os primeiros anos de aprendizagem.
+                </p>
+
+                <p>
+                    Por meio da tecnologia e de atividades educativas
+                    planejadas, buscamos estimular o desenvolvimento infantil,
+                    respeitando o ritmo de cada criança.
+                </p>
+            </div>
+
+            <div class="objective-art" aria-hidden="true">
+                🎓
+                <span>✦</span>
+            </div>
+
+        </section>
+
+        <!-- EQUIPE -->
+        <section class="section section-shell" id="equipe">
+
+            <div class="section-heading">
+                <span class="eyebrow">Pessoas por trás da ideia</span>
+
+                <h2>Conheça quem faz a Lumi acontecer</h2>
+
+                <p>
+                    Somos uma equipe interessada em educação, tecnologia
+                    e inovação. Trabalhamos para transformar a alfabetização
+                    em uma experiência divertida, acessível e inspiradora.
+                </p>
+            </div>
+
+            <div class="team-grid">
+
+                <article class="team-card">
+                    <div class="team-photo">
+                        <img src="img/Erika.png" alt="Erika">
                     </div>
-                </div>
+                    <h3>Erika</h3>
+                    <p>Fundadora e Desenvolvedora Full Stack</p>
+                </article>
+
+                <article class="team-card">
+                    <div class="team-photo">
+                        <img src="img/Lincoln.png" alt="Lincoln">
+                    </div>
+                    <h3>Lincoln</h3>
+                    <p>Banco de Dados e Designer</p>
+                </article>
+
+                <article class="team-card">
+                    <div class="team-photo">
+                        <img src="img/Samuel.png" alt="Samuel">
+                    </div>
+                    <h3>Samuel</h3>
+                    <p>Desenvolvedor Backend e Analista de Qualidade</p>
+                </article>
+
+                <article class="team-card">
+                    <div class="team-photo">
+                        <img src="img/Pedro.png" alt="Pedro">
+                    </div>
+                    <h3>Pedro</h3>
+                    <p>Documentação e Analista de Mídia</p>
+                </article>
+
             </div>
         </section>
 
-        <section class="quem-somos" id="equipe">
-            <div class="container-quem">
-                <div class="section-header">
-                    <h2 class="titulo">
-                        Conheça quem faz a Lumi acontecer
-                    </h2>
-                    <p class="subtitulo">
-                        Somos uma equipe apaixonada por educação, tecnologia e
-                        inovação. Trabalhamos juntos para transformar a
-                        alfabetização em uma experiência divertida, acessível e
-                        inspiradora.
-                    </p>
-                </div>
-                <div class="equipe">
-                    <article class="membro">
-                        <div class="foto">
-                            <img src="img/Erika.png" alt="Foto de Erika" class="fotinha">
-                        </div>
-                        <h3>Erika</h3>
-                        <span>Fundadora e Desenvolvedora Full Stack</span>
-                    </article>
-                    <article class="membro">
-                        <div class="foto">
-                            <img src="img/Lincoln.png" alt="Foto de Lincoln" class="fotinha">
-                        </div>
-                        <h3>Lincoln</h3>
-                        <span>Banco de Dados e Designer</span>
-                    </article>
-                    <article class="membro">
-                        <div class="foto">
-                            <img src="img/Samuel.png" alt="Foto de Samuel" class="fotinha">
-                        </div>
-                        <h3>Samuel</h3>
-                        <span>Desenvolvedor Backend e Analista de Qualidade</span>
-                    </article>
-                    <article class="membro">
-                        <div class="foto">
-                            <img src="img/Pedro.png" alt="Foto de Pedro" class="fotinha">
-                        </div>
-                        <h3>Pedro</h3>
-                        <span>Documentação e Analista de Mídia</span>
-                    </article>
-                </div>
-            </div>
-        </section>
     </main>
 
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-contato">
+    <!-- RODAPÉ -->
+    <footer class="site-footer">
+
+        <div class="footer-inner">
+
+            <div class="footer-brand">
+                <img src="img/Luminho.png" alt="Mascote Luminho">
+
+                <div>
+                    <strong>Lumi</strong>
+                    <p>Iluminando o começo de grandes histórias.</p>
+                </div>
+            </div>
+
+            <div class="footer-contact">
+                <h2>Fale com a gente</h2>
+
                 <a href="https://www.instagram.com/lumi_kids_04/" target="_blank" rel="noopener noreferrer">
                     Instagram
                 </a>
 
                 <a href="mailto:contatolumikids04@gmail.com">
-                    E-mail
+                    contatolumikids04@gmail.com
                 </a>
             </div>
-            <hr>
-            <div class="footer-bottom">
-                <p>
-                    © 2026 Lumi • Todos os direitos reservados.
-                </p>
-                <div class="legal-actions">
-                    <a href="index.html">Voltar ao início</a>
-                    <a href="termos-de-uso.html">Termos de Uso</a>
-                    <a href="politica-de-privacidade.html">
-                        Política de Privacidade
-                    </a>
-                </div>
+
+            <div class="footer-legal">
+                <h2>Informações</h2>
+
+                <a href="termos-de-uso.html">Termos de Uso</a>
+
+                <a href="politica-de-privacidade.html">
+                    Política de Privacidade
+                </a>
             </div>
+
         </div>
+
+        <div class="footer-bottom">
+            <span>© 2026 Lumi. Todos os direitos reservados.</span>
+            <a href="#inicio">Voltar ao início ↑</a>
+        </div>
+
     </footer>
 
     <script>
-        document.querySelectorAll('a[href^="#"]').forEach(link => {
-            link.addEventListener("click", function (e) {
-                e.preventDefault();
-                const destino =
-                    document.querySelector(
-                        this.getAttribute("href")
-                    );
-                if (destino) {
-                    destino.scrollIntoView({
-                        behavior: "smooth",
-                        block: "start"
-                    });
-                }
+        // Navegação suave para links internos.
+        document.querySelectorAll('a[href^="#"]').forEach((link) => {
+            link.addEventListener("click", (event) => {
+                const target = document.querySelector(
+                    link.getAttribute("href")
+                );
+
+                if (!target) return;
+
+                event.preventDefault();
+
+                target.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
             });
         });
     </script>
+
 </body>
 
 </html>

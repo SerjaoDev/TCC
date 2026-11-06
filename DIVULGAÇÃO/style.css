@@ -1,285 +1,834 @@
+/* =====================================================
+   LUMI — ESTILIZAÇÃO PRINCIPAL
+   ===================================================== */
+
+/* VARIÁVEIS */
+
+:root {
+    --cream: #fff8ed;
+    --white: #ffffff;
+    --ink: #3d3552;
+    --muted: #716b7d;
+
+    --purple: #8064c8;
+    --purple-dark: #6348a8;
+    --purple-soft: #f0eaff;
+
+    --pink: #ffdce8;
+    --yellow: #ffe59a;
+    --mint: #dff5e9;
+
+    --line: rgba(75, 57, 112, .12);
+    --shadow: 0 16px 40px rgba(70, 51, 110, .10);
+
+    --radius-lg: 28px;
+    --radius-md: 20px;
+
+    --content: 1160px;
+}
+
+
+/* CONFIGURAÇÕES GERAIS */
+
 * {
-    font-size: clamp(1.03rem, 1.5vw, 1.16rem);
-    line-height: 1.8;
+    box-sizing: border-box;
 }
 
-.hero-circle {
-    width: min(420px, 75vw);
-    height: min(420px, 75vw);
-    background: radial-gradient(circle, rgba(255, 224, 128, .95), rgba(255, 224, 128, .18) 70%);
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 88px;
 }
 
-.mascote {
-    width: min(430px, 88%);
-    filter: drop-shadow(0 16px 18px rgba(120, 83, 20, .10));
-}
-
-.cards,
-.metodologia-cards,
-.beneficios-grid,
-.mvv-cards,
-.equipe {
-    gap: clamp(18px, 2.5vw, 28px);
-}
-
-.card,
-.met-card,
-.beneficio-card,
-.mvv-card,
-.membro {
-    padding: clamp(24px, 3vw, 34px);
-    border: 2px solid rgba(239, 190, 75, .18);
-    border-radius: var(--borda);
-    box-shadow: var(--sombra);
-    transition:
-        transform var(--transicao),
-        box-shadow var(--transicao),
-        border-color var(--transicao);
-}
-
-.card::before,
-.met-card::before,
-.beneficio-card::before,
-.mvv-card::before,
-.membro::before {
-    height: 6px;
-    background: linear-gradient(90deg, var(--amarelo), var(--laranja), var(--rosa));
-}
-
-.card:hover,
-.met-card:hover,
-.beneficio-card:hover,
-.mvv-card:hover,
-.membro:hover {
-    transform: translateY(-7px);
-    border-color: rgba(242, 169, 0, .55);
-    box-shadow: var(--sombra-hover);
-}
-
-.card-icon {
-    width: 76px;
-    height: 76px;
-    font-size: 2.2rem;
-    box-shadow: 0 7px 18px rgba(255, 180, 0, .16);
-    transition: transform var(--transicao);
-}
-
-.card h3,
-.met-card h3,
-.beneficio-card h3,
-.mvv-card h3,
-.membro h3 {
-    font-size: clamp(1.2rem, 1.8vw, 1.4rem);
-    line-height: 1.25;
-}
-
-.card p,
-.met-card p,
-.beneficio-card p,
-.mvv-card p,
-.breve-card p,
-.conteudo p {
-    line-height: 1.75;
-}
-
-.app-section {
-    background: linear-gradient(180deg, #FFF8E8 0%, #FFFDF7 100%);
-}
-
-.como-funciona,
-.missao-visao-valores,
-.quem-somos {
-    background: #FFFEFA;
-}
-
-.metodologia {
-    background:
-        radial-gradient(circle at 90% 10%, rgba(131, 211, 245, .20), transparent 22rem),
-        #F0FAFF;
-}
-
-.beneficios {
-    background: linear-gradient(180deg, #FFFDF7, #FFF5DF);
-}
-
-.timeline::before {
-    width: 4px;
-    background: linear-gradient(var(--amarelo), var(--laranja), var(--rosa));
-}
-
-.numero {
-    box-shadow: 0 4px 14px rgba(92, 67, 25, .08);
-}
-
-.conteudo {
-    border: 1px solid rgba(239, 190, 75, .16);
-    border-radius: 22px;
-    box-shadow: var(--sombra);
-}
-
-.mvv-card li {
-    padding: 13px 10px;
-    border-bottom-color: #F1EDE5;
-}
-
-.mvv-card li:hover {
-    color: #D98228;
-}
-
-.objetivo {
-    background:
-        radial-gradient(circle at 15% 80%, rgba(255, 185, 216, .18), transparent 20rem),
-        linear-gradient(135deg, #FFF8E8, #FFF2CB);
-}
-
-.emoji {
-    width: clamp(180px, 22vw, 260px);
-    height: clamp(180px, 22vw, 260px);
-    font-size: clamp(5rem, 9vw, 7rem);
-    border: 8px solid rgba(255, 255, 255, .72);
-    box-shadow: 0 12px 32px rgba(92, 67, 25, .10);
-}
-
-.foto {
-    border: 4px solid #FFF;
-    box-shadow: 0 0 0 3px rgba(255, 190, 55, .5);
-}
-
-.footer {
-    background: linear-gradient(135deg, #F58A35, #F5A52F 58%, #F2B844);
-    padding: 64px 8% 28px;
-}
-
-.footer-links a {
-    padding: 7px 2px;
-}
-
-.footer-links a:hover {
-    color: #FFF4C2;
-    transform: translateY(-2px);
-}
-
-.legal-page {
-    min-height: 100vh;
+body {
     margin: 0;
-    padding: 0;
-    color: var(--texto);
-    font-family: "Fredoka", sans-serif;
-    line-height: 1.75;
-
-    background:
-        radial-gradient(
-            circle at 8% 10%,
-            rgba(255, 213, 79, 0.20),
-            transparent 24rem
-        ),
-        radial-gradient(
-            circle at 92% 85%,
-            rgba(255, 182, 217, 0.18),
-            transparent 22rem
-        ),
-        linear-gradient(180deg, #FFFBE6 0%, #FFF7D9 100%);
+    background: var(--cream);
+    color: var(--ink);
+    font-family: "Fredoka", "Trebuchet MS", sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
 }
 
-.legal-header {
+img {
+    display: block;
+    max-width: 100%;
+}
+
+a {
+    color: inherit;
+}
+
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+p {
+    margin: 0 0 1rem;
+    color: var(--muted);
+}
+
+h1,
+h2,
+h3 {
+    margin: 0;
+    line-height: 1.15;
+    color: var(--ink);
+}
+
+h1 {
+    font-size: clamp(2.7rem, 6vw, 5rem);
+    font-weight: 700;
+    letter-spacing: -.035em;
+}
+
+h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 600;
+    letter-spacing: -.025em;
+}
+
+h3 {
+    font-size: 1.35rem;
+    font-weight: 600;
+}
+
+ul {
+    padding-left: 1.25rem;
+    color: var(--muted);
+}
+
+
+/* =====================================================
+   CABEÇALHO E MENU
+   ===================================================== */
+
+.site-header {
+    position: sticky;
+    z-index: 20;
+    top: 0;
+
+    background: rgba(255, 248, 237, .92);
+
+    border-bottom: 1px solid var(--line);
+
+    backdrop-filter: blur(14px);
+}
+
+.header-inner {
+    width: min(var(--content), calc(100% - 40px));
+    min-height: 76px;
+    margin: auto;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    gap: 24px;
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    text-decoration: none;
+
+    color: var(--purple-dark);
+
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+
+.brand-icon {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.navbar a {
+    padding: 9px 11px;
+
+    border-radius: 999px;
+
+    text-decoration: none;
+
+    color: var(--muted);
+
+    font-size: .95rem;
+    font-weight: 500;
+
+    transition:
+        color .2s ease,
+        background .2s ease;
+}
+
+.navbar a:hover,
+.navbar a:focus-visible {
+    color: var(--purple-dark);
+    background: var(--purple-soft);
+}
+
+
+/* =====================================================
+   ESTRUTURA DAS SEÇÕES
+   ===================================================== */
+
+.section-shell,
+.section {
+    width: min(var(--content), calc(100% - 40px));
+    margin-inline: auto;
+}
+
+.section {
+    padding-block: 88px;
+}
+
+.section-soft {
+    width: 100%;
+
+    padding-inline:
+        max(20px, calc((100% - var(--content)) / 2));
+
+    background: #fff1df;
+}
+
+.section-lilac {
+    width: 100%;
+
+    padding-inline:
+        max(20px, calc((100% - var(--content)) / 2));
+
+    background: var(--purple-soft);
+}
+
+.section-heading {
+    max-width: 760px;
+    margin: 0 auto 42px;
+    text-align: center;
+}
+
+.section-heading p {
+    max-width: 680px;
+    margin: 16px auto 0;
+    font-size: 1.08rem;
+}
+
+.eyebrow {
+    display: inline-block;
+
+    margin-bottom: 14px;
+
+    color: var(--purple-dark);
+
+    font-size: .9rem;
+    font-weight: 600;
+
+    letter-spacing: .09em;
+    text-transform: uppercase;
+}
+
+
+/* =====================================================
+   BOTÕES
+   ===================================================== */
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 13px 22px;
+
+    border-radius: 999px;
+
+    text-decoration: none;
+
+    font-weight: 600;
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+}
+
+.button:hover {
+    transform: translateY(-3px);
+}
+
+.button-primary {
+    background: var(--purple);
+    color: white;
+
+    box-shadow: 0 10px 22px rgba(128, 100, 200, .25);
+}
+
+.button-primary:hover {
+    background: var(--purple-dark);
+}
+
+
+/* =====================================================
+   SEÇÃO INICIAL — HERO
+   ===================================================== */
+
+.hero {
+    min-height: 610px;
+
+    display: grid;
+    grid-template-columns: 1.08fr .92fr;
+
+    align-items: center;
+    gap: 48px;
+
+    padding-block: 78px;
+}
+
+.hero-copy {
+    max-width: 650px;
+}
+
+.hero-copy h1 span {
+    color: var(--purple);
+}
+
+.hero-copy p {
+    max-width: 610px;
+
+    margin: 24px 0 28px;
+
+    font-size: 1.15rem;
+}
+
+.hero-art {
+    min-height: 420px;
+
+    position: relative;
+
+    display: grid;
+    place-items: center;
+}
+
+.hero-mascot {
+    position: relative;
+    z-index: 2;
+
+    width: min(78%, 360px);
+    max-height: 390px;
+
+    object-fit: contain;
+
+    filter: drop-shadow(0 18px 20px rgba(73, 54, 111, .13));
+}
+
+.hero-orbit {
+    position: absolute;
+    border-radius: 50%;
+}
+
+.orbit-one {
+    width: 360px;
+    height: 360px;
+
+    background: var(--yellow);
+    opacity: .65;
+}
+
+.orbit-two {
+    width: 430px;
+    height: 430px;
+
+    border: 2px dashed rgba(128, 100, 200, .25);
+}
+
+.spark {
+    position: absolute;
+    z-index: 3;
+
+    color: var(--purple);
+    font-size: 2.5rem;
+}
+
+.spark-one {
+    top: 12%;
+    left: 14%;
+}
+
+.spark-two {
+    top: 22%;
+    right: 9%;
+
+    color: #e9a64b;
+}
+
+.spark-three {
+    bottom: 12%;
+    left: 18%;
+
+    color: #e9a64b;
+}
+
+
+/* =====================================================
+   CARDS DA PLATAFORMA
+   ===================================================== */
+
+.feature-grid,
+.method-grid,
+.benefit-grid,
+.mvv-grid,
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.feature-card,
+.method-card,
+.benefit-card,
+.mvv-card,
+.team-card {
+    background: var(--white);
+
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+
+    box-shadow: var(--shadow);
+}
+
+.feature-card {
+    padding: 28px 24px;
+}
+
+.feature-icon {
+    width: 58px;
+    height: 58px;
+
+    display: grid;
+    place-items: center;
+
+    margin-bottom: 18px;
+
+    border-radius: 18px;
+
+    background: var(--purple-soft);
+
+    font-size: 1.8rem;
+}
+
+.feature-card p,
+.method-card p,
+.benefit-card p,
+.mvv-card p {
+    margin: 10px 0 0;
+}
+
+
+/* =====================================================
+   COMO FUNCIONA — ETAPAS
+   ===================================================== */
+
+.steps-grid {
+    max-width: 900px;
+    margin: auto;
+
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+.step-card {
+    display: flex;
+    align-items: flex-start;
     gap: 18px;
 
-    min-height: 76px;
-    padding: 18px clamp(20px, 6vw, 80px);
+    padding: 24px;
 
-    background: rgba(255, 213, 79, 0.92);
-    border-radius: 0 0 28px 28px;
-    box-shadow: var(--sombra);
+    background: white;
+
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+
+    box-shadow: var(--shadow);
 }
 
-.legal-header a {
-    color: var(--texto);
-    font-weight: 600;
+.step-number {
+    flex: 0 0 46px;
+
+    width: 46px;
+    height: 46px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    background: var(--yellow);
+
+    color: var(--ink);
+
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.step-card p {
+    margin: 8px 0 0;
+}
+
+
+/* =====================================================
+   METODOLOGIA
+   ===================================================== */
+
+.method-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.method-card {
+    padding: 28px;
+}
+
+
+/* =====================================================
+   BENEFÍCIOS
+   ===================================================== */
+
+.benefit-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.benefit-card {
+    padding: 25px;
+}
+
+.benefit-card>span,
+.mvv-card>span {
+    display: inline-grid;
+    place-items: center;
+
+    width: 54px;
+    height: 54px;
+
+    margin-bottom: 15px;
+
+    border-radius: 17px;
+
+    background: var(--mint);
+
+    font-size: 1.7rem;
+}
+
+
+/* =====================================================
+   MISSÃO, VISÃO E VALORES
+   ===================================================== */
+
+.mvv-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.mvv-card {
+    padding: 28px;
+}
+
+.mvv-card:nth-child(2)>span {
+    background: var(--pink);
+}
+
+.mvv-card:nth-child(3)>span {
+    background: var(--yellow);
+}
+
+.mvv-card ul {
+    margin-bottom: 0;
+}
+
+
+/* =====================================================
+   OBJETIVO
+   ===================================================== */
+
+.objective-section {
+    display: grid;
+    grid-template-columns: 1.2fr .8fr;
+
+    align-items: center;
+    gap: 50px;
+
+    padding-block: 100px;
+}
+
+.objective-copy p {
+    max-width: 700px;
+    margin-top: 18px;
+}
+
+.objective-art {
+    position: relative;
+
+    min-height: 260px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: var(--radius-lg);
+
+    background: var(--mint);
+
+    font-size: 7rem;
+}
+
+.objective-art span {
+    position: absolute;
+
+    top: 25px;
+    right: 35px;
+
+    color: #e9a64b;
+    font-size: 3rem;
+}
+
+
+/* =====================================================
+   EQUIPE
+   ===================================================== */
+
+.team-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.team-card {
+    padding: 20px;
+    text-align: center;
+}
+
+.team-photo {
+    width: 150px;
+    height: 150px;
+
+    margin: 0 auto 18px;
+
+    overflow: hidden;
+
+    border-radius: 50%;
+
+    background: var(--purple-soft);
+}
+
+.team-photo img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.team-card p {
+    margin: 8px 0 0;
+    font-size: .98rem;
+}
+
+
+/* =====================================================
+   RODAPÉ
+   ===================================================== */
+
+.site-footer {
+    padding: 48px 20px 18px;
+
+    background: #342b4c;
+
+    color: white;
+}
+
+.footer-inner {
+    width: min(var(--content), 100%);
+    margin: auto;
+
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+
+    gap: 40px;
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.footer-brand img {
+    width: 64px;
+    height: 64px;
+
+    object-fit: contain;
+}
+
+.footer-brand strong {
+    font-size: 1.8rem;
+}
+
+.footer-brand p {
+    margin: 3px 0 0;
+    color: #d7d0e5;
+}
+
+.footer-contact,
+.footer-legal {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.footer-contact h2,
+.footer-legal h2 {
+    margin-bottom: 5px;
+
+    color: white;
+
+    font-size: 1.15rem;
+}
+
+.footer-contact a,
+.footer-legal a,
+.footer-bottom a {
+    color: #eee8fb;
     text-decoration: none;
-    transition: var(--transicao);
 }
 
-.legal-header a:hover {
+.footer-contact a:hover,
+.footer-legal a:hover,
+.footer-bottom a:hover {
     text-decoration: underline;
-    text-underline-offset: 4px;
+}
+
+.footer-bottom {
+    width: min(var(--content), 100%);
+    margin: 35px auto 0;
+    padding-top: 18px;
+
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+
+    border-top: 1px solid rgba(255, 255, 255, .2);
+}
+
+.footer-bottom span {
+    color: #d7d0e5;
+    font-size: .92rem;
+}
+
+
+/* =====================================================
+   PÁGINAS LEGAIS
+   TERMOS DE USO E POLÍTICA DE PRIVACIDADE
+   ===================================================== */
+
+.legal-page {
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    background: var(--cream);
+}
+
+.legal-header {
+    padding: 22px 20px;
+
+    background: white;
+
+    border-bottom: 1px solid var(--line);
+}
+
+.legal-header-inner {
+    width: min(900px, 100%);
+    margin: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.legal-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    color: var(--purple-dark);
+
+    font-size: 1.5rem;
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+.legal-brand img {
+    width: 42px;
+    height: 42px;
+
+    object-fit: contain;
 }
 
 .legal-main {
-    width: min(900px, calc(100% - 36px));
-    margin: clamp(28px, 5vw, 52px) auto;
+    width: min(900px, calc(100% - 40px));
 
-    padding: clamp(24px, 5vw, 56px);
+    margin: 48px auto;
 
-    background: var(--branco);
-    border: 2px solid rgba(255, 180, 0, 0.18);
-    border-radius: var(--borda);
+    padding: clamp(24px, 5vw, 54px);
 
-    box-shadow: var(--sombra);
+    background: white;
+
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow);
+
+    flex: 1;
 }
 
 .legal-main h1 {
-    margin: 0 0 12px;
+    margin-bottom: 12px;
 
-    color: var(--texto);
-    font-size: clamp(2rem, 5vw, 3.1rem);
-    line-height: 1.12;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+}
+
+.legal-updated {
+    margin-bottom: 32px;
+    font-size: .95rem;
 }
 
 .legal-main h2 {
-    margin: 34px 0 10px;
+    margin: 32px 0 12px;
+    font-size: 1.45rem;
+}
 
-    color: var(--texto);
-    font-size: clamp(1.2rem, 2.5vw, 1.5rem);
-    line-height: 1.3;
+.legal-main h3 {
+    margin: 22px 0 8px;
+    font-size: 1.12rem;
 }
 
 .legal-main p,
 .legal-main li {
-    color: var(--texto-secundario);
-    line-height: 1.8;
-}
-
-.legal-main p {
-    margin: 0 0 16px;
-}
-
-.legal-main ul,
-.legal-main ol {
-    padding-left: 1.5rem;
-    margin: 0 0 18px;
+    font-size: 1rem;
+    line-height: 1.75;
 }
 
 .legal-main a {
-    color: #A85D12;
+    color: var(--purple-dark);
     font-weight: 600;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 3px;
-
-    transition: var(--transicao);
-}
-
-.legal-main a:hover {
-    color: #75400C;
-}
-
-.legal-main .notice {
-    margin: 22px 0;
-    padding: 17px 20px;
-
-    color: #684B27;
-    background: #FFF6E5;
-
-    border-left: 6px solid var(--laranja);
-    border-radius: 14px;
-}
-
-.legal-main .placeholder {
-    color: #A0442A;
-    font-weight: 700;
-    overflow-wrap: anywhere;
 }
 
 .legal-actions {
@@ -288,9 +837,6 @@
     gap: 12px;
 
     margin-top: 32px;
-    padding-top: 24px;
-
-    border-top: 1px solid rgba(68, 68, 68, 0.10);
 }
 
 .legal-actions a {
@@ -298,70 +844,219 @@
     align-items: center;
     justify-content: center;
 
-    min-height: 44px;
-    padding: 11px 19px;
+    padding: 11px 18px;
 
-    color: var(--texto);
-    background: linear-gradient(135deg, var(--amarelo), #FFE88F);
-
-    border: 2px solid transparent;
+    border: 1px solid var(--purple);
     border-radius: 999px;
 
-    box-shadow: 0 6px 16px rgba(255, 180, 0, 0.16);
+    color: var(--purple-dark);
 
     text-decoration: none;
-    transition: var(--transicao);
+    font-weight: 600;
+
+    transition:
+        background .2s ease,
+        color .2s ease;
 }
 
 .legal-actions a:hover {
-    transform: translateY(-3px);
-    border-color: var(--laranja);
-    box-shadow: var(--sombra-hover);
+    background: var(--purple);
+    color: white;
 }
 
 .legal-footer {
-    padding: 10px 20px 36px;
+    padding: 22px 20px;
 
-    color: var(--texto-secundario);
     text-align: center;
+
+    background: #342b4c;
+    color: #eee8fb;
 }
 
-.legal-page a:focus-visible {
-    outline: 3px solid #287DB5;
-    outline-offset: 4px;
-    border-radius: 6px;
+.legal-footer p {
+    margin: 0;
+
+    color: #d7d0e5;
+    font-size: .9rem;
 }
 
-@media (max-width: 600px) {
-    .legal-header {
-        min-height: 64px;
-        padding: 15px 20px;
+
+/* =====================================================
+   ACESSIBILIDADE
+   ===================================================== */
+
+a:focus-visible {
+    outline: 3px solid #e5a83c;
+    outline-offset: 3px;
+}
+
+
+/* =====================================================
+   RESPONSIVIDADE — TABLETS
+   ===================================================== */
+
+@media (max-width: 900px) {
+
+    .header-inner {
+        align-items: flex-start;
+        flex-direction: column;
+
+        padding-block: 12px;
+        gap: 8px;
     }
 
-    .legal-main {
-        width: calc(100% - 24px);
-        margin: 20px auto;
-
-        padding: 24px 19px;
-
-        border-radius: 20px;
+    .navbar {
+        justify-content: flex-start;
     }
 
-    .legal-main h2 {
-        margin-top: 27px;
+    .hero {
+        min-height: auto;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 20px;
+
+        padding-block: 60px;
     }
 
-    .legal-actions {
+    .orbit-one {
+        width: 290px;
+        height: 290px;
+    }
+
+    .orbit-two {
+        width: 340px;
+        height: 340px;
+    }
+
+    .feature-grid,
+    .team-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .benefit-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+/* =====================================================
+   RESPONSIVIDADE — CELULARES
+   ===================================================== */
+
+@media (max-width: 620px) {
+
+    body {
+        font-size: 16px;
+    }
+
+    .header-inner,
+    .section-shell {
+        width: min(100% - 28px, var(--content));
+    }
+
+    .navbar {
+        gap: 2px;
+    }
+
+    .navbar a {
+        padding: 7px 9px;
+        font-size: .86rem;
+    }
+
+    .hero {
+        grid-template-columns: 1fr;
+
+        padding-block: 48px 30px;
+    }
+
+    .hero-art {
+        min-height: 300px;
+    }
+
+    .hero-mascot {
+        width: min(72%, 270px);
+        max-height: 290px;
+    }
+
+    .orbit-one {
+        width: 250px;
+        height: 250px;
+    }
+
+    .orbit-two {
+        width: 290px;
+        height: 290px;
+    }
+
+    .section {
+        padding-block: 62px;
+    }
+
+    .section-soft,
+    .section-lilac {
+        padding-inline: 14px;
+    }
+
+    .feature-grid,
+    .method-grid,
+    .steps-grid,
+    .benefit-grid,
+    .mvv-grid,
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .objective-section {
+        grid-template-columns: 1fr;
+
+        gap: 25px;
+
+        padding-block: 65px;
+    }
+
+    .objective-art {
+        min-height: 200px;
+        font-size: 5.5rem;
+    }
+
+    .footer-inner {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .footer-bottom {
         flex-direction: column;
     }
 
-    .legal-actions a {
-        width: 100%;
+    .legal-header-inner {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .legal-main {
+        width: calc(100% - 28px);
+
+        margin: 24px auto;
+
+        padding: 24px 20px;
     }
 }
 
+
+/* =====================================================
+   REDUÇÃO DE MOVIMENTO
+   ===================================================== */
+
 @media (prefers-reduced-motion: reduce) {
-    .legal-actions a {
-        transition: none;
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
     }
+
 }
