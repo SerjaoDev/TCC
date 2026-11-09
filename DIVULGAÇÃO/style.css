@@ -170,6 +170,51 @@ li::marker { color: var(--brand); }
     }
 }
 
+/* Botão hambúrguer (aparece só em telas pequenas) */
+
+.menu-toggle {
+    display: none;
+    place-items: center;
+    flex: none;
+
+    width: 46px;
+    height: 46px;
+    padding: 0;
+
+    border: 0;
+    border-radius: 50%;
+    background: color-mix(in oklch, var(--sun) 55%, white);
+    box-shadow: 0 3px 0 oklch(0.68 0.15 75);
+
+    cursor: pointer;
+    transition: transform .25s var(--spring), box-shadow .25s ease;
+
+    &:active { transform: translateY(3px); box-shadow: none; }
+}
+
+.menu-bars,
+.menu-bars::before,
+.menu-bars::after {
+    display: block;
+    width: 20px;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--ink);
+    transition: transform .35s var(--spring), background .2s ease;
+}
+
+.menu-bars { position: relative; }
+
+.menu-bars::before,
+.menu-bars::after { content: ""; position: absolute; left: 0; }
+
+.menu-bars::before { top: -7px; }
+.menu-bars::after { top: 7px; }
+
+.menu-toggle[aria-expanded="true"] .menu-bars { background: transparent; }
+.menu-toggle[aria-expanded="true"] .menu-bars::before { transform: translateY(7px) rotate(45deg); }
+.menu-toggle[aria-expanded="true"] .menu-bars::after { transform: translateY(-7px) rotate(-45deg); }
+
 /* =====================================================
    ESTRUTURA DAS SEÇÕES
    ===================================================== */
@@ -805,19 +850,52 @@ li::marker { color: var(--brand); }
 @media (max-width: 900px) {
 
     .header-inner {
+        position: relative;
+        padding: 8px 8px 8px 18px;
+    }
+
+    .menu-toggle { display: grid; }
+
+    /* Menu vira um painel que abre abaixo da pílula */
+    .navbar {
+        position: absolute;
+        top: calc(100% + 10px);
+        inset-inline: 0;
+
         flex-direction: column;
         align-items: stretch;
         gap: 4px;
-        padding: 10px 12px;
+        padding: 12px;
+
+        border: 1.5px solid var(--line);
         border-radius: 28px;
+        background: color-mix(in oklch, white 97%, transparent);
+        box-shadow: var(--shadow-hover);
+
+        visibility: hidden;
+        opacity: 0;
+        translate: 0 -10px;
+        scale: .96;
+        transform-origin: top right;
+        transition:
+            opacity .2s ease,
+            translate .35s var(--spring),
+            scale .35s var(--spring),
+            visibility 0s .35s;
+
+        a {
+            padding: 14px 18px;
+            border-radius: 18px;
+            font-size: 1.05rem;
+        }
     }
 
-    .brand { align-self: flex-start; }
-
-    .navbar {
-        justify-content: flex-start;
-        overflow-x: auto;
-        scrollbar-width: none;
+    .menu-toggle[aria-expanded="true"] + .navbar {
+        visibility: visible;
+        opacity: 1;
+        translate: none;
+        scale: 1;
+        transition-delay: 0s;
     }
 
     .hero { grid-template-columns: 1fr 1fr; gap: 20px; }

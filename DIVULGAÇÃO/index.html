@@ -29,7 +29,12 @@
                 <span>Lumi</span>
             </a>
 
-            <nav class="navbar" aria-label="Navegação principal">
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu"
+                aria-label="Abrir menu">
+                <span class="menu-bars" aria-hidden="true"></span>
+            </button>
+
+            <nav class="navbar" id="menu" aria-label="Navegação principal">
                 <a href="#inicio">Início</a>
                 <a href="#plataforma">Plataforma</a>
                 <a href="#funciona">Como funciona</a>
@@ -507,6 +512,36 @@
                 });
             });
         });
+
+        // Menu hambúrguer (celular e tablet).
+        const toggle = document.querySelector(".menu-toggle");
+        const menu = document.getElementById("menu");
+
+        function setMenu(open) {
+            toggle.setAttribute("aria-expanded", open);
+            toggle.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
+        }
+
+        const isOpen = () => toggle.getAttribute("aria-expanded") === "true";
+
+        toggle.addEventListener("click", () => setMenu(!isOpen()));
+
+        menu.addEventListener("click", (event) => {
+            if (event.target.closest("a")) setMenu(false);
+        });
+
+        document.addEventListener("click", (event) => {
+            if (!event.target.closest(".header-inner")) setMenu(false);
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && isOpen()) {
+                setMenu(false);
+                toggle.focus();
+            }
+        });
+
+        matchMedia("(min-width: 901px)").addEventListener("change", () => setMenu(false));
     </script>
 
 </body>
