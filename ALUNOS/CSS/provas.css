@@ -1,0 +1,588 @@
+/* =========================================================
+   Prova infantil: folha de estilos modernizada
+   Todos os ids e classes originais foram mantidos.
+   ========================================================= */
+
+/* ---------- Variáveis ---------- */
+:root {
+    /* cores */
+    --cor-tinta: #1a1a1a;
+    --cor-branco: #fff;
+    --cor-fundo: #f7f3cb;
+    --cor-fundo-resultado: #fbf5c8;
+    --cor-amarelo: #fde05f;
+    --cor-amarelo-claro: #fff29c;
+    --cor-vermelho: #ff5252;
+    --cor-verde: #4cd964;
+    --cor-azul: #42a5f5;
+    --cor-roxo: #7e57c2;
+    --cor-acerto: #22a447;
+    --cor-erro: #e53935;
+    --cor-erro-fundo: #ff8a80;
+
+    /* bordas */
+    --borda: 3px solid var(--cor-tinta);
+    --borda-grossa: 4px solid var(--cor-tinta);
+}
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    font-family: 'Fredoka', 'Comic Sans MS', ui-rounded, sans-serif;
+    background: var(--cor-fundo);
+    color: var(--cor-tinta);
+    overflow-x: hidden;
+}
+
+/* Botões e links: sem atraso de toque e com foco visível pelo teclado */
+:is(.btn-voltar, .btn-audio, .alternativa, .btn-proxima, .btn-final) {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+
+    &:focus-visible {
+        outline: 4px solid var(--cor-roxo);
+        outline-offset: 4px;
+    }
+}
+
+/* ---------- Fundo decorativo ---------- */
+.fundo {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.bolha {
+    position: absolute;
+    width: var(--tam);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--cor-bolha);
+}
+
+.bolha1 {
+    --tam: 280px;
+    --cor-bolha: #b1e0a8;
+    top: -80px;
+    right: 10%;
+}
+
+.bolha2 {
+    --tam: 300px;
+    --cor-bolha: #f7d3ca;
+    bottom: -100px;
+    left: 10%;
+}
+
+.bolha3 {
+    --tam: 220px;
+    --cor-bolha: #a8c3d1;
+    top: 30%;
+    left: -100px;
+}
+
+.bolha4 {
+    --tam: 250px;
+    --cor-bolha: #fce892;
+    right: -80px;
+    bottom: 10%;
+}
+
+/* ---------- Botão voltar ---------- */
+.btn-voltar {
+    --elevacao: 5px;
+
+    position: fixed;
+    top: clamp(0.75rem, 3vw, 1.25rem);
+    left: clamp(0.75rem, 3vw, 1.25rem);
+    z-index: 100;
+
+    display: grid;
+    place-items: center;
+
+    width: clamp(2.625rem, 11vw, 3rem);
+    aspect-ratio: 1;
+
+    border: var(--borda);
+    border-radius: 50%;
+    background: var(--cor-branco);
+    box-shadow: 0 var(--elevacao) 0 var(--cor-tinta);
+
+    color: var(--cor-tinta);
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+
+    transition: translate 0.2s;
+
+    @media (hover: hover) {
+        &:hover {
+            translate: 0 -2px;
+        }
+    }
+}
+
+/* ---------- Layout da página ---------- */
+.pagina {
+    position: relative;
+    z-index: 5;
+
+    min-height: 100vh;
+    min-height: 100dvh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: clamp(1.5rem, 4vw, 2.1875rem) clamp(0.75rem, 3vw, 1.25rem);
+}
+
+.prova {
+    width: 100%;
+    max-width: 900px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ---------- Cabeçalho ---------- */
+.cabecalho {
+    width: 100%;
+    max-width: 750px;
+    margin-bottom: 1.25rem;
+    text-align: center;
+}
+
+.titulo {
+    font-size: clamp(1.95rem, 1.45rem + 2.1vw, 2.625rem);
+    font-weight: 900;
+    color: var(--cor-vermelho);
+    text-wrap: balance;
+
+    /* contorno branco (alternativa para navegadores sem paint-order) */
+    text-shadow:
+        2px 2px 0 var(--cor-branco),
+        -2px -2px 0 var(--cor-branco),
+        2px -2px 0 var(--cor-branco),
+        -2px 2px 0 var(--cor-branco);
+
+    @supports (paint-order: stroke fill) {
+        text-shadow: none;
+        -webkit-text-stroke: 4px var(--cor-branco);
+        paint-order: stroke fill;
+    }
+}
+
+.subtitulo {
+    margin-top: 0.3125rem;
+    font-size: clamp(1.125rem, 1rem + 0.8vw, 1.375rem);
+    font-weight: bold;
+}
+
+/* ---------- Progresso ---------- */
+.progresso-area {
+    width: 100%;
+    max-width: 700px;
+    margin-bottom: 1.5625rem;
+}
+
+.progresso-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 0.5rem;
+
+    font-size: 1.125rem;
+    font-weight: bold;
+}
+
+.barra {
+    width: 100%;
+    height: 18px;
+
+    background: var(--cor-branco);
+    border: var(--borda);
+    border-radius: 999px;
+
+    overflow: hidden;
+}
+
+.barra-progresso {
+    width: 0%;
+    height: 100%;
+    background: var(--cor-verde);
+    transition: width 0.4s ease;
+}
+
+/* ---------- Card da questão ---------- */
+.card-questao {
+    width: 100%;
+    max-width: 760px;
+
+    padding:
+        clamp(1.375rem, 1rem + 2vw, 1.875rem) clamp(0.9375rem, 0.3rem + 3.2vw, 1.875rem);
+
+    background: rgb(255 255 255 / 94%);
+    border: var(--borda-grossa);
+    border-radius: clamp(1.75rem, 1.4rem + 1.5vw, 2.1875rem);
+    box-shadow: 0 9px 0 var(--cor-tinta);
+
+    text-align: center;
+}
+
+.numero-questao {
+    margin-bottom: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: bold;
+    color: var(--cor-roxo);
+}
+
+.instrucao {
+    margin-bottom: 1.25rem;
+    font-size: clamp(1.375rem, 1.1rem + 1.2vw, 1.6875rem);
+    font-weight: 900;
+    text-wrap: balance;
+}
+
+/* Botão de áudio */
+.btn-audio {
+    --elevacao: 5px;
+
+    display: grid;
+    place-items: center;
+
+    width: 4.5rem;
+    aspect-ratio: 1;
+    margin: 0 auto 1.25rem;
+
+    border: var(--borda);
+    border-radius: 50%;
+    background: var(--cor-amarelo);
+    box-shadow: 0 var(--elevacao) 0 var(--cor-tinta);
+
+    cursor: pointer;
+    transition: translate 0.15s, scale 0.15s, box-shadow 0.15s;
+
+    svg {
+        width: 2.125rem;
+        height: 2.125rem;
+    }
+
+    @media (hover: hover) {
+        &:hover {
+            scale: 1.05;
+        }
+    }
+
+    &:active {
+        translate: 0 4px;
+        scale: 1;
+        --elevacao: 1px;
+    }
+}
+
+/* Imagem e letra da questão */
+.imagem-questao {
+    display: block;
+    width: clamp(7.75rem, 4rem + 10vw, 9.375rem);
+    height: auto;
+    aspect-ratio: 1;
+    margin: 0.3125rem auto 1.25rem;
+    object-fit: contain;
+}
+
+.letra-grande {
+    display: grid;
+    place-items: center;
+
+    width: clamp(9rem, 28vw, 11.25rem);
+    aspect-ratio: 1;
+    margin: 0 auto 1.25rem;
+
+    background: var(--cor-amarelo);
+    border: var(--borda-grossa);
+    border-radius: 2.1875rem;
+    box-shadow: 0 8px 0 var(--cor-tinta);
+
+    font-size: clamp(4rem, 3rem + 5vw, 5.3125rem);
+    font-weight: 900;
+}
+
+.palavra-grande {
+    margin: 0.9375rem 0 1.5625rem;
+    font-size: clamp(2.125rem, 1.4rem + 3.2vw, 3rem);
+    font-weight: 900;
+    letter-spacing: 0.08em;
+}
+
+.lacuna {
+    color: var(--cor-vermelho);
+}
+
+/* ---------- Alternativas ---------- */
+.alternativas {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(0.625rem, 3vw, 0.9375rem);
+
+    width: 100%;
+    max-width: 580px;
+    margin: 0 auto;
+}
+
+.alternativa {
+    --elevacao: 6px;
+
+    display: grid;
+    place-items: center;
+
+    min-height: clamp(3.625rem, 2.9rem + 2.2vw, 4.375rem);
+
+    border: var(--borda);
+    border-radius: 22px;
+    background: var(--cor-amarelo);
+    box-shadow: 0 var(--elevacao) 0 var(--cor-tinta);
+
+    font-family: inherit;
+    font-size: clamp(1.375rem, 1.1rem + 1.4vw, 1.875rem);
+    font-weight: 900;
+
+    cursor: pointer;
+    transition: translate 0.15s, box-shadow 0.15s, background-color 0.15s;
+
+    /* :where() zera a especificidade, então .correta e .errada vencem sem !important */
+    @media (hover: hover) {
+        &:where(:hover:not(:disabled)) {
+            translate: 0 -3px;
+            background: var(--cor-amarelo-claro);
+        }
+    }
+
+    &:active:not(:disabled) {
+        translate: 0 3px;
+        --elevacao: 2px;
+    }
+
+    &:disabled {
+        cursor: default;
+    }
+
+    &.correta {
+        background: var(--cor-verde);
+        color: #000;
+    }
+
+    &.errada {
+        background: var(--cor-erro-fundo);
+    }
+}
+
+/* ---------- Feedback e próxima ---------- */
+.feedback {
+    min-height: 2.625rem;
+    margin-top: 1.25rem;
+
+    font-size: 1.375rem;
+    font-weight: 900;
+    text-wrap: balance;
+
+    &.acerto {
+        color: var(--cor-acerto);
+    }
+
+    &.erro {
+        color: var(--cor-erro);
+    }
+}
+
+.btn-proxima {
+    --elevacao: 6px;
+
+    width: 100%;
+    max-width: 580px;
+    height: 3.4375rem;
+    margin-top: 0.9375rem;
+
+    border: var(--borda);
+    border-radius: 30px;
+    background: var(--cor-azul);
+    box-shadow: 0 var(--elevacao) 0 var(--cor-tinta);
+
+    color: var(--cor-branco);
+    font-family: inherit;
+    font-size: 1.5625rem;
+    font-weight: 900;
+
+    cursor: pointer;
+    transition: translate 0.15s, box-shadow 0.15s;
+
+    @media (hover: hover) {
+        &:hover {
+            translate: 0 -2px;
+        }
+    }
+
+    &:active {
+        translate: 0 3px;
+        --elevacao: 2px;
+    }
+
+    &:disabled {
+        display: none;
+    }
+}
+
+/* ---------- Tela de resultado ---------- */
+#resultado {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: none;
+    justify-content: center;
+    align-items: center;
+
+    padding: 1.5625rem;
+    background: var(--cor-fundo-resultado);
+    overflow: hidden;
+
+    &.mostrar {
+        display: flex;
+    }
+}
+
+.resultado-conteudo {
+    position: relative;
+    z-index: 5;
+
+    width: 100%;
+    max-width: 650px;
+    max-height: 100%;
+    padding: 2.5rem 1.875rem;
+
+    background: var(--cor-branco);
+    border: var(--borda-grossa);
+    border-radius: 2.5rem;
+    box-shadow: 0 10px 0 var(--cor-tinta);
+
+    text-align: center;
+    overflow-y: auto;
+}
+
+.resultado-titulo {
+    margin-bottom: 0.625rem;
+    font-size: clamp(2.4rem, 1.6rem + 3.5vw, 3.25rem);
+    font-weight: 900;
+    color: var(--cor-vermelho);
+}
+
+.mascote {
+    width: min(150px, 45vw);
+    margin: 0.625rem auto;
+    object-fit: contain;
+}
+
+.estrelas {
+    margin: 0.625rem 0;
+    font-size: 2.8125rem;
+}
+
+.resultado-nota {
+    margin: 0.625rem 0;
+    font-size: clamp(1.5625rem, 1.3rem + 1.2vw, 1.875rem);
+    font-weight: 900;
+}
+
+.resultado-mensagem {
+    max-width: 500px;
+    margin: 0.9375rem auto;
+
+    font-size: 1.375rem;
+    font-weight: bold;
+    line-height: 1.4;
+    text-wrap: pretty;
+}
+
+.btn-final {
+    --elevacao: 6px;
+
+    display: inline-grid;
+    place-items: center;
+
+    min-height: 3.4375rem;
+    margin-top: 0.9375rem;
+    padding: 0 2.1875rem;
+
+    border: var(--borda);
+    border-radius: 30px;
+    background: var(--cor-amarelo);
+    box-shadow: 0 var(--elevacao) 0 var(--cor-tinta);
+
+    color: var(--cor-tinta);
+    font-family: inherit;
+    font-size: 1.375rem;
+    font-weight: 900;
+    text-decoration: none;
+
+    cursor: pointer;
+    transition: translate 0.15s, box-shadow 0.15s;
+
+    &:active {
+        translate: 0 4px;
+        --elevacao: 2px;
+    }
+}
+
+/* ---------- Confete ---------- */
+.confete {
+    position: absolute;
+    top: -30px;
+    z-index: 1;
+
+    width: 12px;
+    height: 20px;
+
+    animation: cair linear forwards;
+}
+
+@keyframes cair {
+    from {
+        transform: translateY(-30px) rotate(0deg);
+    }
+
+    to {
+        transform: translateY(110dvh) rotate(720deg);
+    }
+}
+
+/* ---------- Acessibilidade: movimento reduzido ---------- */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+    }
+
+    .confete {
+        display: none;
+    }
+}

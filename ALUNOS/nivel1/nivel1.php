@@ -3,7 +3,7 @@ session_start();
 require_once '../conexao.php';
 
 $nivel_atual  = 1;
-$total_niveis = 12;
+$total_niveis = 13;
 $estrutura_id = 1;
 $titulo       = 'O ALFABETO';
 $fundo        = 'fn1.png';
@@ -20,8 +20,9 @@ $atividades_arquivos = [
     8  => 'atv8n1.php',
     9  => 'atv9n1.php',
     10 => 'atv10n1.php',
-    11 => 'vogais.php',
-    12 => 'prova.php',
+    11 => 'atv11n1.php',
+    12 => 'vogais.php',
+    13 => 'prova.php',
 ];
 
 $aluno_id = $_SESSION['aluno_id'] ?? 1;
