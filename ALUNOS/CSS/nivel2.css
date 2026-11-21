@@ -1,0 +1,839 @@
+/* ==========================================================================
+   TOKENS
+   Cores, sombras e medidas centralizadas. Nenhum nome de classe ou id foi
+   alterado: só a forma de escrever as regras mudou.
+   ========================================================================== */
+:root {
+    /* Cores base */
+    --cor-fundo: #f7f3cb;
+    --cor-fundo-parabens: #fbf5c8;
+    --cor-contorno: #1a1a1a;
+    --cor-branco: #ffffff;
+    --cor-amarelo: #ffeb60;
+    --cor-amarelo-claro: #fff4a3;
+    --cor-menta: #a8e0d2;
+    --cor-verde-ok: #b1e0a8;
+    --cor-gramado: #4cd964;
+    --cor-erro: #ff5252;
+    --cor-foco: #42a5f5;
+
+    /* Círculos decorativos do fundo */
+    --cor-circulo-azul: #a8c3d1;
+    --cor-circulo-rosa: #f7d3ca;
+    --cor-circulo-verde: #b1e0a8;
+    --cor-circulo-amarelo: #fce892;
+
+    /* Tipografia */
+    --fonte: 'Fredoka', 'Comic Sans MS', ui-rounded, system-ui, sans-serif;
+    --peso-forte: 900;
+
+    /* Sombras "de brinquedo" (deslocadas para baixo, sem blur) */
+    --sombra-sm: 0 3px 0 var(--cor-contorno);
+    --sombra-md: 0 4px 0 var(--cor-contorno);
+    --sombra-lg: 0 6px 0 var(--cor-contorno);
+
+    /* Etapa 2: posições horizontais das colunas.
+       Mantenha em sincronia com o SVG das setas / o JS de ligação. */
+    --e2-x-letra: 120px;
+    --e2-x-vogais: 400px;
+    --e2-x-igual: 480px;
+    --e2-x-drops: 540px;
+}
+
+
+/* ==========================================================================
+   BASE
+   ========================================================================== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    background-color: var(--cor-fundo);
+    font-family: var(--fonte);
+    min-height: 100vh;
+    min-height: 100dvh; /* acompanha a barra do navegador em tablets/celulares */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+/* Botões herdam a fonte do jogo em vez da fonte do sistema */
+:where(button) {
+    font: inherit;
+    color: inherit;
+}
+
+
+/* ==========================================================================
+   TELA DE TRANSIÇÃO
+   ========================================================================== */
+#tela-transicao {
+    position: fixed;
+    inset: 0;
+    background: url('../img/iniciando2.png') center / cover no-repeat;
+    z-index: 9999;
+    transition: opacity 1s ease-out, visibility 1s ease-out;
+}
+
+
+/* ==========================================================================
+   NUVENS (animadas)
+   ========================================================================== */
+.nuvem-container {
+    position: absolute;
+    inset: 0 0 50% 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.nuvem {
+    position: absolute;
+    background: rgb(255 255 255 / 0.85);
+    border-radius: 50px;
+    opacity: 0.8;
+    animation: moverNuvem linear infinite;
+}
+
+.nuvem::before,
+.nuvem::after {
+    content: '';
+    position: absolute;
+    background: rgb(255 255 255 / 0.85);
+    border-radius: 50%;
+}
+
+.nuvem1 { width: 140px; height: 45px; top: 15%; left: -150px; animation-duration: 8s; }
+.nuvem1::before { width: 50px; height: 50px; top: -20px; left: 25px; }
+.nuvem1::after  { width: 40px; height: 40px; top: -15px; left: 60px; }
+
+.nuvem2 { width: 180px; height: 55px; top: 35%; left: -200px; animation-duration: 11s; animation-delay: 1s; }
+.nuvem2::before { width: 65px; height: 65px; top: -25px; left: 30px; }
+.nuvem2::after  { width: 50px; height: 50px; top: -20px; left: 80px; }
+
+.nuvem3 { width: 120px; height: 40px; top: 8%; left: -130px; animation-duration: 9.5s; animation-delay: 2.5s; }
+.nuvem3::before { width: 45px; height: 45px; top: -15px; left: 20px; }
+.nuvem3::after  { width: 35px; height: 35px; top: -10px; left: 50px; }
+
+@keyframes moverNuvem {
+    from { transform: translateX(0); }
+    to   { transform: translateX(calc(100vw + 250px)); }
+}
+
+
+/* ==========================================================================
+   UTILITÁRIOS (alternados via JS)
+   O !important é proposital: estas classes precisam vencer qualquer regra
+   de display/opacidade/visibilidade dos elementos que as recebem.
+   ========================================================================== */
+.esconder {
+    display: none !important;
+}
+
+.transicao-oculta {
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+
+/* ==========================================================================
+   TELA DE PARABÉNS
+   ========================================================================== */
+#tela-parabens {
+    position: fixed;
+    inset: 0;
+    background: var(--cor-fundo-parabens);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+}
+
+.gramado-parabens {
+    position: absolute;
+    inset-inline: -5%;
+    bottom: -50px;
+    height: 180px;
+    background-color: var(--cor-gramado);
+    border-radius: 50% 50% 0 0;
+    z-index: 2;
+}
+
+.conteudo-parabens-centro {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 5;
+    width: 100%;
+}
+
+.texto-parabens-colorido {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 20px;
+    animation: pulsarLetras 1.5s infinite alternate ease-in-out;
+}
+
+.texto-parabens-colorido span {
+    font-size: clamp(40px, 9vw, 68px);
+    font-weight: var(--peso-forte);
+    /* Contorno branco "adesivo" (fallback para navegadores antigos) */
+    text-shadow:
+        2px 2px 0 var(--cor-branco),
+        -2px -2px 0 var(--cor-branco),
+        2px -2px 0 var(--cor-branco),
+        -2px 2px 0 var(--cor-branco),
+        0 4px 6px rgb(0 0 0 / 0.15);
+}
+
+/* Contorno liso de verdade, sem as quinas serrilhadas do text-shadow */
+@supports (paint-order: stroke fill) and (-webkit-text-stroke: 1px #fff) {
+    .texto-parabens-colorido span {
+        -webkit-text-stroke: 4px var(--cor-branco);
+        paint-order: stroke fill;
+        text-shadow: 0 4px 6px rgb(0 0 0 / 0.15);
+    }
+}
+
+.char-p1 { color: #ff5252; }
+.char-a1 { color: #ff7043; }
+.char-r  { color: #7e57c2; }
+.char-a2 { color: #26a69a; }
+.char-b  { color: #9ccc65; }
+.char-e  { color: #fbc02d; }
+.char-s1 { color: #ec407a; }
+.char-n  { color: #42a5f5; }
+.char-s2 { color: #00bcd4; }
+
+@keyframes pulsarLetras {
+    from { transform: scale(0.95); }
+    to   { transform: scale(1.05); }
+}
+
+.mascote-parabens {
+    width: clamp(150px, 22vw, 210px);
+    height: auto;
+    animation: flutuarMascote 2s infinite alternate ease-in-out;
+}
+
+@keyframes flutuarMascote {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-10px); }
+}
+
+.nuvem-parabens-esq {
+    position: absolute;
+    top: 22%;
+    left: 8%;
+    width: clamp(140px, 24vw, 240px);
+    opacity: 0.9;
+    z-index: 3;
+}
+
+.nuvem-parabens-dir {
+    position: absolute;
+    top: 12%;
+    right: 8%;
+    width: clamp(150px, 26vw, 260px);
+    opacity: 0.9;
+    z-index: 3;
+}
+
+
+/* ==========================================================================
+   CONFETES
+   ========================================================================== */
+.container-confetes {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+    overflow: hidden;
+}
+
+.confete {
+    position: absolute;
+    top: -20px;
+    animation: cairConfete linear infinite;
+}
+
+.confete.retangulo { width: 12px; height: 20px; border-radius: 2px; }
+.confete.circulo   { width: 12px; height: 12px; border-radius: 50%; }
+.confete.serpentina { width: 6px; height: 28px; border-radius: 10px; }
+
+@keyframes cairConfete {
+    from { transform: translateY(0) rotate(0deg) translateX(0); opacity: 1; }
+    to   { transform: translateY(105vh) rotate(720deg) translateX(50px); opacity: 0.8; }
+}
+
+
+/* ==========================================================================
+   FEEDBACK DE ERRO NO ARRASTE
+   ========================================================================== */
+@keyframes balancarErro {
+    0%, 100% { transform: translateX(0); }
+    15% { transform: translateX(-10px); }
+    30% { transform: translateX(9px); }
+    45% { transform: translateX(-7px); }
+    60% { transform: translateX(6px); }
+    75% { transform: translateX(-4px); }
+    90% { transform: translateX(3px); }
+}
+
+.erro-arraste {
+    animation: balancarErro 0.6s ease-in-out;
+    background-color: rgb(255 82 82 / 0.35) !important;
+    border-color: var(--cor-erro) !important;
+    box-shadow: 0 0 0 3px rgb(255 82 82 / 0.5) !important;
+}
+
+
+/* ==========================================================================
+   BOTÃO VOLTAR
+   ========================================================================== */
+.btn-voltar {
+    position: absolute;
+    /* respeita o "notch" de tablets/celulares quando houver */
+    top: max(20px, env(safe-area-inset-top));
+    left: max(20px, env(safe-area-inset-left));
+    width: 45px;
+    height: 45px;
+    background: var(--cor-branco);
+    border: 2px solid var(--cor-contorno);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: var(--cor-contorno);
+    font-size: 20px;
+    font-weight: bold;
+    z-index: 20;
+    box-shadow: var(--sombra-md);
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.btn-voltar:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 var(--cor-contorno);
+}
+
+
+/* ==========================================================================
+   CÍRCULOS DECORATIVOS DO FUNDO
+   ========================================================================== */
+.circulo {
+    position: absolute;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.circulo-azul {
+    width: clamp(160px, 26vw, 260px);
+    aspect-ratio: 1;
+    background-color: var(--cor-circulo-azul);
+    top: -50px;
+    left: -50px;
+}
+
+.circulo-rosa {
+    width: clamp(180px, 30vw, 300px);
+    aspect-ratio: 1;
+    background-color: var(--cor-circulo-rosa);
+    left: 22%;
+    bottom: 18%;
+}
+
+.circulo-verde {
+    width: clamp(170px, 28vw, 280px);
+    aspect-ratio: 1;
+    background-color: var(--cor-circulo-verde);
+    top: 12%;
+    right: 18%;
+}
+
+.circulo-amarelo {
+    width: clamp(190px, 32vw, 320px);
+    aspect-ratio: 1;
+    background-color: var(--cor-circulo-amarelo);
+    bottom: -80px;
+    right: -50px;
+}
+
+
+/* ==========================================================================
+   CONTAINER DAS ETAPAS
+   ========================================================================== */
+.etapa-container {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 950px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+/* ==========================================================================
+   ETAPA 1
+   ========================================================================== */
+.grid-cards-etapa1 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+.card-bloco-etapa1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.card-amarelo-f3 {
+    width: clamp(100px, 15vw, 140px);
+    aspect-ratio: 1;
+    background-color: var(--cor-amarelo);
+    border: 3.5px solid var(--cor-contorno);
+    border-radius: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--sombra-lg);
+}
+
+.card-amarelo-f3 span {
+    font-size: clamp(34px, 5vw, 48px);
+    font-weight: var(--peso-forte);
+    color: var(--cor-contorno);
+}
+
+.btn-som-f3 {
+    width: 52px;
+    height: 52px;
+    background-color: var(--cor-branco);
+    border: 2.5px solid var(--cor-contorno);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: var(--sombra-sm);
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.btn-som-f3:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 var(--cor-contorno);
+}
+
+.btn-avancar-f3 {
+    width: 100%;
+    max-width: 780px;
+    min-height: 50px;
+    background-color: transparent;
+    border: 2.5px solid var(--cor-contorno);
+    border-radius: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 24px;
+    color: var(--cor-contorno);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+/* Hover só em dispositivos com mouse (evita "hover preso" no toque) */
+@media (hover: hover) {
+    .btn-avancar-f3:hover {
+        background-color: var(--cor-contorno);
+        color: var(--cor-branco);
+    }
+}
+
+
+/* ==========================================================================
+   ETAPA 2 (LIGAR LETRA ÀS SÍLABAS)
+   A geometria abaixo é posicional e o SVG das setas depende dela:
+   os valores foram mantidos idênticos ao original.
+   ========================================================================== */
+.painel-ligacao-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 900px;
+    height: 480px;
+}
+
+.svg-setas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.box-letra-b-e2, .box-letra-c-e2 {
+    position: absolute;
+    left: var(--e2-x-letra);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 2;
+}
+
+.circulo-letra-b, .circulo-letra-c {
+    width: 80px;
+    height: 80px;
+    border: 3px solid var(--cor-contorno);
+    border-radius: 50%;
+    background-color: var(--cor-menta);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 42px;
+    font-weight: var(--peso-forte);
+    color: var(--cor-contorno);
+    box-shadow: var(--sombra-md);
+}
+
+.coluna-vogais-f2 {
+    position: absolute;
+    left: var(--e2-x-vogais);
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    z-index: 2;
+}
+
+.circulo-vogal {
+    width: 60px;
+    height: 60px;
+    border: 3px solid var(--cor-contorno);
+    border-radius: 50%;
+    background-color: var(--cor-menta);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    font-weight: var(--peso-forte);
+    color: var(--cor-contorno);
+    box-shadow: var(--sombra-sm);
+}
+
+.coluna-igual {
+    position: absolute;
+    left: var(--e2-x-igual);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 2;
+}
+
+.sinal-igual {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    font-size: 32px;
+    font-weight: var(--peso-forte);
+    color: var(--cor-contorno);
+}
+
+.coluna-drops {
+    position: absolute;
+    left: var(--e2-x-drops);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 2;
+}
+
+.quadrado-drop {
+    width: 110px;
+    height: 60px;
+    border: 3px solid var(--cor-contorno);
+    border-radius: 15px;
+    background-color: var(--cor-branco);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    font-weight: var(--peso-forte);
+    color: var(--cor-contorno);
+    box-shadow: var(--sombra-sm);
+    transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.quadrado-drop.hover-drop {
+    background-color: var(--cor-amarelo-claro);
+}
+
+.quadrado-drop.concluido {
+    background-color: var(--cor-verde-ok);
+}
+
+.container-opcoes-arrastaveis {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+    z-index: 10;
+}
+
+.silaba-opcao {
+    width: 80px;
+    height: 55px;
+    background-color: var(--cor-amarelo);
+    border: 3px solid var(--cor-contorno);
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    font-weight: var(--peso-forte);
+    color: var(--cor-contorno);
+    cursor: grab;
+    box-shadow: var(--sombra-md);
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: none; /* arrastar com o dedo não rola a página */
+}
+
+.silaba-opcao:active {
+    cursor: grabbing;
+}
+
+
+/* ==========================================================================
+   ETAPA 3 (SÍLABA PARA CADA FOTO)
+   ========================================================================== */
+.container-topo-e3 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.fila-fotos-e3 {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 15px;
+    justify-content: center;
+    justify-content: safe center; /* não corta o 1º card quando a fila rola */
+    align-items: center;
+    width: 100%;
+    margin-bottom: 25px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    padding: 10px 5px;
+}
+
+.card-foto-item {
+    background-color: var(--cor-branco);
+    border: 3px solid var(--cor-contorno);
+    border-radius: 20px;
+    padding: 15px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    box-shadow: var(--sombra-md);
+    min-width: 130px;
+    flex-shrink: 0;
+}
+
+.card-foto-item img {
+    width: 75px;
+    aspect-ratio: 1;
+    object-fit: contain;
+}
+
+.drop-silaba-e3 {
+    width: 70px;
+    height: 55px;
+    border: 3px dashed var(--cor-contorno);
+    border-radius: 15px;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    font-weight: var(--peso-forte);
+    color: var(--cor-contorno);
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.drop-silaba-e3.concluido {
+    border-style: solid;
+    background-color: var(--cor-verde-ok);
+}
+
+.container-blocos-baixo {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+
+/* ==========================================================================
+   ETAPA 4 (ARRASTAR IMAGEM PARA A SÍLABA)
+   ========================================================================== */
+.painel-etapa4-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 35px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.coluna-silabas-e4 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 15px;
+}
+
+.card-silaba-e4 {
+    width: 110px;
+    height: 60px;
+    background-color: var(--cor-amarelo);
+    border: 3px solid var(--cor-contorno);
+    border-radius: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--sombra-md);
+    font-size: 32px;
+    font-weight: var(--peso-forte);
+    color: var(--cor-contorno);
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.card-silaba-e4.hover-drop {
+    background-color: var(--cor-amarelo-claro);
+    transform: scale(1.05);
+}
+
+.linha-bi-e4 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.grid-15-imagens-e4 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    max-width: 480px;
+}
+
+.card-img-e4 {
+    width: 120px;
+    height: 60px;
+    background-color: var(--cor-amarelo);
+    border: 3px solid var(--cor-contorno);
+    border-radius: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: grab;
+    box-shadow: var(--sombra-md);
+    transition: transform 0.15s, opacity 0.3s;
+    position: relative;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: none; /* arrastar com o dedo não rola a página */
+}
+
+.card-img-e4:active {
+    cursor: grabbing;
+}
+
+.card-img-e4 img {
+    width: 48px;
+    aspect-ratio: 1;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+
+/* ==========================================================================
+   ACESSIBILIDADE
+   ========================================================================== */
+
+/* Foco visível para quem navega por teclado */
+:where(.btn-voltar, .btn-som-f3, .btn-avancar-f3, .silaba-opcao, .card-img-e4):focus-visible {
+    outline: 4px solid var(--cor-foco);
+    outline-offset: 3px;
+}
+
+/* Sem destaque cinza ao tocar em telas touch */
+.btn-voltar,
+.btn-som-f3,
+.btn-avancar-f3,
+.silaba-opcao,
+.card-img-e4 {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Respeita quem pede menos movimento no sistema */
+@media (prefers-reduced-motion: reduce) {
+    /* Nuvens ficam paradas no céu em vez de cruzar a tela */
+    .nuvem { animation: none; }
+    .nuvem1 { left: 8%; }
+    .nuvem2 { left: 38%; }
+    .nuvem3 { left: 68%; }
+
+    .texto-parabens-colorido,
+    .mascote-parabens {
+        animation: none;
+    }
+
+    .confete {
+        display: none;
+    }
+
+    /* O erro continua visível pela cor e pelo contorno, sem tremer */
+    .erro-arraste {
+        animation: none;
+    }
+}

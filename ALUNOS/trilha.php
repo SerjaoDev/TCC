@@ -17,7 +17,7 @@ $nome_aluno = $aluno_logado ? $_SESSION['aluno_nome'] : '';
 <body>
 
 <audio id="somFundo" loop preload="auto">
-    <source src="audios/fundolumi.mp3" type="audio/mpeg">
+    <source src="audios/Música.mpeg" type="audio/mpeg">
 </audio>
 
 <script>
