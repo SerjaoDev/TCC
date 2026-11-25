@@ -31,7 +31,7 @@ $atividades_arquivos = [
     19 => 'atv19n2.php',
     20 => 'atv20n2.php', 
     21 => 'atv21n2.php',
-    22 => 'atv22n2.php'
+    22 => 'prova.php'
 ];
 
 $aluno_id = $_SESSION['aluno_id'] ?? 1;

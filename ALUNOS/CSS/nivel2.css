@@ -90,9 +90,9 @@ img {
 #tela-transicao {
     position: fixed;
     inset: 0;
-    background: url('../img/iniciando2.png') center / cover no-repeat;
+    background: url('../img/iniciando1.png') center / cover no-repeat;
     z-index: 9999;
-    transition: opacity 1s ease-out, visibility 1s ease-out;
+    transition: opacity 500ms ease, visibility 500ms ease;
 }
 
 
