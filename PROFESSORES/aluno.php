@@ -39,6 +39,24 @@ $totais = $stmt_totais->get_result()->fetch_assoc();
 $estrelas = (int)$totais['total_estrelas'];
 $licoes   = (int)$totais['total_licoes'];
 
+// Busca o progresso separado por estrutura (nível da trilha).
+// Cada atividade grava o registro com o estrutura_id correspondente,
+// então não se deve usar a soma global para distribuir entre os níveis.
+$stmt_niveis = $conexao->prepare("
+    SELECT estrutura_id, COALESCE(SUM(licoes_concluidas), 0) AS fases_concluidas
+    FROM progresso
+    WHERE aluno_id = ?
+    GROUP BY estrutura_id
+");
+$stmt_niveis->bind_param("i", $id);
+$stmt_niveis->execute();
+$resultado_niveis = $stmt_niveis->get_result();
+
+$progresso_por_nivel = [];
+while ($row_nivel = $resultado_niveis->fetch_assoc()) {
+    $progresso_por_nivel[(int)$row_nivel['estrutura_id']] = (int)$row_nivel['fases_concluidas'];
+}
+
 // Cálculo do Progresso Geral (%)
 $TOTAL_FASES_APP = 85;
 $porcentagem_total = ($TOTAL_FASES_APP > 0) ? round(($licoes / $TOTAL_FASES_APP) * 100) : 0;
@@ -134,11 +152,7 @@ $niveis_config = [
             <h2>Progresso por Nível</h2>
 
             <?php foreach ($niveis_config as $n_id => $n_info):
-                if ($n_id === 1) {
-                    $fases_no_nivel = min($licoes, $n_info['total']);
-                } else {
-                    $fases_no_nivel = 0;
-                }
+                $fases_no_nivel = min($progresso_por_nivel[$n_id] ?? 0, $n_info['total']);
 
                 $porcentagem_nivel = round(($fases_no_nivel / $n_info['total']) * 100);
             ?>

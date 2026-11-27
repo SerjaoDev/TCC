@@ -17,6 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['salvar_prova'])) {
     $percentual = round(($nota / $total) * 100, 2);
 
     try {
+        $pdo->beginTransaction();
+
         $stmt = $pdo->prepare(
             'INSERT INTO provas (aluno_id, nota, total, percentual)
              VALUES (:aluno_id, :nota, :total, :percentual)'
@@ -28,6 +30,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['salvar_prova'])) {
             ':percentual' => $percentual,
         ]);
 
+        // A prova é a 13ª fase do nível 1: também entra no progresso do aluno.
+        $stmtProgresso = $pdo->prepare(
+            'INSERT INTO progresso (aluno_id, estrutura_id, nivel_atual, licoes_concluidas)
+             VALUES (:aluno_id, 1, 13, 1)
+             ON DUPLICATE KEY UPDATE licoes_concluidas = 1'
+        );
+        $stmtProgresso->execute([':aluno_id' => $aluno_id]);
+
+        $pdo->commit();
+
         echo json_encode([
             'status'     => 'sucesso',
             'nota'       => $nota,
@@ -35,6 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['salvar_prova'])) {
             'percentual' => $percentual,
         ]);
     } catch (PDOException $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         error_log($e->getMessage());
         echo json_encode(['status' => 'erro', 'mensagem' => 'Não foi possível salvar a prova.']);
     }

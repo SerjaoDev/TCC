@@ -4,466 +4,32 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Caça-Palavras · Frutas</title>
-<style>
-  * { box-sizing: border-box; }
-
-  :root {
-    --ink: #1f3a52;
-    --muted: #6b8093;
-    --line: #d9e9f6;
-    --brand: #fb923c;
-    --orange: #c2410c;
-    --baby: #dceffb;
-    --baby-line: #cfe5f6;
-    --radius: 22px;
-  }
-
-  html, body { height: 100%; }
-
-  body {
-    margin: 0;
-    min-height: 100%;
-    padding: clamp(14px, 3vw, 36px);
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    color: var(--ink);
-    font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
-    background:
-      linear-gradient(180deg, rgba(247, 252, 255, .5), rgba(219, 238, 252, .62)),
-      url("img/fundolumi.png") center center / cover no-repeat fixed,
-      var(--baby);
-  }
-
-  .app {
-    width: min(1080px, 100%);
-    padding: clamp(16px, 3vw, 30px);
-    border-radius: 28px;
-    border: 1px solid rgba(255, 255, 255, .85);
-    background: linear-gradient(180deg, rgba(234, 246, 255, .93), rgba(219, 238, 252, .93));
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow:
-      0 30px 60px -34px rgba(31, 58, 82, .38),
-      0 2px 6px rgba(31, 58, 82, .05);
-  }
-
-  /* ---------- Cabeçalho ---------- */
-  .top {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 20px;
-  }
-
-  .brand { display: flex; align-items: center; gap: 14px; }
-
-  .logo {
-    width: 54px; height: 54px;
-    display: grid; place-items: center;
-    border-radius: 17px;
-    font-size: 26px;
-    background: linear-gradient(140deg, #fef9c3, #fde68a 52%, #fdba74);
-    box-shadow: 0 14px 26px -16px rgba(234, 88, 12, .55);
-  }
-
-  h1 {
-    margin: 0;
-    font-size: clamp(22px, 3vw, 30px);
-    letter-spacing: -.02em;
-  }
-
-  .sub { margin: 3px 0 0; font-size: 14px; color: var(--muted); }
-  .sub strong { color: var(--orange); }
-
-  .tools {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .timer {
-    display: flex; align-items: center; gap: 8px;
-    padding: 10px 14px;
-    border-radius: 14px;
-    border: 1px solid var(--baby-line);
-    background: rgba(255, 255, 255, .9);
-    font-variant-numeric: tabular-nums;
-    font-weight: 700;
-    font-size: 15px;
-    color: #4a6b85;
-    box-shadow: 0 6px 16px -14px rgba(31, 58, 82, .5);
-  }
-  .timer span { font-size: 15px; opacity: .55; }
-
-  .round-chip {
-    padding: 10px 14px;
-    border-radius: 14px;
-    border: 1px solid #fed7aa;
-    background: #fef3c7;
-    color: var(--orange);
-    font-size: 12.5px;
-    font-weight: 800;
-    letter-spacing: .03em;
-    white-space: nowrap;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 11px 18px;
-    border: 0;
-    border-radius: 14px;
-    font: inherit;
-    font-weight: 700;
-    font-size: 14px;
-    color: #9a3412;
-    text-decoration: none;
-    cursor: pointer;
-    background: linear-gradient(135deg, #fef3c7, #fde68a 45%, #fdba74);
-    box-shadow: 0 14px 26px -16px rgba(234, 88, 12, .5);
-    transition: transform .15s, box-shadow .15s, filter .15s;
-  }
-  .btn:hover { transform: translateY(-1px); filter: brightness(1.03); }
-  .btn:active { transform: translateY(1px) scale(.99); }
-
-  .btn.switch {
-    background: rgba(255, 255, 255, .9);
-    color: #4a6b85;
-    border: 1px solid var(--baby-line);
-    box-shadow: 0 6px 16px -14px rgba(31, 58, 82, .5);
-  }
-  .btn.switch:hover { background: #fff; }
-
-  /* ---------- Layout ---------- */
-  .layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 288px;
-    gap: clamp(16px, 2.4vw, 26px);
-    align-items: start;
-  }
-
-  /* ---------- Tabuleiro ---------- */
-  .board-card {
-    padding: clamp(10px, 1.8vw, 18px);
-    border: 1px solid var(--baby-line);
-    border-radius: var(--radius);
-    background: rgba(250, 253, 255, .92);
-    box-shadow:
-      inset 0 1px 0 #fff,
-      0 16px 34px -30px rgba(31, 58, 82, .55);
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(var(--cols, 12), 1fr);
-    gap: clamp(3px, .55vw, 6px);
-    container-type: inline-size;
-    touch-action: none;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none;
-    cursor: pointer;
-  }
-
-  .cell {
-    aspect-ratio: 1 / 1;
-    display: grid;
-    place-items: center;
-    border-radius: 10px;
-    border: 1px solid #e3f0fb;
-    background: #f2f9ff;
-    color: #3a5a72;
-    font-weight: 800;
-    font-size: calc(100cqw / var(--cols, 12) * .46);
-    line-height: 1;
-    transition: background .12s, color .12s, transform .12s, box-shadow .12s;
-  }
-
-  @media (hover: hover) {
-    .cell:hover { background: #e6f4ff; transform: translateY(-1px); }
-  }
-
-  .cell.selected {
-    background: linear-gradient(135deg, #fde68a, #fdba74) !important;
-    color: #9a3412 !important;
-    box-shadow: 0 8px 18px -8px rgba(234, 88, 12, .55);
-    transform: scale(1.04);
-  }
-
-  .cell.found { font-weight: 800; }
-
-  .cell.pop { animation: pop .45s ease; }
-  @keyframes pop {
-    0% { transform: scale(1); }
-    45% { transform: scale(1.22); }
-    100% { transform: scale(1); }
-  }
-
-  .cell.wrong {
-    background: #fee2e2 !important;
-    color: #dc2626 !important;
-    animation: shake .32s ease;
-  }
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-3px); }
-    75% { transform: translateX(3px); }
-  }
-
-  .tip {
-    margin: 12px 4px 0;
-    font-size: 13px;
-    color: var(--muted);
-    text-align: center;
-  }
-  .tip b { color: var(--orange); }
-
-  /* ---------- Painel de palavras ---------- */
-  .panel {
-    padding: 18px;
-    border: 1px solid var(--baby-line);
-    border-radius: var(--radius);
-    background: rgba(250, 253, 255, .92);
-    box-shadow: 0 16px 34px -32px rgba(31, 58, 82, .6);
-  }
-
-  .panel-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 10px;
-  }
-
-  .panel h2 {
-    margin: 0;
-    font-size: 12.5px;
-    font-weight: 800;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: #7d9ab2;
-  }
-
-  .count { font-size: 13px; font-weight: 800; color: var(--orange); }
-
-  .progress {
-    height: 8px;
-    margin: 12px 0 16px;
-    border-radius: 999px;
-    background: #e2eff9;
-    overflow: hidden;
-  }
-  .progress > i {
-    display: block;
-    width: 0;
-    height: 100%;
-    border-radius: 999px;
-    background: linear-gradient(90deg, #fde68a, #fb923c);
-    transition: width .45s cubic-bezier(.3, .9, .3, 1);
-  }
-
-  .words {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .words li {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 9px 12px;
-    border-radius: 12px;
-    border: 1px solid transparent;
-    background: #f4faff;
-    color: #4a6b85;
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: .06em;
-    transition: background .3s, color .3s, border-color .3s, transform .3s;
-  }
-
-  .words li .dot {
-    flex: 0 0 auto;
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: #d8e8f5;
-    transition: background .3s, transform .3s;
-  }
-
-  .words li .txt { transition: opacity .3s; }
-
-  .words li .check {
-    margin-left: auto;
-    font-size: 13px;
-    opacity: 0;
-    transform: scale(.4);
-    transition: opacity .3s, transform .3s;
-  }
-
-  .words li.found {
-    background: var(--tint);
-    border-color: var(--tint-border);
-    color: var(--word-color);
-  }
-  .words li.found .dot { background: var(--word-color); transform: scale(1.15); }
-  .words li.found .txt {
-    text-decoration: line-through;
-    text-decoration-thickness: 2px;
-    text-decoration-color: var(--word-color);
-  }
-  .words li.found .check { opacity: 1; transform: none; }
-
-  .legend {
-    margin-top: 16px;
-    padding-top: 14px;
-    border-top: 1px dashed var(--baby-line);
-    font-size: 12.5px;
-    line-height: 1.55;
-    color: #7d9ab2;
-  }
-
-  .link-btn {
-    margin-top: 12px;
-    padding: 0;
-    border: 0;
-    background: none;
-    color: #93aec2;
-    font: inherit;
-    font-size: 12.5px;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    cursor: pointer;
-    transition: color .15s;
-  }
-  .link-btn:hover { color: var(--orange); }
-
-  /* ---------- Tela de parabéns ---------- */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-    display: grid;
-    place-items: center;
-    padding: 20px;
-    background: rgba(26, 55, 80, .38);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .3s ease;
-  }
-  .overlay.show { opacity: 1; pointer-events: auto; }
-
-  .win {
-    width: min(430px, 100%);
-    padding: 30px 26px 26px;
-    border-radius: 26px;
-    background: #fff;
-    text-align: center;
-    box-shadow: 0 40px 80px -30px rgba(20, 40, 60, .55);
-    transform: translateY(16px) scale(.94);
-    transition: transform .38s cubic-bezier(.2, .9, .3, 1.25);
-  }
-  .overlay.show .win { transform: none; }
-
-  .win .emoji { font-size: 56px; line-height: 1; animation: bob 1.6s ease-in-out infinite; }
-  @keyframes bob {
-    0%, 100% { transform: translateY(0) rotate(-4deg); }
-    50% { transform: translateY(-7px) rotate(4deg); }
-  }
-
-  .win h2 {
-    margin: 10px 0 6px;
-    font-size: 32px;
-    letter-spacing: -.02em;
-    background: linear-gradient(90deg, #eab308, #fb923c 55%, #f97316);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .win p { margin: 0 0 20px; font-size: 14.5px; color: #6b8093; line-height: 1.5; }
-
-  .win .stats { display: flex; gap: 10px; margin-bottom: 22px; }
-
-  .win .stats div {
-    flex: 1;
-    padding: 11px 8px;
-    border-radius: 14px;
-    background: #f2f9ff;
-  }
-  .win .stats small {
-    display: block;
-    margin-bottom: 3px;
-    font-size: 11px;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: #93a9bd;
-  }
-  .win .stats b { font-size: 19px; color: #2f4b63; font-variant-numeric: tabular-nums; }
-
-  .win .btn { width: 100%; padding: 13px 18px; font-size: 15px; }
-
-  #confetti {
-    position: fixed;
-    inset: 0;
-    z-index: 60;
-    pointer-events: none;
-  }
-
-  /* ---------- Responsivo ---------- */
-  @media (max-width: 880px) {
-    body { background-attachment: scroll; }
-    .layout { grid-template-columns: 1fr; }
-    .panel { order: 2; }
-    .words { flex-direction: row; flex-wrap: wrap; }
-    .words li { flex: 1 1 42%; font-size: 13.5px; padding: 8px 10px; }
-    .legend { display: none; }
-  }
-
-  @media (max-width: 460px) {
-    .logo { width: 46px; height: 46px; font-size: 22px; border-radius: 14px; }
-    .timer { padding: 9px 12px; font-size: 13px; }
-    .round-chip { padding: 9px 11px; font-size: 11.5px; }
-    .btn { padding: 10px 14px; font-size: 13px; }
-    .words li { flex: 1 1 100%; }
-  }
-</style>
+<link rel="stylesheet" href="estilo.css" />
 </head>
-<body>
+<body class="jogo-caca">
 
 <div class="app">
   <header class="top">
     <div class="brand">
-      <div class="logo">🔎</div>
+      <div class="logo">L</div>
       <div>
         <h1>Caça-Palavras</h1>
-        <p class="sub">Tema: <strong id="themeName">Frutas</strong> · encontre as <strong id="totalLabel">8</strong> palavras</p>
+        <p class="sub">Vamos achar <strong id="totalLabel">8</strong> palavras de <strong id="themeName">Frutas</strong></p>
       </div>
     </div>
 
     <div class="tools">
       <div class="round-chip" id="roundChip">Rodada 1 de 6</div>
-      <div class="timer"><span>⏱</span><b id="timer">00:00</b></div>
-      <button class="btn" id="newGame" type="button">Reiniciar rodada</button>
-      <a class="btn switch" href="cruzada.html">🧩 Palavra cruzada</a>
+      <div class="timer">Tempo <b id="timer">00:00</b></div>
+      <button class="btn" id="newGame" type="button">Tentar de novo</button>
+      <a class="btn switch" href="cruzada.html">Palavra cruzada</a>
     </div>
   </header>
 
   <div class="layout">
     <section class="board-card">
       <div class="grid" id="grid" role="grid" aria-label="Tabuleiro do caça-palavras"></div>
-      <p class="tip">Arraste sobre as letras ou clique na <b>primeira</b> e na <b>última</b> letra da palavra.</p>
+      <p class="tip">Passe o dedo pelas letras ou clique na <b>primeira</b> e na <b>última</b> letra.</p>
     </section>
 
     <aside class="panel">
@@ -477,21 +43,19 @@
       <ul class="words" id="wordList"></ul>
 
       <p class="legend">
-        <b>São 6 rodadas:</b> a cada rodada as palavras são novas e as posições sorteadas.
-        Elas podem estar na horizontal, vertical e diagonal — inclusive de trás para frente.
-        Ao encontrar uma palavra, ela fica <b>grifada</b> com a cor usada no tabuleiro.
+        São <b>6 rodadas</b> cheias de frutas. As palavras podem estar de lado, em pé ou deitadas —
+        até de trás para frente. Quando você acha uma, ela ganha a cor do tabuleiro.
       </p>
 
-      <button class="link-btn" id="restartAll" type="button">Recomeçar as 6 rodadas</button>
+      <button class="link-btn" id="restartAll" type="button">Começar do início</button>
     </aside>
   </div>
 </div>
 
 <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="winTitle">
   <div class="win">
-    <div class="emoji">🎉</div>
     <h2 id="winTitle">Parabéns!</h2>
-    <p id="winMsg">Você encontrou todas as palavras do caça-palavras. Mandou muito bem!</p>
+    <p id="winMsg">Você achou todas as palavras. Que legal!</p>
 
     <div class="stats">
       <div><small>Tempo</small><b id="winTime">00:00</b></div>
@@ -512,18 +76,29 @@
   /* ======================= CONFIGURAÇÃO ======================= */
   const THEME = "Frutas";
 
-  // Banco de palavras. Cada rodada usa um grupo novo, sem repetir palavras.
-  const WORD_BANK = [
-    "ABACATE", "ABACAXI", "ABIU", "ACAI", "ACEROLA", "AMEIXA", "AMORA", "ANONA",
-    "ARACA", "ATEMOIA", "AVOCADO", "BACURI", "BANANA", "BERGAMOTA", "CAJU",
-    "CAQUI", "CARAMBOLA", "CASTANHA", "CEREJA", "CIRIGUELA", "COCO", "CUPUACU",
-    "FIGO", "FRAMBOESA", "GOIABA", "GRAVIOLA", "GROSELHA", "GUARANA", "INGA",
-    "JABUTICABA", "JACA", "JAMBO", "JATOBA", "JENIPAPO", "KIWI", "LARANJA",
-    "LICHIA", "LIMAO", "MACA", "MAMAO", "MANGABA", "MANGA", "MARACUJA", "MAROLO",
-    "MELANCIA", "MELAO", "MIRTILO", "MORANGO", "MURICI", "NECTARINA", "NESPERA",
-    "PERA", "PESSEGO", "PITANGA", "PITAYA", "ROMA", "SAPOTI", "SERIGUELA",
-    "TAMARINDO", "TANGERINA", "UMBU", "UVA"
+  // Rodada 1: as 8 frutas pedidas. Rodadas 2 a 6: conjuntos novos e simples.
+  const WORD_SETS = [
+    ["ABACAXI", "MAMÃO", "LARANJA", "TOMATE", "MAÇÃ", "PÊSSEGO", "UVA", "MARACUJÁ"],
+    ["BANANA", "PERA", "LIMÃO", "MELANCIA", "MORANGO", "KIWI", "COCO", "MELÃO"],
+    ["CEREJA", "AMORA", "MANGA", "GOIABA", "FIGO", "ABACATE", "CAJU", "AÇAÍ"],
+    ["JABUTICABA", "TANGERINA", "PITANGA", "ACEROLA", "FRAMBOESA", "MIRTILO", "DAMASCO", "AMEIXA"],
+    ["ROMÃ", "DÁTIL", "NECTARINA", "GUARANÁ", "BANANA", "PERA", "CEREJA", "KIWI"],
+    ["MAMÃO", "MARACUJÁ", "MELÃO", "UVA", "MAÇÃ", "LARANJA", "COCO", "AMORA"]
   ];
+
+  // O tabuleiro usa letras sem acento; a lista mostra o nome certo.
+  const NOMES = {
+    MAMAO: "MAMÃO",
+    MACA: "MAÇÃ",
+    PESSEGO: "PÊSSEGO",
+    MARACUJA: "MARACUJÁ",
+    LIMAO: "LIMÃO",
+    MELAO: "MELÃO",
+    ACAI: "AÇAÍ",
+    ROMA: "ROMÃ",
+    DATIL: "DÁTIL",
+    GUARANA: "GUARANÁ"
+  };
 
   const TOTAL_ROUNDS = 6;      // quantas partidas em sequência
   const WORDS_PER_GAME = 8;    // palavras diferentes em cada partida
@@ -593,27 +168,11 @@
     return arr;
   }
 
-  // Sorteia as palavras de todas as rodadas de uma vez, sem repetir nenhuma.
+  // Cada rodada tem o seu próprio conjunto de 8 frutas, em ordem sorteada.
   function makeRoundSets() {
-    const pool = shuffle(WORD_BANK.map(norm));
-    const needed = TOTAL_ROUNDS * WORDS_PER_GAME;
-    const sets = [];
-
-    if (pool.length >= needed) {
-      for (let i = 0; i < TOTAL_ROUNDS; i++) {
-        sets.push(pool.slice(i * WORDS_PER_GAME, (i + 1) * WORDS_PER_GAME));
-      }
-    } else {
-      // Banco pequeno: reaproveita palavras só depois de esgotar o banco.
-      for (let i = 0; i < TOTAL_ROUNDS; i++) {
-        const start = (i * WORDS_PER_GAME) % pool.length;
-        const set = [];
-        for (let k = 0; k < WORDS_PER_GAME; k++) set.push(pool[(start + k) % pool.length]);
-        sets.push(set);
-      }
-    }
-
-    return sets;
+    return WORD_SETS.map(function (frutas) {
+      return shuffle(frutas.map(norm));
+    });
   }
 
   /* ======================= GERAÇÃO DO TABULEIRO ======================= */
@@ -715,11 +274,11 @@
 
       const txt = document.createElement("span");
       txt.className = "txt";
-      txt.textContent = p.word;
+      txt.textContent = NOMES[p.word] || p.word;
 
       const check = document.createElement("span");
       check.className = "check";
-      check.textContent = "✓";
+      check.textContent = "achou!";
 
       li.append(dot, txt, check);
       listEl.appendChild(li);
@@ -988,9 +547,9 @@
 
     winRoundEl.textContent = (roundIndex + 1) + "/" + TOTAL_ROUNDS;
     winMsgEl.textContent = isLast
-      ? "Você completou as " + TOTAL_ROUNDS + " rodadas do caça-palavras. Mandou muito bem!"
-      : "Rodada " + (roundIndex + 1) + " de " + TOTAL_ROUNDS + " concluída. A próxima vem com palavras novas!";
-    playAgainEl.textContent = isLast ? "Jogar de novo" : "Próxima rodada";
+      ? "Você terminou as " + TOTAL_ROUNDS + " rodadas. Você mandou muito!"
+      : "Rodada " + (roundIndex + 1) + " de " + TOTAL_ROUNDS + " pronta! Agora vem uma nova fornada de palavras.";
+    playAgainEl.textContent = isLast ? "Brincar de novo" : "Próxima rodada";
 
     overlayEl.classList.add("show");
     launchConfetti();

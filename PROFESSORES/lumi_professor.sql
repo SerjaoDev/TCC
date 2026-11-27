@@ -172,6 +172,24 @@ INSERT INTO `progresso` (`id`, `aluno_id`, `estrutura_id`, `nivel_atual`, `estre
 -- --------------------------------------------------------
 
 --
+-- Estrutura para tabela `provas`
+--
+
+CREATE TABLE IF NOT EXISTS `provas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `aluno_id` int(11) NOT NULL,
+  `nota` int(11) DEFAULT 0,
+  `total` int(11) DEFAULT 0,
+  `percentual` decimal(5,2) DEFAULT 0.00,
+  `data_realizacao` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `provas_aluno_id` (`aluno_id`),
+  CONSTRAINT `provas_aluno_fk` FOREIGN KEY (`aluno_id`) REFERENCES `alunos` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura para tabela `turmas`
 --
 
